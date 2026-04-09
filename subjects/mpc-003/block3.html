@@ -1,1 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personality Theories Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d12;
+  --surface: #18182a;
+  --surface2: #22223a;
+  --border: rgba(255,255,255,0.1);
+  --text: #e8e8f0;
+  --muted: #8a8aaa;
+  --gold: #ffd166;
+  --green: #52b788;
+  --blue: #8ecae6;
+  --purple: #c77dff;
+  --orange: #f4a261;
+  --pink: #f72585;
+  --red: #e76f51;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; min-height:100vh; }
+
+#nav {
+  position:fixed; top:0; left:0; right:0; z-index:999;
+  background:rgba(10,10,18,0.97);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; flex-wrap:wrap;
+  padding:0 1rem; min-height:52px; gap:0;
+}
+.nav-logo { font-family:'Playfair Display',serif; color:var(--gold); font-size:1rem; margin-right:1rem; white-space:nowrap; padding:0.5rem 0; }
+.nav-btn {
+  padding:0 0.9rem; height:52px; line-height:52px;
+  font-size:0.73rem; font-weight:500; letter-spacing:0.06em; text-transform:uppercase;
+  color:var(--muted); cursor:pointer; border-bottom:2px solid transparent;
+  white-space:nowrap; user-select:none;
+  transition:color 0.15s, border-color 0.15s;
+}
+.nav-btn:hover { color:var(--text); }
+.nav-btn.active { color:var(--gold); border-bottom-color:var(--gold); }
+
+.page { display:none; padding:70px 1.5rem 4rem; max-width:1050px; margin:0 auto; }
+.page.active { display:block; animation:fadeUp 0.3s ease; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+h2 { font-family:'Playfair Display',serif; font-size:1.9rem; margin-bottom:0.3rem; }
+.subtitle { color:var(--muted); font-size:0.88rem; margin-bottom:1.8rem; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:1.4rem; margin-bottom:1rem; }
+.card h3 { font-family:'Playfair Display',serif; font-size:1.1rem; margin-bottom:0.5rem; }
+.card p { color:var(--muted); font-size:0.85rem; line-height:1.7; }
+.highlight { background:rgba(255,209,102,0.08); border-left:3px solid var(--gold); border-radius:0 8px 8px 0; padding:0.7rem 1rem; margin-top:0.8rem; font-size:0.83rem; color:var(--text); font-style:italic; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:1rem; }
+.grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:1rem; }
+@media(max-width:640px){ .grid2,.grid3{ grid-template-columns:1fr; } }
+
+.acc-row {
+  background:var(--surface2); border:1px solid var(--border);
+  border-radius:10px; padding:1rem 1.2rem; margin-bottom:0.5rem;
+  cursor:pointer; transition:border-color 0.15s, background 0.15s;
+  display:flex; justify-content:space-between; align-items:center;
+  user-select:none;
+}
+.acc-row:hover { border-color:var(--gold); background:rgba(255,209,102,0.04); }
+.acc-row.open { border-color:var(--gold); border-radius:10px 10px 0 0; }
+.acc-label { font-weight:500; font-size:0.9rem; }
+.acc-sub { font-size:0.78rem; color:var(--muted); margin-top:0.15rem; }
+.acc-arrow { font-size:1.1rem; color:var(--gold); transition:transform 0.2s; min-width:20px; text-align:center; }
+.acc-row.open .acc-arrow { transform:rotate(90deg); }
+.acc-body {
+  display:none;
+  background:rgba(255,255,255,0.02); border:1px solid var(--gold);
+  border-top:none; border-radius:0 0 10px 10px;
+  padding:1rem 1.2rem; margin-bottom:0.5rem;
+  font-size:0.85rem; color:var(--muted); line-height:1.75;
+}
+.acc-body .ex { margin-top:0.7rem; padding:0.6rem 0.9rem; background:rgba(255,209,102,0.06); border-left:2px solid var(--gold); border-radius:0 6px 6px 0; color:var(--text); font-style:italic; font-size:0.83rem; }
+
+.chip-grid { display:flex; flex-wrap:wrap; gap:0.5rem; margin:1rem 0; }
+.chip {
+  padding:0.4rem 0.9rem; border-radius:99px; border:1px solid var(--border);
+  font-size:0.78rem; cursor:pointer; background:var(--surface2);
+  transition:all 0.15s; user-select:none;
+}
+.chip:hover { border-color:var(--blue); color:var(--blue); }
+.chip.sel { border-color:var(--blue); background:rgba(142,202,230,0.12); color:var(--blue); font-weight:600; }
+
+.ocean-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:0.8rem; margin:1rem 0; }
+@media(max-width:640px){ .ocean-grid{ grid-template-columns:repeat(2,1fr); } }
+.ocean-card {
+  border-radius:12px; padding:1.1rem; text-align:center;
+  cursor:pointer; transition:transform 0.15s, box-shadow 0.15s;
+  border:2px solid transparent; user-select:none;
+}
+.ocean-card:hover { transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.4); }
+.ocean-card.sel { border-color:white; }
+.ocean-letter { font-family:'Playfair Display',serif; font-size:2.2rem; font-weight:900; line-height:1; }
+.ocean-name { font-size:0.72rem; margin-top:0.3rem; font-weight:500; }
+#ocean-detail { display:none; }
+
+.slider-wrap { margin-bottom:1.2rem; }
+.slider-label { display:flex; justify-content:space-between; font-size:0.85rem; margin-bottom:0.5rem; }
+.slider-label span:first-child { font-family:'Playfair Display',serif; }
+.slider-poles { display:flex; justify-content:space-between; font-size:0.72rem; color:var(--muted); margin-top:0.3rem; }
+input[type=range] {
+  width:100%; -webkit-appearance:none; height:6px;
+  border-radius:99px; outline:none; cursor:pointer; background:var(--surface2);
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance:none; width:18px; height:18px;
+  border-radius:50%; background:var(--gold); cursor:pointer;
+  box-shadow:0 0 6px rgba(255,209,102,0.5);
+}
+.pen-score { font-family:'DM Mono',monospace; color:var(--gold); font-weight:500; }
+.pen-result-box { background:var(--surface); border:1px solid var(--gold); border-radius:12px; padding:1.3rem; margin-top:1rem; text-align:center; }
+.pen-result-box h4 { font-family:'Playfair Display',serif; color:var(--gold); font-size:1.2rem; margin-bottom:0.4rem; }
+.pen-result-box p { color:var(--muted); font-size:0.86rem; line-height:1.6; }
+
+.q-box { background:var(--surface); border:1px solid var(--border); border-radius:14px; padding:1.6rem; }
+.q-num { font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--muted); margin-bottom:0.5rem; }
+.q-text { font-family:'Playfair Display',serif; font-size:1.15rem; line-height:1.5; margin-bottom:1.2rem; }
+.q-opt {
+  width:100%; text-align:left; padding:0.85rem 1.1rem; margin-bottom:0.5rem;
+  background:var(--surface2); border:1px solid var(--border); border-radius:9px;
+  font-family:'DM Sans',sans-serif; font-size:0.87rem; color:var(--text);
+  cursor:pointer; transition:border-color 0.15s, background 0.15s;
+  display:block;
+}
+.q-opt:hover:not([disabled]) { border-color:var(--gold); background:rgba(255,209,102,0.06); }
+.q-opt.correct { background:rgba(82,183,136,0.15); border-color:var(--green); color:var(--green); }
+.q-opt.wrong { background:rgba(231,111,81,0.12); border-color:var(--red); color:var(--red); }
+.q-fb { display:none; margin-top:0.8rem; padding:0.9rem 1rem; border-radius:8px; font-size:0.84rem; line-height:1.6; }
+.q-fb.show-correct { display:block; background:rgba(82,183,136,0.1); border:1px solid var(--green); color:var(--text); }
+.q-fb.show-wrong { display:block; background:rgba(231,111,81,0.1); border:1px solid var(--red); color:var(--text); }
+.prog-bar { display:flex; gap:3px; margin-bottom:1.2rem; }
+.prog-dot { height:4px; flex:1; border-radius:99px; background:var(--surface2); }
+.prog-dot.done { background:var(--green); }
+.prog-dot.cur { background:var(--gold); }
+
+.btn { display:inline-flex; align-items:center; gap:0.4rem; padding:0.65rem 1.5rem; border-radius:99px; border:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:0.85rem; font-weight:500; transition:all 0.15s; }
+.btn-gold { background:var(--gold); color:#0d0d12; }
+.btn-gold:hover { background:#ffe08a; }
+.btn-out { background:transparent; border:1px solid var(--border); color:var(--text); }
+.btn-out:hover { border-color:var(--muted); }
+
+.fc-area { display:flex; flex-direction:column; align-items:center; gap:1.2rem; }
+.fc-wrap { width:100%; max-width:520px; height:200px; perspective:1000px; cursor:pointer; }
+.fc-inner { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform 0.55s; }
+.fc-wrap.flipped .fc-inner { transform:rotateY(180deg); }
+.fc-face { position:absolute; width:100%; height:100%; backface-visibility:hidden; border-radius:14px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:1.5rem; text-align:center; }
+.fc-front { background:var(--surface); border:1px solid var(--border); }
+.fc-back { background:var(--surface2); border:1px solid var(--purple); transform:rotateY(180deg); }
+.fc-term { font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin-bottom:0.4rem; }
+.fc-hint { font-size:0.73rem; color:var(--muted); }
+.fc-def { font-size:0.85rem; line-height:1.65; color:var(--text); }
+.fc-src { font-size:0.7rem; color:var(--purple); font-family:'DM Mono',monospace; margin-top:0.7rem; }
+.fc-ctrls { display:flex; gap:1rem; align-items:center; }
+.fc-cnt { font-family:'DM Mono',monospace; font-size:0.8rem; color:var(--muted); min-width:55px; text-align:center; }
+
+.home-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:1rem; margin-top:1.5rem; }
+.home-card {
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:1.4rem; cursor:pointer;
+  transition:transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+  border-top:3px solid var(--cc, var(--gold));
+}
+.home-card:hover { transform:translateY(-4px); box-shadow:0 10px 30px rgba(0,0,0,0.4); border-color:var(--cc, var(--gold)); }
+.home-card .ic { font-size:1.8rem; margin-bottom:0.7rem; }
+.home-card h3 { font-family:'Playfair Display',serif; font-size:1.05rem; margin-bottom:0.4rem; }
+.home-card p { color:var(--muted); font-size:0.8rem; line-height:1.5; }
+
+.ctable { width:100%; border-collapse:collapse; font-size:0.82rem; }
+.ctable th { padding:0.85rem 0.9rem; text-align:left; border-bottom:2px solid var(--border); font-family:'Playfair Display',serif; }
+.ctable td { padding:0.85rem 0.9rem; border-bottom:1px solid var(--border); color:var(--muted); vertical-align:top; line-height:1.5; }
+.ctable tr:hover td { background:rgba(255,255,255,0.02); color:var(--text); }
+.ctable td:first-child { color:var(--text); font-weight:600; }
+
+.score-screen { text-align:center; padding:3rem 1rem; }
+.score-big { font-family:'Playfair Display',serif; font-size:5rem; font-weight:900; color:var(--gold); line-height:1; }
+.score-msg { color:var(--muted); margin:0.6rem 0 2rem; font-size:0.9rem; }
+</style>
+</head>
+<body>
+
+<div id="nav">
+  <div class="nav-logo">🧠 Personality Explorer</div>
+  <div class="nav-btn active" onclick="go('home')">Home</div>
+  <div class="nav-btn" onclick="go('allport')">Allport</div>
+  <div class="nav-btn" onclick="go('cattell')">Cattell</div>
+  <div class="nav-btn" onclick="go('eysenck')">Eysenck</div>
+  <div class="nav-btn" onclick="go('bigfive')">Big Five</div>
+  <div class="nav-btn" onclick="go('compare')">Compare</div>
+  <div class="nav-btn" onclick="go('flash')">Flashcards</div>
+  <div class="nav-btn" onclick="go('quiz')">Quiz</div>
+</div>
+
+<!-- HOME -->
+<div class="page active" id="pg-home">
+  <div style="text-align:center;padding:2.5rem 1rem 1.5rem">
+    <div style="font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--green);margin-bottom:0.8rem">Theories of Personality · Units 1–4</div>
+    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.5rem);font-weight:900;line-height:1.1;margin-bottom:0.8rem">Understand <span style="color:var(--gold)">Who You Are</span><br>Through Theory</h1>
+    <p style="color:var(--muted);max-width:480px;margin:0 auto 2rem;font-size:0.9rem;line-height:1.7">An interactive guide to four major personality theories. Click any theory below to explore, use Flashcards to memorise key terms, and take the Quiz to test yourself.</p>
+  </div>
+  <div class="home-grid">
+    <div class="home-card" style="--cc:var(--orange)" onclick="go('allport')">
+      <div class="ic">🌿</div>
+      <h3>Gordon Allport</h3>
+      <p>Traits as real neuropsychic structures — Cardinal, Central &amp; Secondary. The Proprium &amp; Functional Autonomy.</p>
+    </div>
+    <div class="home-card" style="--cc:var(--blue)" onclick="go('cattell')">
+      <div class="ic">🔬</div>
+      <h3>Raymond Cattell</h3>
+      <p>16 Source Traits via factor analysis. R = f(S,P) and MAVA for heredity vs environment.</p>
+    </div>
+    <div class="home-card" style="--cc:var(--purple)" onclick="go('eysenck')">
+      <div class="ic">⚡</div>
+      <h3>Hans Eysenck</h3>
+      <p>Three biological superfactors: Extraversion, Neuroticism, Psychoticism — grounded in cortical arousal theory.</p>
+    </div>
+    <div class="home-card" style="--cc:var(--green)" onclick="go('bigfive')">
+      <div class="ic">🌊</div>
+      <h3>The Big Five</h3>
+      <p>OCEAN — five broad personality dimensions via the lexical hypothesis, replicated across cultures.</p>
+    </div>
+    <div class="home-card" style="--cc:var(--gold)" onclick="go('compare')">
+      <div class="ic">⚖️</div>
+      <h3>Compare All Theories</h3>
+      <p>Side-by-side table of all four theorists — methods, tools, key concepts, criticisms.</p>
+    </div>
+    <div class="home-card" style="--cc:var(--pink)" onclick="go('quiz')">
+      <div class="ic">🎯</div>
+      <h3>Take the Quiz</h3>
+      <p>15 questions across all four units with instant feedback on every answer.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ALLPORT -->
+<div class="page" id="pg-allport">
+  <h2>Gordon Allport — Dispositional Theory</h2>
+  <div class="subtitle">Traits are real neuropsychic structures that initiate and guide consistent behaviour. Click any row to expand it.</div>
+
+  <div style="color:var(--orange);font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:0.8rem">▸ The Trait Hierarchy</div>
+
+  <div class="acc-row" onclick="acc('cardinal')">
+    <div><div class="acc-label">🔴 Cardinal Trait</div><div class="acc-sub">Dominates almost ALL behaviour — very rare</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-cardinal">
+    A cardinal trait is so dominant that virtually everything a person does can be traced to its single influence. Very few people have a true cardinal trait — but when present, it colours their entire existence.
+    <div class="ex">Example: Someone described as "Gandhian" — non-violence permeates every action. Historical names have become adjectives: Machiavellian (cunning), Don Quixote (idealism).</div>
+  </div>
+
+  <div class="acc-row" onclick="acc('central')">
+    <div><div class="acc-label">🟡 Central Traits</div><div class="acc-sub">5–10 building blocks — easily recognised by others</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-central">
+    Central traits are the core descriptors of a person's personality — less all-consuming than cardinal traits but still quite generalised. When you write a reference letter, you list central traits.
+    <div class="ex">Example: "She is outgoing, optimistic, kind, and hard-working." These 4–6 key descriptors are central traits — consistent across many situations but not every single one.</div>
+  </div>
+
+  <div class="acc-row" onclick="acc('secondary')">
+    <div><div class="acc-label">🟢 Secondary Traits</div><div class="acc-sub">Specific, situational — only close friends notice them</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-secondary">
+    Secondary traits are less consistent, less generalised, and only visible in specific situations. You need to know someone very well to observe them.
+    <div class="ex">Example: Gets nervous only during formal public presentations, or prefers a specific type of food — narrow, situational preferences that don't define the whole person.</div>
+  </div>
+
+  <div class="acc-row" onclick="acc('common')">
+    <div><div class="acc-label">📊 Common Traits vs Individual Traits</div><div class="acc-sub">Cultural vs. uniquely personal traits</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-common">
+    <strong style="color:var(--text)">Common (Nomothetic) Traits:</strong> Shared across a culture — allow comparison between people. E.g., anxiety, social attitude.<br><br>
+    <strong style="color:var(--text)">Individual (Idiographic) Traits:</strong> Unique to one person — cannot be used to compare. Found only through case histories, diaries, letters.
+    <div class="ex">Allport argued the TRUE personality only emerges from individual study — group averages obscure what makes each person unique. He was critical of purely nomothetic approaches.</div>
+  </div>
+
+  <div class="acc-row" onclick="acc('fa')">
+    <div><div class="acc-label">🔄 Functional Autonomy of Motives</div><div class="acc-sub">Why adult motives don't need childhood roots</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-fa">
+    Adult motives are INDEPENDENT of their original origins. You don't need to dig into someone's childhood to understand why they do something today. What was a means to an end becomes an end in itself.<br><br>
+    <strong style="color:var(--gold)">Two types:</strong><br>
+    • <strong style="color:var(--text)">Preservative:</strong> Repetitive neurological patterns (eating at same time daily)<br>
+    • <strong style="color:var(--text)">Propriate:</strong> Acquired interests, values, goals — the master motivation system
+    <div class="ex">A student takes a field study because it is required → becomes absorbed in the topic for life. The original motive (grades) vanished; love of the subject is now self-sustaining.</div>
+  </div>
+
+  <div class="acc-row" onclick="acc('prop')">
+    <div><div class="acc-label">🪞 The Proprium (Self) — 7 Stages</div><div class="acc-sub">Allport's name for the self — develops from birth to adulthood</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-prop">
+    The Proprium is Allport's term for the self — all aspects making a person unique. It has 7 sequential functions:<br><br>
+    <strong style="color:var(--gold)">1. Bodily self</strong> — body sensations (infancy)<br>
+    <strong style="color:var(--gold)">2. Self-identity</strong> — continuity through name and language (yr 1–2)<br>
+    <strong style="color:var(--gold)">3. Self-esteem</strong> — pride in accomplishments (yr 3)<br>
+    <strong style="color:var(--gold)">4. Self-extension</strong> — "mine" — body + environment + people (yr 4–6)<br>
+    <strong style="color:var(--gold)">5. Self-image</strong> — "good me" vs "bad me" (yr 5–6)<br>
+    <strong style="color:var(--gold)">6. Rational coping</strong> — solving problems with logic (yr 6–12)<br>
+    <strong style="color:var(--gold)">7. Propriate striving</strong> — long-range goals, sense of purpose (adolescence → adulthood)
+  </div>
+
+  <div class="acc-row" onclick="acc('mature')">
+    <div><div class="acc-label">🌟 The Mature Personality — 6 Criteria</div><div class="acc-sub">Allport's portrait of psychological health</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-mature">
+    A mature person shows all six of these characteristics:<br><br>
+    1. <strong style="color:var(--gold)">Extended sense of self</strong> — genuinely participates in work, relationships, society<br>
+    2. <strong style="color:var(--gold)">Warm social interactions</strong> — intimacy with family + compassion for all humans<br>
+    3. <strong style="color:var(--gold)">Emotional security and self-acceptance</strong> — handles frustration without hostility<br>
+    4. <strong style="color:var(--gold)">Realistic perception</strong> — sees the world as it is, not as wished<br>
+    5. <strong style="color:var(--gold)">Self-insight and humour</strong> — knows own strengths and weaknesses, can laugh at oneself<br>
+    6. <strong style="color:var(--gold)">Unifying philosophy of life</strong> — a dominant goal or value gives life meaning and direction
+  </div>
+</div>
+
+<!-- CATTELL -->
+<div class="page" id="pg-cattell">
+  <h2>Raymond Cattell — 16 Factor Theory</h2>
+  <div class="subtitle">Factor analysis reveals 16 hidden source traits beneath observable behaviour.</div>
+
+  <div class="grid2">
+    <div class="card">
+      <h3>📐 The Specification Equation</h3>
+      <p style="font-family:'DM Mono',monospace;font-size:1.3rem;color:var(--gold);margin:0.5rem 0">R = f ( S , P )</p>
+      <p><strong style="color:var(--text)">R</strong> = Response (behaviour)<br><strong style="color:var(--text)">S</strong> = Stimulus situation<br><strong style="color:var(--text)">P</strong> = Personality (all source traits weighted for that situation)</p>
+      <div class="highlight">Behaviour is mathematically predictable if you know the situation AND all 16 source trait scores.</div>
+    </div>
+    <div class="card">
+      <h3>🧫 Surface vs Source Traits</h3>
+      <p><strong style="color:var(--blue)">Surface traits</strong> — observable clusters of co-occurring behaviours (e.g., restlessness + indecision → "neuroticism"). Not stable — no single underlying cause.</p>
+      <p style="margin-top:0.6rem"><strong style="color:var(--green)">Source traits</strong> — deep causal building blocks. Stable across time and situations. Discovered ONLY via factor analysis. There are <strong style="color:var(--gold)">16</strong> of them.</p>
+    </div>
+  </div>
+
+  <div style="color:var(--blue);font-family:'Playfair Display',serif;font-size:1.05rem;margin:1.3rem 0 0.5rem">▸ Click any factor chip to see what it means</div>
+  <div class="chip-grid" id="cc-chips"></div>
+  <div class="card" id="cc-detail" style="display:none;border-color:var(--blue)">
+    <h3 id="cc-title" style="color:var(--blue)"></h3>
+    <p id="cc-body"></p>
+  </div>
+
+  <div class="grid3" style="margin-top:1.2rem">
+    <div class="card">
+      <h3>📊 3 Data Sources</h3>
+      <p><strong style="color:var(--gold)">L-data</strong>: Real-life observations<br><strong style="color:var(--gold)">Q-data</strong>: Questionnaires (16PF)<br><strong style="color:var(--gold)">OT-data</strong>: Objective tests — resistant to faking</p>
+    </div>
+    <div class="card">
+      <h3>🧬 Nature vs Nurture (MAVA)</h3>
+      <p>Cattell's <strong style="color:var(--gold)">MAVA</strong> technique found:<br><span style="color:var(--red);font-family:'DM Mono',monospace">~⅓ Genetic</span><br><span style="color:var(--green);font-family:'DM Mono',monospace">~⅔ Environmental</span></p>
+    </div>
+    <div class="card">
+      <h3>🏫 Syntality</h3>
+      <p>Groups (nations, schools) also have "personality" — Cattell called it <strong style="color:var(--gold)">syntality</strong>. Major national traits: size, morale, affluence, industriousness.</p>
+    </div>
+  </div>
+</div>
+
+<!-- EYSENCK -->
+<div class="page" id="pg-eysenck">
+  <h2>Hans Eysenck — PEN Model</h2>
+  <div class="subtitle">Three biological superfactors in a hierarchical taxonomy. Drag the sliders to explore how they combine!</div>
+
+  <div class="card" style="max-width:580px;margin:0 auto 1rem">
+    <div class="slider-wrap">
+      <div class="slider-label"><span>Extraversion (E)</span><span class="pen-score" id="ev">50</span></div>
+      <input type="range" min="0" max="100" value="50" id="sl-e" oninput="penUpdate()">
+      <div class="slider-poles"><span>← Introvert</span><span>Extravert →</span></div>
+      <p id="ed" style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem"></p>
+    </div>
+    <div class="slider-wrap">
+      <div class="slider-label"><span>Neuroticism (N)</span><span class="pen-score" id="nv">50</span></div>
+      <input type="range" min="0" max="100" value="50" id="sl-n" oninput="penUpdate()">
+      <div class="slider-poles"><span>← Stable</span><span>Neurotic →</span></div>
+      <p id="nd" style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem"></p>
+    </div>
+    <div class="slider-wrap">
+      <div class="slider-label"><span>Psychoticism (P)</span><span class="pen-score" id="pv">50</span></div>
+      <input type="range" min="0" max="100" value="50" id="sl-p" oninput="penUpdate()">
+      <div class="slider-poles"><span>← Empathic</span><span>Psychotic →</span></div>
+      <p id="pd" style="font-size:0.78rem;color:var(--muted);margin-top:0.4rem"></p>
+    </div>
+    <div class="pen-result-box">
+      <h4 id="pen-t">Your Profile</h4>
+      <p id="pen-d"></p>
+    </div>
+  </div>
+
+  <div style="color:var(--purple);font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:0.8rem">▸ Key Concepts — Click to expand</div>
+
+  <div class="acc-row" onclick="acc('eh')">
+    <div><div class="acc-label">📐 The 4-Level Hierarchy</div><div class="acc-sub">From single acts to superfactors</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-eh">
+    Eysenck arranged personality in 4 levels (bottom to top):<br><br>
+    <strong style="color:var(--muted)">Level 1 — Specific responses:</strong> Talking to a specific friend on a single occasion<br>
+    <strong style="color:var(--green)">Level 2 — Habitual responses:</strong> Regularly joining clubs, talking to friends<br>
+    <strong style="color:var(--blue)">Level 3 — Traits:</strong> Sociability, assertiveness, liveliness (components of Extraversion)<br>
+    <strong style="color:var(--gold)">Level 4 — Superfactors/Types:</strong> Extraversion, Neuroticism, Psychoticism<br><br>
+    Superfactors are stable and cross-situational. Specific behaviours vary day to day. Higher levels are more reliable for predicting behaviour.
+  </div>
+
+  <div class="acc-row" onclick="acc('ea')">
+    <div><div class="acc-label">🧠 Cortical Arousal &amp; Extraversion (ARAS)</div><div class="acc-sub">Why introverts avoid parties and extraverts seek them</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-ea">
+    Extraversion is explained by the <strong style="color:var(--gold)">Ascending Reticular Activating System (ARAS)</strong> in the brain stem.<br><br>
+    • <strong style="color:var(--text)">Introverts:</strong> Chronically HIGHER baseline cortical arousal → already over-stimulated → avoid excitement<br>
+    • <strong style="color:var(--text)">Extraverts:</strong> Chronically LOWER baseline arousal → under-stimulated → constantly seek exciting situations<br><br>
+    Based on the <strong style="color:var(--gold)">Yerkes-Dodson Law:</strong> performance is best at intermediate arousal. Both extremes cause performance to drop.
+    <div class="ex">Lemon Drop Test (Corcoran, 1964): 4 drops of lemon juice on the tongue — introverts secrete nearly TWICE as much saliva as extraverts, showing their higher sensitivity to stimulation.</div>
+  </div>
+
+  <div class="acc-row" onclick="acc('en')">
+    <div><div class="acc-label">💛 Neuroticism &amp; the Visceral Brain (Limbic System)</div><div class="acc-sub">Emotional reactivity and the autonomic nervous system</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-en">
+    Neuroticism is linked to activation thresholds in the <strong style="color:var(--gold)">visceral brain (limbic system)</strong> — hippocampus, amygdala, septum, hypothalamus.<br><br>
+    • <strong style="color:var(--text)">High Neuroticism:</strong> Lower thresholds → reacts quickly and persistently to even minor stressors<br>
+    • <strong style="color:var(--text)">Emotionally Stable:</strong> Higher thresholds → calm under stress, quick recovery<br><br>
+    Measured via: heart rate, blood pressure, skin conductance, breathing rate, muscular tension.
+    <div class="ex">High Introversion + High Neuroticism → prone to anxiety disorders (phobias, OCD). High Extraversion + High Neuroticism → increased risk for antisocial/psychopathic behaviour.</div>
+  </div>
+
+  <div class="acc-row" onclick="acc('ep')">
+    <div><div class="acc-label">⚗️ Psychoticism &amp; Gonadal Hormones</div><div class="acc-sub">Testosterone, MAO enzyme, and the P dimension</div></div>
+    <div class="acc-arrow">▶</div>
+  </div>
+  <div class="acc-body" id="acc-ep">
+    Psychoticism is biologically linked to <strong style="color:var(--gold)">testosterone</strong> and low levels of the enzyme <strong style="color:var(--gold)">monoamine oxidase (MAO)</strong>.<br><br>
+    Low platelet MAO found in psychotic patients AND their relatives — suggesting it's a biological vulnerability marker.<br><br>
+    High P scorers: troublesome, uncooperative, egocentric, hostile, impulsive, non-conformist. More common in men than women.
+    <div class="ex">Eysenck added Psychoticism as a 3rd dimension in 1976 — seen as a genetic predisposition toward psychosis OR psychopathy placed on a continuum, not an all-or-nothing category.</div>
+  </div>
+</div>
+
+<!-- BIG FIVE -->
+<div class="page" id="pg-bigfive">
+  <h2>The Big Five — OCEAN</h2>
+  <div class="subtitle">Five broad dimensions via factor analysis of personality words. Click each letter to explore that dimension.</div>
+
+  <div class="ocean-grid">
+    <div class="ocean-card" style="background:rgba(244,162,97,0.12);border-color:rgba(244,162,97,0.3)" onclick="showOcean('O')">
+      <div class="ocean-letter" style="color:var(--orange)">O</div>
+      <div class="ocean-name" style="color:var(--orange)">Openness</div>
+    </div>
+    <div class="ocean-card" style="background:rgba(82,183,136,0.12);border-color:rgba(82,183,136,0.3)" onclick="showOcean('C')">
+      <div class="ocean-letter" style="color:var(--green)">C</div>
+      <div class="ocean-name" style="color:var(--green)">Conscientiousness</div>
+    </div>
+    <div class="ocean-card" style="background:rgba(142,202,230,0.12);border-color:rgba(142,202,230,0.3)" onclick="showOcean('E')">
+      <div class="ocean-letter" style="color:var(--blue)">E</div>
+      <div class="ocean-name" style="color:var(--blue)">Extraversion</div>
+    </div>
+    <div class="ocean-card" style="background:rgba(199,125,255,0.12);border-color:rgba(199,125,255,0.3)" onclick="showOcean('A')">
+      <div class="ocean-letter" style="color:var(--purple)">A</div>
+      <div class="ocean-name" style="color:var(--purple)">Agreeableness</div>
+    </div>
+    <div class="ocean-card" style="background:rgba(247,37,133,0.12);border-color:rgba(247,37,133,0.3)" onclick="showOcean('N')">
+      <div class="ocean-letter" style="color:var(--pink)">N</div>
+      <div class="ocean-name" style="color:var(--pink)">Neuroticism</div>
+    </div>
+  </div>
+
+  <div class="card" id="ocean-detail" style="border-color:var(--gold)">
+    <h3 id="ocean-title"></h3>
+    <p id="ocean-body"></p>
+    <div class="highlight" id="ocean-ex"></div>
+  </div>
+
+  <div class="grid2" style="margin-top:1rem">
+    <div class="card">
+      <h3>📜 The Lexical Hypothesis</h3>
+      <p>The most important personality differences get encoded as words in natural language over generations. Starting from Allport &amp; Odbert's ~18,000 English trait words → Cattell's 4,500 → 35 clusters → 5 factors. The Big Five has been replicated in German, Chinese, Dutch, and many other languages.</p>
+    </div>
+    <div class="card">
+      <h3>✅ 6 Key Features of the Big Five</h3>
+      <p>
+        1. <strong style="color:var(--text)">Dimensional</strong> — continuous, not categories<br>
+        2. <strong style="color:var(--text)">Stable</strong> — consistent across 45 years<br>
+        3. <strong style="color:var(--text)">Heritable</strong> — partly genetic<br>
+        4. <strong style="color:var(--text)">Adaptive</strong> — evolutionary value<br>
+        5. <strong style="color:var(--text)">Universal</strong> — found across cultures<br>
+        6. <strong style="color:var(--text)">Clinically useful</strong> — aids therapeutic insight
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- COMPARE -->
+<div class="page" id="pg-compare">
+  <h2>Compare All Theories</h2>
+  <div class="subtitle">Side-by-side overview of all four theorists. Hover any row to highlight it.</div>
+  <div style="overflow-x:auto">
+    <table class="ctable">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th style="color:var(--orange)">Allport</th>
+          <th style="color:var(--blue)">Cattell</th>
+          <th style="color:var(--purple)">Eysenck</th>
+          <th style="color:var(--green)">Big Five</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Method</td><td>Idiographic / Lexical</td><td>Factor Analysis (inductive)</td><td>Factor Analysis + Experiments</td><td>Lexical + Factor Analysis</td></tr>
+        <tr><td>Number of Traits</td><td>Cardinal, Central, Secondary (unique per person)</td><td>16 Source Traits</td><td>3 Superfactors (P, E, N)</td><td>5 Dimensions (OCEAN)</td></tr>
+        <tr><td>Primary Tool</td><td>Study of Values Scale</td><td>16PF Questionnaire</td><td>EPQ (Eysenck Personality Questionnaire)</td><td>BFI / NEO PI-R</td></tr>
+        <tr><td>Biological Basis</td><td>Moderate (neuropsychic structures)</td><td>~⅓ genetic (MAVA)</td><td>Strong — ARAS, limbic system, MAO</td><td>Substantial heritability</td></tr>
+        <tr><td>Nature vs Nurture</td><td>Both, emphasis on uniqueness</td><td>~⅔ environment</td><td>Strongly biological / genetic</td><td>Both — Five-Factor Theory</td></tr>
+        <tr><td>Core Concept</td><td>Proprium + Functional Autonomy</td><td>R = f(S,P), ERGs &amp; SEMs</td><td>PEN hierarchy + arousal theory</td><td>OCEAN taxonomy (lexical)</td></tr>
+        <tr><td>Type vs Trait</td><td>Traits (continuous)</td><td>Traits (continuous)</td><td>Types = Supertraits (still continuous)</td><td>Dimensions (continuous)</td></tr>
+        <tr><td>Unique Insight</td><td>Every person is unique; study the individual</td><td>Behaviour is mathematically predictable</td><td>Personality has neurophysiological causes</td><td>Best cross-cultural integrative taxonomy</td></tr>
+        <tr><td>Key Criticism</td><td>Too idiographic; hard to test scientifically</td><td>Too many factors; factor analysis is method-dependent</td><td>P dimension is controversial; too reductive</td><td>Descriptive, not causal — no "why"</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- FLASHCARDS -->
+<div class="page" id="pg-flash">
+  <h2>Flashcards</h2>
+  <div class="subtitle">20 key terms from all four units. Click the card to flip it and reveal the definition.</div>
+  <div class="fc-area">
+    <div class="fc-wrap" id="fc-card" onclick="flipFC()">
+      <div class="fc-inner">
+        <div class="fc-face fc-front">
+          <div class="fc-term" id="fc-term">—</div>
+          <div class="fc-hint">Click card to flip ↻</div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-def" id="fc-def">—</div>
+          <div class="fc-src" id="fc-src">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-ctrls">
+      <button class="btn btn-out" onclick="fcMove(-1)">← Prev</button>
+      <div class="fc-cnt" id="fc-cnt">1 / 20</div>
+      <button class="btn btn-gold" onclick="fcMove(1)">Next →</button>
+    </div>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div class="page" id="pg-quiz">
+  <h2>Knowledge Quiz</h2>
+  <div class="subtitle">15 questions across all four theories. Click an answer to get instant feedback.</div>
+  <div style="max-width:660px;margin:0 auto">
+    <div class="prog-bar" id="qprog"></div>
+    <div id="qa">
+      <div class="q-box">
+        <div class="q-num" id="qnum"></div>
+        <div class="q-text" id="qtext"></div>
+        <div id="qopts"></div>
+        <div class="q-fb" id="qfb"></div>
+      </div>
+      <div style="text-align:right;margin-top:0.8rem">
+        <button class="btn btn-gold" id="qnext" onclick="qNext()" style="display:none">Next →</button>
+      </div>
+    </div>
+    <div class="score-screen" id="qscore" style="display:none">
+      <div class="score-big" id="snum"></div>
+      <div class="score-msg" id="smsg"></div>
+      <button class="btn btn-gold" onclick="qRestart()">Try Again ↺</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ===== NAV ===== */
+var pages = ['home','allport','cattell','eysenck','bigfive','compare','flash','quiz'];
+function go(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  document.querySelectorAll('.nav-btn').forEach(function(b){ b.classList.remove('active'); });
+  var pg = document.getElementById('pg-'+id);
+  if (pg) pg.classList.add('active');
+  var btns = document.querySelectorAll('.nav-btn');
+  var idx = pages.indexOf(id);
+  if (idx >= 0 && btns[idx+1]) btns[idx+1].classList.add('active'); // +1 because logo is first child
+  else if (btns[idx]) btns[idx].classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// Fix nav: assign active by text match
+function goPage(id) {
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  var pg = document.getElementById('pg-'+id);
+  if (pg) pg.classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(function(b){
+    b.classList.remove('active');
+    var fn = b.getAttribute('onclick');
+    if (fn && fn.indexOf("'"+id+"'") >= 0) b.classList.add('active');
+  });
+  window.scrollTo(0,0);
+}
+// override go with goPage
+var go = goPage;
+
+/* ===== ACCORDION ===== */
+function acc(key) {
+  var rows = document.querySelectorAll('.acc-row');
+  var bodies = document.querySelectorAll('.acc-body');
+  // find the body
+  var body = document.getElementById('acc-'+key);
+  if (!body) return;
+  var isOpen = body.style.display === 'block';
+  // find matching row (the one before this body)
+  // toggle
+  body.style.display = isOpen ? 'none' : 'block';
+  // find arrow - look for acc-row with matching onclick
+  var allRows = document.querySelectorAll('.acc-row');
+  allRows.forEach(function(r){
+    var fn = r.getAttribute('onclick');
+    if (fn && fn.indexOf("'"+key+"'") >= 0) {
+      r.classList.toggle('open', !isOpen);
+    }
+  });
+}
+
+/* ===== CATTELL CHIPS ===== */
+var cattellData = [
+  {l:'A',n:'Warmth',d:'Warmth (A): High scorers are warm, caring, and attentive to others. Low scorers are reserved, impersonal, and detached.'},
+  {l:'B',n:'Reasoning',d:'Reasoning (B): Higher scores = more abstract/analytical thinking. Lower scores = more concrete and literal.'},
+  {l:'C',n:'Emotional Stability',d:'Emotional Stability (C): High = calm, adaptive, mature. Low = reactive, easily upset, emotionally changeable.'},
+  {l:'E',n:'Dominance',d:'Dominance (E): High = assertive, forceful, competitive. Low = deferential, cooperative, avoids conflict.'},
+  {l:'F',n:'Liveliness',d:'Liveliness (F): High = enthusiastic, spontaneous, fun-loving. Low = serious, deliberate, restrained.'},
+  {l:'G',n:'Rule Consciousness',d:'Rule Consciousness (G): High = follows rules, principled. Low = expedient, may bend or disregard rules.'},
+  {l:'H',n:'Social Boldness',d:'Social Boldness (H): High = socially bold, fearless. Low = shy, timid, threat-sensitive.'},
+  {l:'I',n:'Sensitivity',d:'Sensitivity (I): High = empathetic, aesthetically oriented. Low = objective, unsentimental.'},
+  {l:'L',n:'Vigilance',d:'Vigilance (L): High = suspicious, hard to trust. Low = trusting, accepting, easy to get along with.'},
+  {l:'M',n:'Abstractedness',d:'Abstractedness (M): High = imaginative, idea-absorbed. Low = practical, concrete, grounded.'},
+  {l:'N',n:'Privateness',d:'Privateness (N): High = private, non-disclosing. Low = forthright, openly self-revealing.'},
+  {l:'O',n:'Apprehension',d:'Apprehension (O): High = worried, self-doubting, guilt-prone. Low = self-assured, secure.'},
+  {l:'Q1',n:'Open to Change',d:'Openness to Change (Q1): High = analytically minded, open to experimentation. Low = traditional, conservative.'},
+  {l:'Q2',n:'Self-Reliance',d:'Self-Reliance (Q2): High = prefers working alone, self-sufficient. Low = group-oriented, affiliative.'},
+  {l:'Q3',n:'Perfectionism',d:'Perfectionism (Q3): High = self-disciplined, organised, precise. Low = tolerates disorder, more flexible.'},
+  {l:'Q4',n:'Tension',d:'Tension (Q4): High = tense, high-energy, impatient. Low = relaxed, patient, placid.'}
+];
+
+(function(){
+  var grid = document.getElementById('cc-chips');
+  cattellData.forEach(function(f){
+    var chip = document.createElement('div');
+    chip.className = 'chip';
+    chip.textContent = f.l + ' · ' + f.n;
+    chip.onclick = function(){
+      document.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('sel'); });
+      chip.classList.add('sel');
+      document.getElementById('cc-title').textContent = 'Factor ' + f.l + ': ' + f.n;
+      document.getElementById('cc-body').textContent = f.d;
+      document.getElementById('cc-detail').style.display = 'block';
+    };
+    grid.appendChild(chip);
+  });
+})();
+
+/* ===== EYSENCK SLIDERS ===== */
+function penUpdate() {
+  var e = parseInt(document.getElementById('sl-e').value);
+  var n = parseInt(document.getElementById('sl-n').value);
+  var p = parseInt(document.getElementById('sl-p').value);
+  document.getElementById('ev').textContent = e;
+  document.getElementById('nv').textContent = n;
+  document.getElementById('pv').textContent = p;
+  document.getElementById('ed').textContent = e > 66 ? 'High extraversion: sociable, impulsive, optimistic, seeks excitement.' : e > 33 ? 'Ambivert: balanced between introversion and extraversion.' : 'High introversion: reserved, reflective, sensitive to stimulation, prefers quiet.';
+  document.getElementById('nd').textContent = n > 66 ? 'High neuroticism: anxious, moody, reactive to minor stress.' : n > 33 ? 'Moderate emotional reactivity.' : 'Emotionally stable: calm, even-tempered, resilient.';
+  document.getElementById('pd').textContent = p > 66 ? 'High psychoticism: egocentric, hostile, non-conformist.' : p > 33 ? 'Moderate on psychoticism dimension.' : 'Low psychoticism: altruistic, empathic, cooperative.';
+  var prof = '';
+  if (e > 66 && n > 66) prof = 'High E + High N: Emotionally expressive and reactive extravert. Risk for antisocial tendencies (Eysenck).';
+  else if (e > 66 && n < 34) prof = 'High E + Low N (Stable Extravert): Socially confident, optimistic, resilient. Associated with wellbeing and leadership.';
+  else if (e < 34 && n > 66) prof = 'Low E + High N (Unstable Introvert): Most prone to anxiety disorders — phobias, OCD. Sensitive and easily overwhelmed.';
+  else if (e < 34 && n < 34) prof = 'Low E + Low N (Stable Introvert): Calm, reliable, reserved. Self-sufficient without anxiety.';
+  else prof = 'Balanced profile — moderate on all dimensions, typical of most people in the general population.';
+  if (p > 66) prof += ' High P adds egocentric and hostile tendencies — biological predisposition toward unconventional or psychotic thinking.';
+  document.getElementById('pen-t').textContent = (e > 50 ? 'Extravert' : 'Introvert') + ' · ' + (n > 50 ? 'Neurotic' : 'Stable') + ' · ' + (p > 50 ? 'High-P' : 'Low-P');
+  document.getElementById('pen-d').textContent = prof;
+}
+penUpdate();
+
+/* ===== OCEAN ===== */
+var oceanData = {
+  O:{t:'O — Openness to Experience',b:'Also called Intellect or Intellect/Imagination. High O scorers are imaginative, curious, aesthetic, and intellectually adventurous. They enjoy novelty, abstract ideas, and creative pursuits. Low O scorers prefer routine, concrete thinking, and familiar environments. Predicts creativity and interest in arts and sciences.',ex:'High O: A painter who reads philosophy, loves foreign films, and picks up new instruments for fun. Low O: Prefers established routines, practical tasks, and familiar ideas.'},
+  C:{t:'C — Conscientiousness',b:'High scorers are disciplined, organised, achievement-oriented, and reliable. They plan ahead and control impulses well. Low scorers are flexible and spontaneous but may struggle to follow through. Conscientiousness is the strongest Big Five predictor of academic and job performance.',ex:'High C: Punctual, methodical, ambitious, thorough, dependable. Low C: Laid-back, easily distracted, prefers to improvise rather than plan.'},
+  E:{t:'E — Extraversion (Surgency)',b:'High scorers are sociable, energetic, assertive, talkative, and emotionally expressive. They gain energy from social interaction. Introverts (low E) prefer calm, solitary settings and tend to be more reserved. Note: introversion is NOT the same as shyness or social anxiety.',ex:'Lemon Drop Test (Eysenck): Introverts salivate nearly 2× more than extraverts, showing higher physiological sensitivity. Eysenck\'s E dimension and Big Five E measure the same core construct.'},
+  A:{t:'A — Agreeableness',b:'High scorers are trusting, kind, altruistic, cooperative, and sympathetic. They engage in prosocial behaviour and value harmony. Low scorers are more competitive, sceptical, and willing to disagree or confront. Linked to Choleric/Sanguine in ancient typologies.',ex:'High A: Volunteers, forgives easily, avoids conflict, assumes the best of others. Low A: A tough negotiator who challenges assumptions and doesn\'t mind confrontation.'},
+  N:{t:'N — Neuroticism (Emotional Instability)',b:'High scorers experience anxiety, moodiness, irritability, sadness, and emotional instability. They react more strongly to stressors. Low scorers are calm, resilient, and even-tempered. One of the most replicated dimensions in personality research worldwide.',ex:'High N corresponds to Melancholic (ancient humour theory) and to Eysenck\'s Neuroticism. It is the strongest predictor of risk for anxiety and depressive disorders.'}
+};
+function showOcean(letter) {
+  var d = oceanData[letter];
+  document.getElementById('ocean-title').textContent = d.t;
+  document.getElementById('ocean-body').textContent = d.b;
+  document.getElementById('ocean-ex').textContent = d.ex;
+  document.querySelectorAll('.ocean-card').forEach(function(c){ c.classList.remove('sel'); });
+  // find the card for this letter and add sel
+  var cards = document.querySelectorAll('.ocean-card');
+  var letters = ['O','C','E','A','N'];
+  var idx = letters.indexOf(letter);
+  if (cards[idx]) cards[idx].classList.add('sel');
+  document.getElementById('ocean-detail').style.display = 'block';
+}
+
+/* ===== FLASHCARDS ===== */
+var fcCards = [
+  {t:'Cardinal Trait',d:'A single dominating trait so pervasive it influences almost ALL of a person\'s behaviour. Rare. Historical figures have given their names as adjectives: Gandhian (non-violence), Machiavellian (cunning).',s:'Allport · Unit 1'},
+  {t:'Central Traits',d:'The 5–10 key building blocks of personality. Less all-consuming than cardinal traits but consistent across many situations. These are what you list in a reference letter (e.g., outgoing, kind, hard-working).',s:'Allport · Unit 1'},
+  {t:'Secondary Traits',d:'Narrow, situational tendencies visible only to close friends. Less consistent and less relevant than central traits. E.g., specific food preferences or nervousness only in formal presentations.',s:'Allport · Unit 1'},
+  {t:'Functional Autonomy',d:'Adult motives are INDEPENDENT of their original origins. What was a means to an end becomes an end in itself. No need to look at childhood to understand present motivation.',s:'Allport · Unit 1'},
+  {t:'The Proprium (Self)',d:'Allport\'s term for the self — all aspects making a person unique. Develops through 7 stages: bodily self → self-identity → self-esteem → self-extension → self-image → rational coping → propriate striving.',s:'Allport · Unit 1'},
+  {t:'Source Trait',d:'Deep, causal building blocks of personality revealed by factor analysis. Stable, cross-situational. Approximately 16 in number (Cattell). The fundamental units of personality analysis.',s:'Cattell · Unit 2'},
+  {t:'Surface Trait',d:'Observable clusters of co-occurring behaviours (e.g., restlessness + indecision → "neuroticism"). Less reliable than source traits — no single underlying cause. Cattell considered these secondary.',s:'Cattell · Unit 2'},
+  {t:'MAVA',d:'Multiple Abstract Variance Analysis — Cattell\'s technique to estimate genetic vs environmental contribution to traits. Result: approximately ⅓ genetic, ⅔ environmental.',s:'Cattell · Unit 2'},
+  {t:'R = f(S, P)',d:'Cattell\'s Specification Equation. Response = function of the Stimulus situation and Personality structure. Behaviour is mathematically predictable if you know the situation and all 16 source trait scores.',s:'Cattell · Unit 2'},
+  {t:'16PF',d:'Sixteen Personality Factor Questionnaire — Cattell\'s self-report measure of all 16 source traits. Q-data. Widely used in research and occupational psychology.',s:'Cattell · Unit 2'},
+  {t:'PEN Model',d:'Eysenck\'s three-superfactor model: Psychoticism (P), Extraversion (E), Neuroticism (N). Arranged in a 4-level hierarchy. Superfactors are orthogonal — they do not correlate with each other.',s:'Eysenck · Unit 3'},
+  {t:'Cortical Arousal (ARAS)',d:'Introverts have higher baseline cortical arousal via the Ascending Reticular Activating System → already over-stimulated → avoid excitement. Extraverts are under-aroused → constantly seek stimulation.',s:'Eysenck · Unit 3'},
+  {t:'EPQ',d:'Eysenck Personality Questionnaire — measures E, N, and P plus a Lie scale to detect faking. A Junior EPQ exists for children aged 7–15.',s:'Eysenck · Unit 3'},
+  {t:'Psychoticism (P)',d:'Eysenck\'s 3rd superfactor, added in 1976. High P: egocentric, hostile, impulsive, non-conformist. Biologically linked to testosterone and low monoamine oxidase (MAO). More common in men.',s:'Eysenck · Unit 3'},
+  {t:'Lexical Hypothesis',d:'The most important individual differences in personality become encoded as words in natural language over generations. Basis for the Big Five: starting from ~18,000 English trait words → 5 factors.',s:'Big Five · Unit 4'},
+  {t:'OCEAN',d:'The Big Five: Openness to Experience, Conscientiousness, Extraversion, Agreeableness, Neuroticism. The most widely used personality taxonomy, replicated across cultures and languages.',s:'Big Five · Unit 4'},
+  {t:'Openness to Experience',d:'Big Five dimension: imagination, broad interests, curiosity, aesthetic sensitivity. Also called Intellect/Imagination. Predicts creativity and interest in art, science, and novel ideas.',s:'Big Five · Unit 4'},
+  {t:'Conscientiousness',d:'Big Five dimension: organised, disciplined, goal-directed, reliable. The strongest Big Five predictor of academic achievement and job performance across cultures.',s:'Big Five · Unit 4'},
+  {t:'Syntality (Cattell)',d:'Cattell\'s term for group-level "personality" — traits that describe groups (families, schools, nations) rather than individuals. Major national syntality traits: size, morale, affluence, industriousness.',s:'Cattell · Unit 2'},
+  {t:'Propriate Striving',d:'The 7th and final stage of the Proprium. A unified sense of self and long-range goals. Sense of direction, intentionality, and purpose. Fully consolidates only in adulthood when all aspects of the self are integrated.',s:'Allport · Unit 1'}
+];
+var fcIdx = 0;
+function fcRender() {
+  document.getElementById('fc-term').textContent = fcCards[fcIdx].t;
+  document.getElementById('fc-def').textContent = fcCards[fcIdx].d;
+  document.getElementById('fc-src').textContent = fcCards[fcIdx].s;
+  document.getElementById('fc-cnt').textContent = (fcIdx+1) + ' / ' + fcCards.length;
+  document.getElementById('fc-card').classList.remove('flipped');
+}
+function flipFC() { document.getElementById('fc-card').classList.toggle('flipped'); }
+function fcMove(dir) { fcIdx = (fcIdx+dir+fcCards.length) % fcCards.length; fcRender(); }
+fcRender();
+
+/* ===== QUIZ ===== */
+var Qs = [
+  {q:'According to Allport, which type of trait is so pervasive that almost all of a person\'s behaviour can be traced to it?',opts:['Central trait','Secondary trait','Cardinal trait','Source trait'],ans:2,fb:'A Cardinal trait dominates the person\'s entire personality. Rare — but when present, everything a person does can be traced to it (e.g., Gandhi\'s non-violence permeating every action).'},
+  {q:'What does "functional autonomy of motives" mean in Allport\'s theory?',opts:['Motives are inherited from parents','Adult motives are independent of their childhood origins','Motives are determined by the situation alone','Traits automatically stabilise in adulthood'],ans:1,fb:'Functional autonomy: what originally caused a behaviour no longer matters. A student who began studying for grades may become a lifelong enthusiast — the original motive is gone; the intrinsic love remains.'},
+  {q:'Cattell\'s formula R = f(S,P) means:',opts:['Relationships = friends × peers','Response = function of Stimulus and Personality','Reasoning = factor of Self and Perception','Reward = frequency × punishment'],ans:1,fb:'R (response/behaviour) is a function (f) of S (the stimulus situation) and P (personality structure — all 16 source traits weighted for that specific situation).'},
+  {q:'Which statistical technique did Cattell use to discover source traits?',opts:['ANOVA','Regression analysis','Factor analysis','MAVA'],ans:2,fb:'Factor analysis clusters variables that correlate with each other. Cattell used it to find the 16 underlying source traits from a huge pool of observed trait words and behaviours.'},
+  {q:'Why do introverts tend to avoid highly stimulating situations, according to Eysenck\'s arousal theory?',opts:['They have lower intelligence','They have lower baseline cortical arousal','They have higher baseline cortical arousal via the ARAS','They have lower neuroticism scores'],ans:2,fb:'Introverts have HIGHER baseline cortical arousal via the ARAS — already chronically over-stimulated. More stimulation would push them past the optimal level, so they avoid it.'},
+  {q:'What does the P stand for in Eysenck\'s PEN model?',opts:['Perception','Psychoticism','Placidity','Persistence'],ans:1,fb:'PEN = Psychoticism, Extraversion, Neuroticism. Psychoticism is linked to testosterone and low MAO enzyme activity. High P scorers tend to be egocentric, hostile, and non-conformist.'},
+  {q:'The Big Five OCEAN acronym stands for:',opts:['Openness, Curiosity, Empathy, Anxiety, Neuroticism','Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism','Optimism, Creativity, Energy, Assertiveness, Negativity','Order, Control, Engagement, Autonomy, Need-for-cognition'],ans:1,fb:'OCEAN = Openness to Experience, Conscientiousness, Extraversion, Agreeableness, and Neuroticism. This is the standard Five-Factor Model taxonomy, replicated across cultures.'},
+  {q:'Cattell\'s MAVA technique estimated that personality variation is approximately:',opts:['100% genetic','⅓ genetic and ⅔ environmental','⅔ genetic and ⅓ environmental','50% genetic and 50% environmental'],ans:1,fb:'MAVA (Multiple Abstract Variance Analysis) found that about one-third of personality variation comes from genetics and two-thirds from environmental influences.'},
+  {q:'Which Big Five dimension includes traits like trust, altruism, kindness, and prosocial behaviour?',opts:['Conscientiousness','Openness to Experience','Neuroticism','Agreeableness'],ans:3,fb:'Agreeableness covers prosocial tendencies: trust, altruism, kindness, and cooperative behaviour. Low A individuals tend to be competitive, sceptical, and comfortable with confrontation.'},
+  {q:'In Eysenck\'s hierarchy, where do superfactors like Extraversion sit?',opts:['Level 1 — specific responses','Level 2 — habitual responses','Level 3 — traits','Level 4 — top of the hierarchy'],ans:3,fb:'Level 1 = specific responses → Level 2 = habitual responses → Level 3 = traits (e.g., sociability) → Level 4 = superfactors (E, N, P). Superfactors are the most stable level.'},
+  {q:'What is the PROPRIUM according to Allport?',opts:['The genetic basis of personality','A statistical method for personality research','The self — core that unifies personality, developing through 7 stages','A type of secondary trait'],ans:2,fb:'The Proprium is Allport\'s term for the self. It has 7 sequential aspects: Bodily Self → Self-Identity → Self-Esteem → Self-Extension → Self-Image → Rational Coping → Propriate Striving.'},
+  {q:'Which tool was developed by Eysenck to assess his three superfactors?',opts:['16PF','NEO PI-R','EPQ (Eysenck Personality Questionnaire)','BFI'],ans:2,fb:'The EPQ (Eysenck Personality Questionnaire) measures E, N, and P plus a Lie scale. Cattell created the 16PF. McCrae & Costa developed the NEO PI-R for the Big Five.'},
+  {q:'The "lexical hypothesis" states that:',opts:['Personality can only be measured through written language','The most important individual differences become encoded as words in natural language','Intelligence is the primary driver of personality','Traits are learned through language development in childhood'],ans:1,fb:'The lexical hypothesis: personality differences that are socially important get encoded as trait words in natural language over generations. Led to extracting the Big Five from ~18,000 English personality adjectives.'},
+  {q:'Cattell\'s term for personality-like traits that describe groups (nations, schools) is:',opts:['Synergy','Syntality','Syntropy','Syndrome'],ans:1,fb:'Syntality is Cattell\'s term for group-level "personality." Major national syntality traits include: size, morale, affluence, and industriousness.'},
+  {q:'The "lemon drop test" demonstrates a key difference between introverts and extraverts — what does it show?',opts:['Extraverts find sour taste more pleasant','Introverts show less reaction to taste','Introverts secrete almost twice as much saliva as extraverts','Extraverts have stronger taste sensitivity'],ans:2,fb:'When 4 drops of lemon juice are placed on the tongue, introverts secrete nearly TWICE as much saliva as extraverts (Corcoran, 1964). This demonstrates introverts\' higher sensitivity to stimulation — consistent with Eysenck\'s cortical arousal theory.'}
+];
+var qIdx=0, qScore=0, qAnswered=false;
+
+function qRender() {
+  var q = Qs[qIdx];
+  document.getElementById('qnum').textContent = 'Question '+(qIdx+1)+' of '+Qs.length;
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('qnext').style.display = 'none';
+  var fb = document.getElementById('qfb');
+  fb.className = 'q-fb';
+  fb.textContent = '';
+  var opts = document.getElementById('qopts');
+  opts.innerHTML = '';
+  q.opts.forEach(function(o,i){
+    var btn = document.createElement('button');
+    btn.className = 'q-opt';
+    btn.textContent = o;
+    btn.onclick = function(){ qAnswer(i); };
+    opts.appendChild(btn);
+  });
+  var prog = document.getElementById('qprog');
+  prog.innerHTML = '';
+  Qs.forEach(function(_,i){
+    var d = document.createElement('div');
+    d.className = 'prog-dot'+(i<qIdx?' done':i===qIdx?' cur':'');
+    prog.appendChild(d);
+  });
+  qAnswered = false;
+}
+
+function qAnswer(i) {
+  if (qAnswered) return;
+  qAnswered = true;
+  var q = Qs[qIdx];
+  var btns = document.querySelectorAll('.q-opt');
+  btns.forEach(function(b){ b.disabled = true; });
+  var fb = document.getElementById('qfb');
+  if (i === q.ans) {
+    btns[i].classList.add('correct');
+    qScore++;
+    fb.textContent = '✓ Correct! '+q.fb;
+    fb.className = 'q-fb show-correct';
+  } else {
+    btns[i].classList.add('wrong');
+    btns[q.ans].classList.add('correct');
+    fb.textContent = '✗ Not quite. '+q.fb;
+    fb.className = 'q-fb show-wrong';
+  }
+  document.getElementById('qnext').style.display = 'inline-flex';
+}
+
+function qNext() {
+  qIdx++;
+  if (qIdx >= Qs.length) {
+    document.getElementById('qa').style.display = 'none';
+    document.getElementById('qprog').style.display = 'none';
+    var pct = Math.round(qScore/Qs.length*100);
+    document.getElementById('snum').textContent = qScore+'/'+Qs.length;
+    document.getElementById('smsg').textContent = pct>=90?'🏆 Outstanding! Deep mastery of all four theories.':pct>=70?'🎯 Great work! Review the flashcards for the ones you missed.':pct>=50?'📚 Good effort! Revisit each theory page and try again.':'🌱 Keep going! Use the Flashcards and theory pages to strengthen your knowledge.';
+    document.getElementById('qscore').style.display = 'block';
+  } else { qRender(); }
+}
+
+function qRestart() {
+  qIdx=0; qScore=0; qAnswered=false;
+  document.getElementById('qa').style.display = 'block';
+  document.getElementById('qprog').style.display = 'flex';
+  document.getElementById('qscore').style.display = 'none';
+  qRender();
+}
+
+qRender();
+</script>
+</body>
+</html>
 
