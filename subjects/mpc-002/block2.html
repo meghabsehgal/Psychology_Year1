@@ -1,1 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block 2 Study App — Early School Years (6–11)</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ffffff; --bg2: #f5f4f0; --bg3: #eeedea;
+    --text: #1a1a18; --text2: #6b6b66; --text3: #9c9a92;
+    --border: rgba(0,0,0,0.12); --border2: rgba(0,0,0,0.2);
+    --info-bg: #e6f1fb; --info-text: #185fa5; --info-border: rgba(24,95,165,0.3);
+    --success-bg: #eaf3de; --success-text: #3b6d11; --success-border: rgba(59,109,17,0.3);
+    --warn-bg: #faeeda; --warn-text: #854f0b; --warn-border: rgba(133,79,11,0.3);
+    --danger-bg: #fcebeb; --danger-text: #a32d2d; --danger-border: rgba(163,45,45,0.3);
+    --radius: 8px; --radius-lg: 12px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c; --bg2: #2a2a27; --bg3: #333330;
+      --text: #e8e6dc; --text2: #a8a69e; --text3: #6b6966;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.18);
+      --info-bg: #0c3660; --info-text: #85b7eb; --info-border: rgba(133,183,235,0.3);
+      --success-bg: #173404; --success-text: #97c459; --success-border: rgba(151,196,89,0.3);
+      --warn-bg: #412402; --warn-text: #ef9f27; --warn-border: rgba(239,159,39,0.3);
+      --danger-bg: #501313; --danger-text: #f09595; --danger-border: rgba(240,149,149,0.3);
+    }
+  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg3); color: var(--text); min-height: 100vh; line-height: 1.6; }
+  .app-wrap { max-width: 820px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+  .app-header { margin-bottom: 1.5rem; }
+  .app-header h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .app-header p { font-size: 13px; color: var(--text2); }
+  .nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .nav-btn { padding: 7px 14px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: var(--bg); color: var(--text2); font-size: 13px; cursor: pointer; transition: all .15s; font-family: inherit; }
+  .nav-btn:hover { background: var(--bg2); }
+  .nav-btn.active { background: var(--info-bg); color: var(--info-text); border-color: var(--info-border); font-weight: 500; }
+  .tab { display: none; }
+  .tab.active { display: block; }
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow); }
+  .unit-header { display: flex; align-items: center; gap: 10px; margin-bottom: .75rem; }
+  .unit-badge { background: var(--info-bg); color: var(--info-text); font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: var(--radius); }
+  .unit-header strong { font-size: 15px; }
+  .unit-sub { font-size: 13px; color: var(--text2); margin-bottom: .75rem; }
+  .concept-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+  .concept-chip { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 10px 12px; cursor: pointer; transition: all .15s; }
+  .concept-chip:hover { border-color: var(--info-border); background: var(--info-bg); }
+  .concept-chip:hover .chip-label { color: var(--info-text); }
+  .concept-chip:hover .chip-sub { color: var(--info-text); opacity: .7; }
+  .chip-label { font-size: 13px; font-weight: 500; margin-bottom: 2px; color: var(--text); }
+  .chip-sub { font-size: 11px; color: var(--text2); }
+  /* Modal */
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,.45); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; }
+  .modal { background: var(--bg); border-radius: var(--radius-lg); border: 0.5px solid var(--border); padding: 1.5rem; max-width: 460px; width: 100%; box-shadow: 0 8px 32px rgba(0,0,0,.2); }
+  .modal h3 { font-size: 16px; font-weight: 600; margin-bottom: .5rem; }
+  .modal p { font-size: 14px; color: var(--text2); line-height: 1.65; margin-bottom: 1rem; }
+  .btn { padding: 7px 16px; border: 0.5px solid var(--border2); border-radius: var(--radius); background: transparent; color: var(--text2); cursor: pointer; font-size: 13px; font-family: inherit; transition: all .15s; }
+  .btn:hover { background: var(--bg2); }
+  /* Flashcards */
+  .fc-wrap { display: flex; flex-direction: column; align-items: center; gap: 1rem; }
+  .fc-hint { font-size: 13px; color: var(--text2); text-align: center; }
+  .flashcard { width: 100%; max-width: 500px; min-height: 190px; perspective: 900px; cursor: pointer; }
+  .fc-inner { width: 100%; min-height: 190px; position: relative; transform-style: preserve-3d; transition: transform .4s cubic-bezier(.4,0,.2,1); }
+  .fc-inner.flipped { transform: rotateY(180deg); }
+  .fc-face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: var(--radius-lg); border: 0.5px solid var(--border); padding: 1.5rem; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 190px; box-shadow: var(--shadow); }
+  .fc-front { background: var(--bg); }
+  .fc-back { background: var(--info-bg); transform: rotateY(180deg); }
+  .fc-q { font-size: 15px; font-weight: 500; line-height: 1.5; color: var(--text); }
+  .fc-a { font-size: 13.5px; color: var(--info-text); line-height: 1.65; }
+  .fc-hint-txt { font-size: 11px; color: var(--text3); margin-top: .5rem; }
+  .fc-nav { display: flex; gap: 10px; align-items: center; }
+  .fc-count { font-size: 13px; color: var(--text2); min-width: 60px; text-align: center; }
+  /* Progress bar */
+  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; margin-bottom: 1rem; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--info-text); border-radius: 2px; transition: width .35s; }
+  /* Quiz */
+  .quiz-q { font-size: 15px; font-weight: 500; margin-bottom: 1rem; line-height: 1.5; }
+  .quiz-meta { font-size: 12px; color: var(--text2); margin-bottom: .5rem; }
+  .score-badge { display: inline-block; background: var(--success-bg); color: var(--success-text); padding: 2px 8px; border-radius: var(--radius); font-size: 11px; font-weight: 600; margin-left: 6px; }
+  .quiz-option { padding: 10px 14px; border: 0.5px solid var(--border2); border-radius: var(--radius); margin-bottom: 8px; cursor: pointer; font-size: 14px; transition: all .15s; background: var(--bg); color: var(--text); font-family: inherit; width: 100%; text-align: left; }
+  .quiz-option:hover:not(.locked) { background: var(--bg2); }
+  .quiz-option.correct { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+  .quiz-option.wrong { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+  .quiz-option.reveal { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); opacity: .7; }
+  .quiz-exp { display: none; font-size: 13px; color: var(--text2); margin-top: .75rem; padding: .75rem; background: var(--bg2); border-radius: var(--radius); line-height: 1.6; }
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 9px; top: 10px; bottom: 10px; width: 1px; background: var(--border2); }
+  .tl-item { position: relative; margin-bottom: 1.25rem; }
+  .tl-dot { position: absolute; left: -24px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background: var(--info-text); }
+  .tl-age { font-size: 13px; font-weight: 600; color: var(--info-text); margin-bottom: 4px; }
+  .tl-text { font-size: 13px; color: var(--text2); line-height: 1.65; }
+  /* Compare */
+  .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  @media (max-width: 500px) { .compare-grid { grid-template-columns: 1fr; } .concept-grid { grid-template-columns: 1fr 1fr; } }
+  .cmp-card { background: var(--bg2); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 12px; }
+  .cmp-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+  .cmp-card ul { padding-left: 14px; font-size: 12px; color: var(--text2); line-height: 1.75; }
+  /* Glossary */
+  .search-bar { width: 100%; padding: 9px 13px; border: 0.5px solid var(--border2); border-radius: var(--radius); font-size: 14px; background: var(--bg); color: var(--text); margin-bottom: 1rem; font-family: inherit; outline: none; transition: border-color .15s; }
+  .search-bar:focus { border-color: var(--info-text); }
+  .glossary-item { padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+  .glossary-item:last-child { border-bottom: none; }
+  .g-term { font-size: 14px; font-weight: 500; margin-bottom: 3px; }
+  .g-def { font-size: 13px; color: var(--text2); line-height: 1.55; }
+  .tag { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: 600; }
+  .tag-blue { background: var(--info-bg); color: var(--info-text); }
+  .tag-green { background: var(--success-bg); color: var(--success-text); }
+  .tag-warn { background: var(--warn-bg); color: var(--warn-text); }
+  .footer { text-align: center; font-size: 12px; color: var(--text3); margin-top: 2rem; }
+</style>
+</head>
+<body>
+<div class="app-wrap">
+  <div class="app-header">
+    <h1>Block 2 — Development During Early School Years (6–11)</h1>
+    <p>Units 1–4 · Physical · Cognitive · Schooling · Special Needs · Interactive Study App</p>
+  </div>
+
+  <div class="nav">
+    <button class="nav-btn active" onclick="switchTab('overview',this)">Overview</button>
+    <button class="nav-btn" onclick="switchTab('flashcards',this)">Flashcards</button>
+    <button class="nav-btn" onclick="switchTab('quiz',this)">Quiz</button>
+    <button class="nav-btn" onclick="switchTab('timeline',this)">Dev. Timeline</button>
+    <button class="nav-btn" onclick="switchTab('compare',this)">Key Theories</button>
+    <button class="nav-btn" onclick="switchTab('glossary',this)">Glossary</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div class="tab active" id="tab-overview">
+    <div class="card">
+      <div class="unit-header"><span class="unit-badge">Unit 1</span><strong>Physical Development</strong></div>
+      <p class="unit-sub">Slow, steady growth from 6–11. Motor skills refine rapidly. Click any concept to explore.</p>
+      <div class="concept-grid">
+        <div class="concept-chip" onclick="showModal('Height & Weight','Height grows ~5–6 cm/year. Weight gain is 3–6 kg/year. By age 12, girls average 139 cm and boys 138 cm. Girls slightly heavier from age 9 onward as their puberty growth spurt begins earlier. Environment has a greater influence on weight than height.')"><div class="chip-label">Height & Weight</div><div class="chip-sub">~5–6 cm/year</div></div>
+        <div class="concept-chip" onclick="showModal('Gross Motor Skills','Large muscle movements — running, jumping, throwing, catching. Improve rapidly from age 6–9. Both speed and coordination increase. Eye-hand coordination becomes precise by age 8. Boys can generally run further and jump higher than girls.')"><div class="chip-label">Gross motor skills</div><div class="chip-sub">Running, jumping, throwing</div></div>
+        <div class="concept-chip" onclick="showModal('Fine Motor Skills','Small muscle movements — writing, drawing, playing instruments. Girls show greater dexterity than boys throughout this period. Handedness is fully established by age 6. Children should not be forced to write before age 4.5–5.5 to avoid muscle damage.')"><div class="chip-label">Fine motor skills</div><div class="chip-sub">Writing, drawing, dexterity</div></div>
+        <div class="concept-chip" onclick="showModal('Bones & Teeth','28 permanent teeth by middle childhood (adults have 32). Bones harden but remain flexible — ossification is still incomplete, so children are more prone to breaks than adults. Baby teeth fall out from age ~6. Brain growth complete by age 10–12.')"><div class="chip-label">Bones & Teeth</div><div class="chip-sub">28 teeth; ossification ongoing</div></div>
+        <div class="concept-chip" onclick="showModal('Sensitive Period','The optimal window when the body is ready to learn a specific skill most efficiently. Fine muscles should not be forced before age 4.5–5.5 to avoid damage. This is one reason formal schooling starts at age 5+. Many muscles mature during 6–11 years.')"><div class="chip-label">Sensitive period</div><div class="chip-sub">Ideal window for skill learning</div></div>
+        <div class="concept-chip" onclick="showModal('Body Proportions','Head becomes relatively smaller (1/6 of body at age 6–8; 1/8 by adulthood). Legs grow faster than the trunk. Face elongates as permanent teeth erupt. Boys gain more muscle; girls gain more fat from age 7. Children lose their "baby fat".')"><div class="chip-label">Body proportions</div><div class="chip-sub">Head shrinks relatively</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="unit-header"><span class="unit-badge">Unit 2</span><strong>Cognitive, Social, Emotional & Moral Development</strong></div>
+      <p class="unit-sub">The concrete operational stage. Children become logical, social, and morally aware.</p>
+      <div class="concept-grid">
+        <div class="concept-chip" onclick="showModal('Concrete Operations (Piaget)','Ages 6–12. Children can think logically about real/concrete events. Key abilities: decentration (multiple dimensions simultaneously), conservation (matter unchanged despite appearance), seriation (ordering by dimension), class inclusion (hierarchies).')"><div class="chip-label">Concrete operations</div><div class="chip-sub">Piaget Stage 3</div></div>
+        <div class="concept-chip" onclick="showModal('Conservation','Knowing physical properties stay the same despite changes in appearance. Development order: Number (6–7) → Mass/Length (7–8) → Weight (9–10) → Volume (14–15). This sequential mastery within one stage is called horizontal décalage.')"><div class="chip-label">Conservation</div><div class="chip-sub">Number → Mass → Volume</div></div>
+        <div class="concept-chip" onclick="showModal('Moral Development (Piaget)','Ages 6–7: Heteronomous morality — rules are absolute, set by authority, punishment is inevitable (immanent justice). Ages 9–10: Autonomous morality — rules are flexible and arbitrary, intentions matter, cooperation replaces obedience.')"><div class="chip-label">Moral development (Piaget)</div><div class="chip-sub">Heteronomous → Autonomous</div></div>
+        <div class="concept-chip" onclick="showModal("Kohlberg's Moral Levels","3 levels: (1) Preconventional — obey to avoid punishment or satisfy needs. (2) Conventional — follow rules to be good (Stage 3) and respect law and order (Stage 4). (3) Postconventional — social contracts and universal ethics. Middle childhood sits mostly at Level 2.")"><div class="chip-label">Kohlberg's levels</div><div class="chip-sub">Pre → Conventional → Post</div></div>
+        <div class="concept-chip" onclick="showModal('Peer Groups','Ages 6–9: small, loose, frequently changing groups. Ages 10–12: structured, exclusive, cohesive. Peers transmit values, model behaviour, enforce conformity. Selman's friendship stages: Playmates (3–7) → Assistants (4–9) → Cooperators (6–12) → Intimates (9–15) → Autonomous (12+).')"><div class="chip-label">Peer groups</div><div class="chip-sub">Same-age socialisation</div></div>
+        <div class="concept-chip" onclick="showModal('Self-esteem','Self-appraisal across 5 areas: scholastic ability, athletic ability, physical appearance, social acceptance, and morality. High self-worth predicts happiness and effective functioning. Supportive parents are the strongest predictor of high self-esteem.')"><div class="chip-label">Self-esteem</div><div class="chip-sub">5-domain self-appraisal</div></div>
+        <div class="concept-chip" onclick="showModal('Emotional Development','Common emotions: Fear shifts from specific to general/supernatural fears. Anxiety increases in grades 4–6. Anger is more common than fear; expressed impulsively or inhibited. Curiosity is the foundation of intellectual life. Joy and pleasure are tied to success and friendships.')"><div class="chip-label">Emotional patterns</div><div class="chip-sub">Fear, Anxiety, Anger, Joy</div></div>
+        <div class="concept-chip" onclick="showModal('Information Processing','Concrete logic improves through: Attention (focus on relevant info, interest drives attention), Perception (reversibility helps organise sensory info), Memory (rehearsal, elaboration, metamemory all improve), Language (vocabulary expands, communication becomes more effective).')"><div class="chip-label">Information processing</div><div class="chip-sub">Attention, Memory, Language</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="unit-header"><span class="unit-badge">Unit 3</span><strong>Schooling & Development</strong></div>
+      <p class="unit-sub">How schools shape children's abilities, values, and instincts during middle childhood.</p>
+      <div class="concept-grid">
+        <div class="concept-chip" onclick="showModal('The 3Rs + Computer','Reading: progressive steps from letter sounds → simple text → fluent adult reading. Writing: purposeful tasks, revision, social purpose. Math: concrete objects better than paper-pencil; abacus improves computation. Computer: exploration tool, formal teaching not before age 14.')"><div class="chip-label">3Rs + Computer</div><div class="chip-sub">Reading, Writing, Math, Tech</div></div>
+        <div class="concept-chip" onclick="showModal("Dewey's Four Instincts","John Dewey identified 4 key childhood instincts that schooling must nurture rather than suppress: (1) Social — conversation and communication. (2) Language — expression, the greatest educational resource. (3) Constructive — making and building. (4) Investigation — curiosity and experimentation. Education gives direction to these natural drives.")"><div class="chip-label">Dewey's instincts</div><div class="chip-sub">Social, Language, Constructive, Investigative</div></div>
+        <div class="concept-chip" onclick="showModal('Value Education (Russell)',"Russell's 4 qualities of ideal character: (1) Vitality — physiological energy, pleasure in being alive. (2) Courage — controlling fear, self-respect. (3) Sensitiveness — empathy, appropriate emotional response. (4) Intelligence — curiosity directed toward knowledge. These cannot be taught from books — the teacher's personality models them.")"><div class="chip-label">Value education</div><div class="chip-sub">Vitality, Courage, Sensitivity, Intelligence</div></div>
+        <div class="concept-chip" onclick="showModal('Subject Teaching','Geography: pictures, travel stories, maps. History: illustrated stories of eminent personalities, visits to historical places. Science: learning by doing, observation. Language: start young — foreign languages learnt perfectly in childhood. Literature: memory training, sensitivity to language, pleasure.')"><div class="chip-label">Subject teaching</div><div class="chip-sub">Geography, History, Science, Language</div></div>
+        <div class="concept-chip" onclick="showModal('Educational Excursions','Real-world trips anchor abstract book knowledge. A child may not connect the "Mississippi River" in a textbook with the river they cross daily. Field trips kindle curiosity. Where trips are impossible, cinema and pictures substitute. Learning is incomplete without direct experience.')"><div class="chip-label">Educational excursions</div><div class="chip-sub">Learning by doing</div></div>
+        <div class="concept-chip" onclick="showModal('Physical & Arts Education','Physical education builds cooperation, health habits, and motor skills. Dance (collective, gross motor + aesthetic) is recommended before singing because it is simpler. Music and arts provide pleasure and cultural formation. Team sports instil cooperation and values.')"><div class="chip-label">Physical & arts ed.</div><div class="chip-sub">Body, cooperation, aesthetic sense</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="unit-header"><span class="unit-badge">Unit 4</span><strong>Identifying Problems & Remedial Measures</strong></div>
+      <p class="unit-sub">Exceptional children, learning differences, and the teacher's role in diagnosis and support.</p>
+      <div class="concept-grid">
+        <div class="concept-chip" onclick="showModal('Learning Disabilities (LD)','IQ is normal or above. Specific deficits: dyslexia (reading), dysgraphia (writing), dyscalculia (math). Chronic neurological condition. More common in boys. Remedial approaches: direct instruction (structured), multisensory strategies, social skills training, peer-mediated instruction, computer-assisted instruction.')"><div class="chip-label">Learning disabilities</div><div class="chip-sub">Dyslexia, Dysgraphia, Dyscalculia</div></div>
+        <div class="concept-chip" onclick="showModal('Mental Retardation (MR)','IQ below 70 on a standardised test PLUS significant difficulty adapting. Causes: physical (genetic, chromosomal disorders, brain damage) or cultural/familial (deprived environment). Assessment requires BOTH IQ tests (Stanford-Binet, WISC-III) AND adaptive behaviour scales (Vineland, ABS-PS).')"><div class="chip-label">Mental retardation</div><div class="chip-sub">IQ &lt; 70 + adaptive deficits</div></div>
+        <div class="concept-chip" onclick="showModal('ADHD','Two types: (1) Inattentive — loses focus, forgets tasks, avoids mental effort, easily distracted. (2) Hyperactive-Impulsive — fidgets, leaves seat, talks excessively, blurts answers, interrupts. Treatment: medication, psychological counselling, behaviour modification, individualised education plans.')"><div class="chip-label">ADHD</div><div class="chip-sub">Inattentive vs Hyperactive-Impulsive</div></div>
+        <div class="concept-chip" onclick="showModal('Cerebral Palsy','A disorder of movement and posture caused by brain damage (usually oxygen deprivation) before, during, or after birth. NOT hereditary, NOT progressive, NOT infectious. Three types: Spastic (stiff movements), Athetoid (involuntary movements), Ataxic (balance problems). Teacher must be familiar with student\'s condition before planning.')"><div class="chip-label">Cerebral palsy</div><div class="chip-sub">Not hereditary, not progressive</div></div>
+        <div class="concept-chip" onclick="showModal('Hearing & Visual Impairments','Hearing impaired: oral/aural, manual (sign language), or total communication approaches; hearing aids, cochlear implants. Teacher: face student when speaking, use captions, ensure good lighting, reduce background noise. Visual impaired: Braille, magnification, tactile maps, speech synthesisers, audio tapes.')"><div class="chip-label">Sensory impairments</div><div class="chip-sub">Hearing & vision strategies</div></div>
+        <div class="concept-chip" onclick="showModal('Gifted & Talented','Areas: high IQ, specific academic aptitude, creative thinking, leadership, visual/performing arts, psychomotor ability. May feel bored with regular curriculum or have social adjustment difficulties. Enrichment adds depth, challenge, and independence to the curriculum. Teachers should encourage divergent thinking and advanced study.')"><div class="chip-label">Gifted & talented</div><div class="chip-sub">Enrichment strategies</div></div>
+        <div class="concept-chip" onclick="showModal('Integration','Including exceptional children in regular classrooms alongside their peers (mainstreaming). Based on the principle that instructional procedures can be refined to suit any student. Requires individualised programs (IEP), proper equipment, and a teacher trained to handle diverse learning needs.')"><div class="chip-label">Integration</div><div class="chip-sub">Mainstreaming & inclusion</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div class="tab" id="tab-flashcards">
+    <div class="fc-wrap">
+      <div style="width:100%;max-width:500px">
+        <div class="progress-bar"><div class="progress-fill" id="fc-progress" style="width:5%"></div></div>
+        <p class="fc-hint" style="margin-bottom:.75rem">Tap card to reveal answer</p>
+      </div>
+      <div class="flashcard" onclick="flipCard()">
+        <div class="fc-inner" id="fc-inner">
+          <div class="fc-face fc-front"><p class="fc-q" id="fc-q"></p><p class="fc-hint-txt">tap to flip</p></div>
+          <div class="fc-face fc-back"><p class="fc-a" id="fc-a"></p></div>
+        </div>
+      </div>
+      <div class="fc-nav">
+        <button class="btn" onclick="prevCard()">← Prev</button>
+        <span class="fc-count" id="fc-count">1 / 20</span>
+        <button class="btn" onclick="nextCard()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="tab" id="tab-quiz">
+    <div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:5%"></div></div>
+    <div id="quiz-container"></div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="tab" id="tab-timeline">
+    <div class="card">
+      <p style="font-size:13px;color:var(--text2);margin-bottom:1rem">Key developmental milestones across ages 6–15</p>
+      <div class="timeline" id="timeline-content"></div>
+    </div>
+  </div>
+
+  <!-- COMPARE -->
+  <div class="tab" id="tab-compare">
+    <div class="card">
+      <p style="font-size:14px;font-weight:600;margin-bottom:1rem">Piaget vs Kohlberg: Cognitive & Moral Development</p>
+      <div class="compare-grid">
+        <div class="cmp-card"><h4 style="color:var(--info-text)">Piaget — Cognitive</h4><ul><li>Concrete operations stage</li><li>Decentration (multiple dimensions)</li><li>Conservation (number → volume)</li><li>Seriation and class inclusion</li><li>Inductive reasoning develops</li></ul></div>
+        <div class="cmp-card"><h4 style="color:var(--success-text)">Piaget — Moral</h4><ul><li>Heteronomous morality (6–7)</li><li>Rules = fixed & absolute</li><li>Punishment is inevitable</li><li>Autonomous morality (9–10)</li><li>Intentions matter, rules flexible</li></ul></div>
+        <div class="cmp-card"><h4 style="color:var(--warn-text)">Kohlberg's Levels</h4><ul><li>Level 1: Punishment avoidance</li><li>Level 1: Satisfying own needs</li><li>Level 2: Good-boy/nice-girl</li><li>Level 2: Law and order</li><li>Level 3: Social contract & ethics</li></ul></div>
+        <div class="cmp-card"><h4 style="color:var(--danger-text)">Dewey vs Russell</h4><ul><li>Dewey: child-centred, instincts</li><li>Dewey: activity-based learning</li><li>Russell: literature for writing</li><li>Russell: accuracy in arithmetic</li><li>Both: curiosity is central</li></ul></div>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:14px;font-weight:600;margin-bottom:1rem">LD vs MR vs ADHD vs Gifted: Quick Comparison</p>
+      <div class="compare-grid">
+        <div class="cmp-card"><h4>Learning Disability</h4><ul><li>Normal or above IQ</li><li>Specific skill deficits only</li><li>Neurological origin</li><li>Dyslexia / Dysgraphia / Dyscalculia</li><li>Direct & multisensory instruction</li></ul></div>
+        <div class="cmp-card"><h4>Mental Retardation</h4><ul><li>IQ below 70</li><li>Adaptive behaviour deficits</li><li>Genetic or environmental causes</li><li>Mild → Profound severity</li><li>Functional curriculum, inclusion</li></ul></div>
+        <div class="cmp-card"><h4>ADHD</h4><ul><li>Normal IQ possible</li><li>Inattentive or Hyperactive type</li><li>Neurological / dietary causes</li><li>Distractibility, impulsiveness</li><li>Medication + behaviour therapy</li></ul></div>
+        <div class="cmp-card"><h4>Gifted</h4><ul><li>High IQ or specific talent</li><li>May have social difficulties</li><li>Bored with regular curriculum</li><li>Needs enrichment activities</li><li>Advanced & independent study</li></ul></div>
+      </div>
+    </div>
+    <div class="card">
+      <p style="font-size:14px;font-weight:600;margin-bottom:1rem">Conservation Development Sequence</p>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="display:flex;align-items:center;gap:12px"><div style="min-width:90px;font-size:12px;font-weight:600;color:var(--info-text)">Age 6–7</div><div style="flex:1;background:var(--info-bg);border-radius:var(--radius);padding:8px 12px;font-size:13px;color:var(--info-text)">Number — "Which row has more marbles?"</div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="min-width:90px;font-size:12px;font-weight:600;color:var(--success-text)">Age 7–8</div><div style="flex:1;background:var(--success-bg);border-radius:var(--radius);padding:8px 12px;font-size:13px;color:var(--success-text)">Mass & Length — "Do the two pieces have the same clay?"</div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="min-width:90px;font-size:12px;font-weight:600;color:var(--warn-text)">Age 9–10</div><div style="flex:1;background:var(--warn-bg);border-radius:var(--radius);padding:8px 12px;font-size:13px;color:var(--warn-text)">Weight — "Which object weighs more?"</div></div>
+        <div style="display:flex;align-items:center;gap:12px"><div style="min-width:90px;font-size:12px;font-weight:600;color:var(--danger-text)">Age 14–15</div><div style="flex:1;background:var(--danger-bg);border-radius:var(--radius);padding:8px 12px;font-size:13px;color:var(--danger-text)">Volume — "Do the clay pieces displace the same water?" (Last to develop!)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GLOSSARY -->
+  <div class="tab" id="tab-glossary">
+    <div class="card">
+      <input type="text" class="search-bar" placeholder="Search terms, definitions..." oninput="filterGlossary(this.value)">
+      <div id="glossary-list"></div>
+    </div>
+  </div>
+
+  <div class="footer">Block 2 · Development During Early School Years (6–11) · Units 1–4</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" style="display:none" onclick="closeModalBg(event)">
+  <div class="modal">
+    <h3 id="modal-title"></h3>
+    <p id="modal-body"></p>
+    <button class="btn" onclick="document.getElementById('modal').style.display='none'">Close</button>
+  </div>
+</div>
+
+<script>
+const flashcards = [
+  {q:"What are the three types of learning disabilities and their specific deficits?", a:"Dyslexia = reading difficulty. Dysgraphia = writing difficulty. Dyscalculia = mathematics difficulty. LD children have normal or above-average IQ — the deficit is in specific learning processes, not general intelligence."},
+  {q:"At what age does conservation of number develop, according to Piaget?", a:"Number conservation develops around age 6–7. This is before mass/length (7–8), weight (9–10), and volume (14–15). This sequential mastery within one stage is called horizontal décalage."},
+  {q:"What is Kohlberg's Conventional level of moral reasoning?", a:"The child follows rules to appear 'good' (Stage 3: Good-boy/nice-girl) and respects law and order for social stability (Stage 4). Most school-age children operate at this level. Breaking rules is seen as inherently immoral."},
+  {q:"What is the 'sensitive period' in motor development?", a:"The optimal window when the body is ready to learn a specific skill most efficiently. Forcing skills before muscles are ready can cause damage. Fine motor tasks like writing should not be pushed before age 4.5–5.5."},
+  {q:"What does ADHD stand for, and what are its two presentations?", a:"Attention Deficit Hyperactivity Disorder. Two types: (1) Inattentive — loses focus, forgets tasks, easily distracted. (2) Hyperactive-Impulsive — fidgets, leaves seat, talks excessively, blurts out answers, interrupts."},
+  {q:"What is decentration in Piaget's concrete operational stage?", a:"The ability to consider multiple dimensions of a situation simultaneously. A 9-year-old knows there are more 'people' than 'children' in a group — they hold both categories at once. Pre-operational children can only focus on one dimension."},
+  {q:"What are Dewey's four childhood instincts that schooling must nurture?", a:"(1) Social instinct — conversation and interaction. (2) Language instinct — expression, the greatest educational resource. (3) Constructive instinct — making things, play. (4) Investigation instinct — curiosity and experimentation."},
+  {q:"What is the IQ threshold for mental retardation, and what else is required for diagnosis?", a:"IQ below 70 on a standardised test, PLUS significant difficulties adapting to the environment. Both intelligence AND adaptive behaviour must be assessed — a single test is insufficient for diagnosis."},
+  {q:"Name Russell's four qualities of ideal character in value education.", a:"(1) Vitality — energy and health; pleasure in being alive. (2) Courage — controlling fear; self-respect. (3) Sensitiveness — empathy and appropriate emotional response. (4) Intelligence — curiosity directed toward knowledge."},
+  {q:"What is 'horizontal décalage' in Piaget's theory?", a:"The sequential mastery of conservation abilities within the concrete operational stage. Children conserve number first (6–7), then mass/length (7–8), weight (9–10), and volume last (14–15). Decáler in French means 'to displace'."},
+  {q:"What are Selman's stages of friendship in middle childhood?", a:"Playmates (3–7): play together. Assistants (4–9): help each other. Cooperators (6–12): share goals, compromise. Intimates (9–15): shared values, strong bonds. Autonomous (12+): mutual dependence with individuality preserved."},
+  {q:"What is the difference between Growth and Development?", a:"Growth = physical change measurable in size (height, weight, teeth). Development = increase in complexity of function and skill — the behavioural aspect of growth. Growth is quantitative; development is qualitative."},
+  {q:"What five educational placement options exist for hearing-impaired students?", a:"(1) Full-time regular classroom. (2) Part-time regular + part-time special class. (3) Special class within regular school. (4) Separate day school. (5) Separate residential school. Choice depends on severity of impairment."},
+  {q:"What is Integration in special education?", a:"Providing equal opportunities by including exceptional children in the same classrooms as their peers (mainstreaming). Assumes instructional procedures can be refined to suit any student, supported by individualised programs and appropriate equipment."},
+  {q:"How does Piaget's heteronomous morality differ from autonomous morality?", a:"Heteronomous (6–7): rules are absolute, fixed by external authority, wrongdoing inevitably leads to punishment, morality judged by consequences. Autonomous (9–10): rules are flexible, intentions matter, decisions are personal, morality is cooperative."},
+  {q:"What is self-esteem and how is it assessed in school-age children?", a:"Self-esteem is self-appraisal of worth. School-age children assess themselves in 5 areas: scholastic ability, athletic ability, physical appearance, social acceptance, and morality. High self-worth correlates with happiness; low with depression."},
+  {q:"What is Kirk's definition of an exceptional child?", a:"A child who deviates from the average in: mental characteristics, sensory abilities, neuromuscular/physical traits, social/emotional behaviour, communication abilities, or multiple handicaps — to an extent requiring special education services."},
+  {q:"What remedial approaches are used for children with Learning Disabilities?", a:"Direct instruction (structured, step-by-step with clear goals), multisensory strategies (see/hear/touch/move), study skills/metacognitive training, social skills training, inclusion strategies, peer-mediated instruction, computer-assisted instruction."},
+  {q:"What is the secular trend in physical development?", a:"The observation that children today are taller than previous generations and mature at earlier ages. This phenomenon is attributed to improved nutrition and health conditions across generations."},
+  {q:"What is conservation of volume, and when does it develop?", a:"Knowing that when clay is reshaped, it displaces the same amount of water regardless of shape. This is the LAST conservation to develop, not until age 14–15 — much later than number, mass, or weight conservation."},
+];
+
+const quizQuestions = [
+  {q:"Which of the following is NOT a specific learning disability?", opts:["Dyslexia","Dysgraphia","Dysphonia","Dyscalculia"], ans:2, exp:"Dysphonia is a speech/voice disorder, not a specific learning disability. Dyslexia = reading, Dysgraphia = writing, Dyscalculia = math. LD children have normal or above-average IQ."},
+  {q:"At what age does the brain reach approximately 90% of its adult weight?", opts:["4 years","6 years","8 years","12 years"], ans:1, exp:"The brain reaches 90% of adult weight by age 6. Brain growth is essentially complete by age 10–12. This rapid early brain development supports the 5-to-7 cognitive shift."},
+  {q:"Kohlberg's 'good-boy/nice-girl' orientation belongs to which level?", opts:["Preconventional","Conventional","Postconventional","Universal-ethical"], ans:1, exp:"Stage 3 (Good-boy/nice-girl) is part of the Conventional level. The child conforms to please others and be seen as 'good'. Most school-age children reason at this level."},
+  {q:"Which test is used to assess COGNITIVE ABILITIES in LD identification?", opts:["Vineland Scale","Brigance Inventory","WISC-III","ABS-PS"], ans:2, exp:"The Wechsler Intelligence Scale for Children-III (WISC-III) assesses cognitive abilities. Brigance assesses skill sequences; Vineland and ABS-PS assess adaptive behaviour for MR identification."},
+  {q:"Heteronomous morality is characterised by:", opts:["Rules are flexible and cooperative","Intentions matter more than consequences","Rules are absolute and set by authority","Personal decisions about rule-following"], ans:2, exp:"Heteronomous morality (ages 6–7): rules are fixed, imposed by external authority, and punishment follows wrongdoing inevitably (immanent justice). This transitions to autonomous morality by ages 9–10."},
+  {q:"Which instinct, according to Dewey, grows from the constructive and conversational impulse combined?", opts:["Social instinct","Language instinct","Investigation instinct","Expressive instinct"], ans:2, exp:"Investigation (curiosity) instinct grows from combining the constructive and conversational impulses. Dewey noted there's no difference for a child between experimental science and carpentry work."},
+  {q:"Conservation of WEIGHT develops at approximately what age?", opts:["6–7 years","7–8 years","9–10 years","14–15 years"], ans:2, exp:"Weight conservation develops at 9–10 years. The sequence is: Number (6–7) → Mass/Length (7–8) → Weight (9–10) → Volume (14–15). This is horizontal décalage."},
+  {q:"Cerebral Palsy is characterised by which type of damage?", opts:["Hereditary genetic defect","Brain damage affecting movement and posture","Progressive muscle deterioration","Chromosomal disorder only"], ans:1, exp:"CP is damage to brain areas controlling movement, usually from oxygen deprivation before, during, or after birth. It is NOT hereditary, NOT progressive, NOT infectious, and NOT a disease."},
+  {q:"The Vineland Adaptive Behaviour Scale primarily assesses:", opts:["IQ and academic achievement","Self-help, communication and socialisation skills","Reading and writing fluency only","Emotional and behavioural disturbances"], ans:1, exp:"The Vineland Scale assesses adaptive behaviour: self-help, locomotion, communication, occupation, socialisation, and self-direction skills — all age-appropriate functional skills needed for daily life."},
+  {q:"Which of Russell's 4 character qualities is described as 'rather physiological than mental'?", opts:["Courage","Sensitiveness","Intelligence","Vitality"], ans:3, exp:"Russell describes Vitality as 'rather physiological than mental' — present with perfect health. It drives interest in the outside world, promotes objectivity, and protects against envy by making one's own existence pleasant."},
+  {q:"In Piaget's Three Mountain Task, at what age does perspective-taking accuracy significantly improve?", opts:["6–7 years","8–9 years","11–12 years","14–15 years"], ans:2, exp:"While young school-age children can occasionally select the correct view, accuracy in perspective-taking significantly improves by age 11–12, reflecting more advanced concrete operations and reduced egocentrism."},
+  {q:"Which assessment measures achievement in reading, writing, and math by GRADE LEVEL for LD identification?", opts:["WISC-III","Woodcock-Johnson (WJ-III)","Brigance Inventory","Stanford-Binet"], ans:1, exp:"The Woodcock-Johnson Psycho-Educational Battery-Revised (WJ-III) assesses achievement in reading, writing, and mathematics by age and grade level. WISC-III assesses cognitive ability, not achievement."},
+];
+
+const glossary = [
+  {term:"Concrete operations", unit:"U2", def:"Piaget's Stage 3 (ages 6–12): the ability to think logically about real, concrete events. Children understand operations like conservation, seriation, decentration, and class inclusion."},
+  {term:"Conservation", unit:"U2", def:"Knowing that physical characteristics (amount, mass, volume) stay the same despite changes in appearance. The last to develop is volume (age 14–15). Sequence: Number → Mass → Weight → Volume."},
+  {term:"Horizontal décalage", unit:"U2", def:"The sequential mastery of concepts within a single developmental stage. From the French 'decáler' (to displace). Example: conservation of number develops before volume within the same concrete operational stage."},
+  {term:"Decentration", unit:"U2", def:"The ability to consider multiple dimensions simultaneously. School-age children can recognise that children are also people — they hold two hierarchical categories at once. Absent in pre-operational children."},
+  {term:"Seriation", unit:"U2", def:"Sequencing and ordering objects by a measurable dimension (size, weight). A concrete operational skill that develops during middle childhood, enabling children to arrange items systematically."},
+  {term:"Heteronomous morality", unit:"U2", def:"Piaget's first moral stage (6–7 years): rules are fixed, absolute, imposed by authority. Wrongdoing inevitably leads to punishment (immanent justice). Morality judged by objective consequences, not intentions."},
+  {term:"Autonomous morality", unit:"U2", def:"Piaget's second moral stage (~age 10): rules are flexible and arbitrary. Intentions matter more than consequences. Cooperation and mutual understanding replace obedience to authority."},
+  {term:"Self-esteem", unit:"U2", def:"Self-appraisal of worth across five areas: scholastic, athletic, physical appearance, social acceptance, and morality. High self-worth predicts happiness and effective functioning. Low self-worth predicts depression."},
+  {term:"Peer group", unit:"U2", def:"A group of equals. Same-age, same-sex children who assemble into informal groups, transmit values, model behaviour, and enforce conformity. Critical agent of socialisation in middle childhood."},
+  {term:"Schooling", unit:"U3", def:"The institutionalised nurturance of children's abilities through explicit instruction. Develops secondary abilities (writing, music) unlike primary abilities (language) that arise naturally without instruction."},
+  {term:"Sensitive period", unit:"U1", def:"The optimal window when the body is ready to learn a specific skill most efficiently. Missing this period makes later learning harder. Fine muscles should not be forced before age 4.5–5.5."},
+  {term:"Secular trend", unit:"U1", def:"The phenomenon that children today are taller and mature earlier than previous generations, attributed to improved nutrition and healthcare across generations."},
+  {term:"Exceptional children", unit:"U4", def:"Children who deviate from the average in mental, sensory, physical, social/emotional, or communication characteristics to a degree requiring special education services. Includes both gifted and disabled children."},
+  {term:"Special education", unit:"U4", def:"Individualised educational instruction designed to meet the unique educational and related needs of students with disabilities. Provides appropriate modifications to school practices."},
+  {term:"Learning disability (LD)", unit:"U4", def:"A syndrome in children of normal or above intelligence characterised by specific difficulties in reading (dyslexia), writing (dysgraphia), or mathematics (dyscalculia). Of probable neurological origin."},
+  {term:"Dyslexia", unit:"U4", def:"A specific learning disability characterised by serious reading problems, including difficulty identifying words, poor comprehension, fluency issues, and word/letter/number reversals. Part of the LD spectrum."},
+  {term:"Dysgraphia", unit:"U4", def:"A specific learning disability characterised by difficulty in writing — poor handwriting, spelling, sentence structure, and written composition skills. Co-occurs with other LDs."},
+  {term:"Dyscalculia", unit:"U4", def:"A specific learning disability characterised by difficulty in mathematics — problems with number facts, arithmetic concepts, abstract reasoning, and writing numbers legibly."},
+  {term:"Mental retardation (MR)", unit:"U4", def:"IQ below 70 on a standardised test PLUS significant difficulties adapting to the environment. Both measures are required. Ranges from mild to profound severity. Not solely defined by IQ."},
+  {term:"ADHD", unit:"U4", def:"Attention Deficit Hyperactivity Disorder: impaired ability to learn due to distractibility, impulsiveness, lack of concentration, restlessness, and inappropriate talking. Two types: inattentive and hyperactive-impulsive."},
+  {term:"Cerebral palsy", unit:"U4", def:"A disorder of movement and posture caused by brain damage (usually oxygen deprivation) before, during, or after birth. Not hereditary, not progressive, not infectious. Three types: Spastic, Athetoid, Ataxic."},
+  {term:"Integration", unit:"U4", def:"Providing equal opportunities by including exceptional children in regular classrooms with peers, removing the pain of exclusion through mainstreaming and individualised instruction."},
+  {term:"Enrichment", unit:"U4", def:"Attempts by the teacher to add depth, detail, and challenge to the curriculum for gifted students. Must be purposeful, planned, and matched to the student's maturity and talent level."},
+  {term:"Vitality", unit:"U3", def:"Russell's first character quality: physiological energy and pleasure in being alive. Promotes objectivity and interest in the world. A safeguard against envy. Present with perfect health."},
+  {term:"Immanent justice", unit:"U2", def:"The belief held in heteronomous morality that wrongdoing inevitably leads to punishment — that the world itself will punish bad behaviour. Characteristic of children ages 6–7."},
+  {term:"Metamemory", unit:"U2", def:"Awareness of one's own memory processes — knowing how memory works and how to use strategies like rehearsal and elaboration to improve it. Develops during the school years."},
+];
+
+const timeline = [
+  {age:"Age 6", dot:true, items:["Brain reaches ~90% of adult weight","First permanent tooth erupts (~6.5 yrs)","Conservation of NUMBER begins (6–7)","Handedness fully established","Can balance on one foot briefly","Heteronomous morality: rules are absolute","Social peer groups form (small, loose)"]},
+  {age:"Age 6–7", dot:true, items:["5-to-7 cognitive shift: concrete operations begin","Conservation of NUMBER fully develops","Reading becomes systematic (letter sounds → words)","Gross motor skills improve rapidly","Eye-hand coordination refines significantly","Preconventional → Conventional moral reasoning"]},
+  {age:"Age 7–8", dot:true, items:["Conservation of MASS & LENGTH develops","Girls begin gaining more fat than muscles","Metacognitive skills (study strategies) emerge","Attention span increases substantially","Friends expected to share goals and cooperate (6–12)","Autonomous morality begins to emerge"]},
+  {age:"Age 8–10", dot:true, items:["Right hemisphere growth spurt (spatial, emotional, music)","Eye-hand coordination notably improves by age 8","By age 10: can control speed and direction of grasp","Peer groups become more structured and exclusive","Better planning and organising skills emerge","Perspective-taking becomes more accurate"]},
+  {age:"Age 9–10", dot:true, items:["Conservation of WEIGHT develops","Girls' puberty growth spurt begins (9–15)","Autonomous morality fully established","Brain growth nearly complete by age 10","Kohlberg's conventional reasoning dominant","Peer groups highly cohesive, fifth-graders"]},
+  {age:"Age 11", dot:true, items:["Girls' growth spurt PEAKS at age 11","Boys' growth spurt BEGINS (~11 years)","Perspective-taking significantly accurate by 11–12","Intimate friendships develop (shared values, support)","Sports participation and motor skills at peak","Fine motor skills highly developed (instruments, craft)"]},
+  {age:"Age 12+", dot:true, items:["Brain growth essentially complete","Formal operational thinking begins (abstract logic)","Deductive reasoning begins to emerge","Postconventional moral reasoning becomes possible","Peer groups highly formalised and selective","Autonomous friendships: mutual but independent"]},
+  {age:"Age 14–15", dot:true, items:["Conservation of VOLUME finally develops (last!)", "Secondary sexual development largely complete","Formal operations stage fully underway","Adult-like understanding of friendship develops","Horizontal décalage complete across all domains"]},
+];
+
+// State
+let currentCard = 0, isFlipped = false, currentQ = 0, score = 0, answered = false;
+
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showModal(title, body) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent = body;
+  document.getElementById('modal').style.display = 'flex';
+}
+function closeModalBg(e) { if (e.target.id === 'modal') document.getElementById('modal').style.display = 'none'; }
+
+function updateCard() {
+  const card = flashcards[currentCard];
+  document.getElementById('fc-q').textContent = card.q;
+  document.getElementById('fc-a').textContent = card.a;
+  document.getElementById('fc-count').textContent = (currentCard + 1) + ' / ' + flashcards.length;
+  document.getElementById('fc-progress').style.width = Math.round((currentCard + 1) / flashcards.length * 100) + '%';
+  const inner = document.getElementById('fc-inner');
+  inner.classList.remove('flipped');
+  isFlipped = false;
+}
+function flipCard() {
+  isFlipped = !isFlipped;
+  document.getElementById('fc-inner').classList.toggle('flipped', isFlipped);
+}
+function nextCard() { currentCard = (currentCard + 1) % flashcards.length; updateCard(); }
+function prevCard() { currentCard = (currentCard - 1 + flashcards.length) % flashcards.length; updateCard(); }
+
+function renderQuiz() {
+  const container = document.getElementById('quiz-container');
+  if (currentQ >= quizQuestions.length) {
+    const pct = Math.round(score / quizQuestions.length * 100);
+    container.innerHTML = `<div class="card" style="text-align:center;padding:2rem">
+      <p style="font-size:28px;font-weight:700;margin-bottom:.25rem">${score} / ${quizQuestions.length}</p>
+      <p style="font-size:14px;color:var(--text2);margin-bottom:1.5rem">${pct}% · ${pct>=80?'Excellent work! 🎉':pct>=60?'Good effort — keep reviewing.':'Keep studying — you\'ve got this!'}</p>
+      <button class="btn" onclick="restartQuiz()">Try again</button></div>`;
+    document.getElementById('quiz-progress').style.width = '100%';
+    return;
+  }
+  const q = quizQuestions[currentQ];
+  document.getElementById('quiz-progress').style.width = Math.round(currentQ / quizQuestions.length * 100) + '%';
+  container.innerHTML = `<div class="card">
+    <p class="quiz-meta">Question ${currentQ + 1} of ${quizQuestions.length} <span class="score-badge">${score} correct</span></p>
+    <p class="quiz-q">${q.q}</p>
+    ${q.opts.map((o,i) => `<button class="quiz-option" id="opt-${i}" onclick="selectAnswer(${i})">${o}</button>`).join('')}
+    <div class="quiz-exp" id="quiz-exp"></div>
+    <button class="btn" id="next-btn" onclick="nextQuestion()" style="display:none;margin-top:.75rem">Next question →</button>
+  </div>`;
+  answered = false;
+}
+function selectAnswer(i) {
+  if (answered) return;
+  answered = true;
+  const q = quizQuestions[currentQ];
+  document.querySelectorAll('.quiz-option').forEach(o => o.classList.add('locked'));
+  document.getElementById('opt-' + i).classList.add(i === q.ans ? 'correct' : 'wrong');
+  if (i !== q.ans) document.getElementById('opt-' + q.ans).classList.add('reveal');
+  if (i === q.ans) score++;
+  const exp = document.getElementById('quiz-exp');
+  exp.textContent = q.exp;
+  exp.style.display = 'block';
+  document.getElementById('next-btn').style.display = 'inline-block';
+}
+function nextQuestion() { currentQ++; renderQuiz(); }
+function restartQuiz() { currentQ = 0; score = 0; renderQuiz(); }
+
+function renderTimeline() {
+  document.getElementById('timeline-content').innerHTML = timeline.map(t => `
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-age">${t.age}</div>
+      <div class="tl-text">${t.items.map(i => '• ' + i).join('<br>')}</div>
+    </div>`).join('');
+}
+
+function renderGlossary() {
+  filterGlossary('');
+}
+function filterGlossary(q) {
+  const terms = q ? glossary.filter(g =>
+    g.term.toLowerCase().includes(q.toLowerCase()) ||
+    g.def.toLowerCase().includes(q.toLowerCase())
+  ) : glossary;
+  const container = document.getElementById('glossary-list');
+  container.innerHTML = terms.length
+    ? terms.map(g => `<div class="glossary-item"><div class="g-term">${g.term} <span class="tag tag-blue">${g.unit}</span></div><div class="g-def">${g.def}</div></div>`).join('')
+    : `<p style="color:var(--text2);font-size:13px;padding:1rem 0">No terms found for "${q}"</p>`;
+}
+
+// Init
+updateCard();
+renderQuiz();
+renderTimeline();
+renderGlossary();
+</script>
+</body>
+</html>
 
