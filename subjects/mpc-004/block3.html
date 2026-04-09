@@ -1,1 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Psychology — Interactive Learning</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0d0f14;--surface:#151820;--surface2:#1c2030;--border:#252a3a;
+    --accent1:#f0a500;--accent2:#e05c5c;--accent3:#5cc8e0;--accent4:#7ec87e;
+    --text:#e8eaf0;--muted:#6b7280;--card-hover:#202535;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden;}
+  .hero{text-align:center;padding:60px 24px 40px;position:relative;}
+  .hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:300px;background:radial-gradient(ellipse,rgba(240,165,0,.12) 0%,transparent 70%);pointer-events:none;}
+  .hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,5vw,3.4rem);font-weight:900;letter-spacing:-1px;line-height:1.1;background:linear-gradient(135deg,#f0a500,#e8eaf0 60%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+  .hero p{margin-top:12px;color:var(--muted);font-size:.95rem;letter-spacing:.5px;}
+  .blocks{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:20px;max-width:1200px;margin:0 auto;padding:0 24px 60px;}
+  .block-card{border-radius:16px;border:1.5px solid var(--border);background:var(--surface);overflow:hidden;transition:transform .25s,box-shadow .25s;}
+  .block-card:hover{transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,.4);}
+  .block-card.u1{border-color:rgba(240,165,0,.25);}
+  .block-card.u2{border-color:rgba(92,200,224,.25);}
+  .block-card.u3{border-color:rgba(224,92,92,.25);}
+  .block-card.u4{border-color:rgba(126,200,126,.25);}
+  .block-header{padding:22px 24px 14px;display:flex;align-items:flex-start;gap:12px;}
+  .block-num{font-family:'DM Mono',monospace;font-size:.68rem;padding:4px 10px;border-radius:20px;font-weight:500;flex-shrink:0;margin-top:3px;}
+  .u1 .block-num{background:rgba(240,165,0,.15);color:var(--accent1);border:1px solid rgba(240,165,0,.3);}
+  .u2 .block-num{background:rgba(92,200,224,.12);color:var(--accent3);border:1px solid rgba(92,200,224,.3);}
+  .u3 .block-num{background:rgba(224,92,92,.12);color:var(--accent2);border:1px solid rgba(224,92,92,.3);}
+  .u4 .block-num{background:rgba(126,200,126,.12);color:var(--accent4);border:1px solid rgba(126,200,126,.3);}
+  .block-title{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:700;line-height:1.3;}
+  .block-topics{padding:0 24px 16px;display:flex;flex-wrap:wrap;gap:7px;}
+  .topic-pill{font-size:.7rem;padding:5px 11px;border-radius:20px;background:var(--surface2);color:var(--muted);border:1px solid var(--border);cursor:pointer;transition:all .2s;font-weight:500;}
+  .u1 .topic-pill:hover{border-color:rgba(240,165,0,.5);color:var(--accent1);background:rgba(240,165,0,.06);}
+  .u2 .topic-pill:hover{border-color:rgba(92,200,224,.5);color:var(--accent3);background:rgba(92,200,224,.06);}
+  .u3 .topic-pill:hover{border-color:rgba(224,92,92,.5);color:var(--accent2);background:rgba(224,92,92,.06);}
+  .u4 .topic-pill:hover{border-color:rgba(126,200,126,.5);color:var(--accent4);background:rgba(126,200,126,.06);}
+  .block-explore-btn{display:block;margin:0 24px 22px;text-align:center;padding:10px;border-radius:10px;font-size:.78rem;font-weight:600;letter-spacing:.5px;cursor:pointer;border:none;transition:opacity .2s;width:calc(100% - 48px);}
+  .block-explore-btn:hover{opacity:.75;}
+  .u1 .block-explore-btn{background:rgba(240,165,0,.12);color:var(--accent1);}
+  .u2 .block-explore-btn{background:rgba(92,200,224,.1);color:var(--accent3);}
+  .u3 .block-explore-btn{background:rgba(224,92,92,.1);color:var(--accent2);}
+  .u4 .block-explore-btn{background:rgba(126,200,126,.1);color:var(--accent4);}
+
+  /* OVERLAY */
+  .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);backdrop-filter:blur(7px);z-index:100;overflow-y:auto;padding:24px 16px 80px;animation:fadeIn .2s ease;}
+  .overlay.open{display:block;}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{max-width:880px;margin:0 auto;background:var(--surface);border-radius:20px;border:1.5px solid var(--border);overflow:hidden;animation:slideUp .28s ease;}
+  @keyframes slideUp{from{transform:translateY(28px);opacity:0}to{transform:translateY(0);opacity:1}}
+  .modal-header{padding:26px 30px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start;}
+  .modal-header h2{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;flex:1;padding-right:18px;line-height:1.3;}
+  .close-btn{width:34px;height:34px;border-radius:50%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;}
+  .close-btn:hover{background:var(--card-hover);}
+  .modal-tabs{display:flex;padding:0 30px;border-bottom:1px solid var(--border);gap:2px;overflow-x:auto;}
+  .tab-btn{padding:12px 14px;font-size:.78rem;font-weight:600;letter-spacing:.5px;border:none;background:none;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;}
+  .tab-btn.active{color:var(--text);border-bottom-color:#f0a500;}
+  .tab-btn:hover:not(.active){color:var(--text);}
+  .modal-body{padding:26px 30px;}
+
+  /* CONCEPTS */
+  .concept-block{margin-bottom:26px;padding:20px;background:var(--surface2);border-radius:12px;border:1px solid var(--border);}
+  .concept-block h3{font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:10px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .accent-bar{width:4px;height:18px;border-radius:2px;flex-shrink:0;}
+  .concept-block p{color:#a8b4c8;font-size:.88rem;line-height:1.78;}
+  .concept-block ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:7px;margin-top:8px;}
+  .concept-block ul li{padding:9px 13px;background:var(--surface);border-radius:8px;border:1px solid var(--border);font-size:.85rem;color:#a8b4c8;line-height:1.6;}
+  .concept-block ul li strong{color:var(--text);}
+
+  /* FLASHCARDS */
+  .fc-area{display:flex;flex-direction:column;align-items:center;gap:18px;}
+  .fc-wrap{perspective:1000px;width:100%;max-width:480px;height:210px;cursor:pointer;}
+  .flashcard{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .45s ease;border-radius:14px;}
+  .flashcard.flipped{transform:rotateY(180deg);}
+  .fc-front,.fc-back{position:absolute;inset:0;backface-visibility:hidden;border-radius:14px;display:flex;align-items:center;justify-content:center;padding:26px;text-align:center;flex-direction:column;gap:10px;background:var(--surface2);border:1.5px solid var(--border);}
+  .fc-back{transform:rotateY(180deg);}
+  .fc-label{font-size:.68rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+  .fc-q{font-family:'Playfair Display',serif;font-size:1.08rem;line-height:1.45;}
+  .fc-a{font-size:.88rem;line-height:1.72;color:#a8b4c8;}
+  .fc-hint{font-size:.72rem;color:var(--muted);}
+  .fc-nav{display:flex;gap:10px;align-items:center;}
+  .fc-nav button{padding:9px 20px;border-radius:8px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:.8rem;font-weight:600;cursor:pointer;transition:background .2s;}
+  .fc-nav button:hover{background:var(--card-hover);}
+  .fc-counter{font-size:.78rem;color:var(--muted);font-family:'DM Mono',monospace;}
+  .progress-wrap{width:100%;max-width:480px;background:var(--surface2);border-radius:99px;height:3px;}
+  .progress-fill{height:3px;border-radius:99px;transition:width .35s ease;}
+
+  /* QUIZ */
+  .quiz-area{display:flex;flex-direction:column;gap:18px;}
+  .quiz-meta{font-size:.75rem;color:var(--muted);font-family:'DM Mono',monospace;}
+  .quiz-q{font-family:'Playfair Display',serif;font-size:1rem;line-height:1.55;}
+  .quiz-opts{display:flex;flex-direction:column;gap:9px;}
+  .quiz-opt{padding:11px 15px;border-radius:10px;background:var(--surface2);border:1.5px solid var(--border);color:#a8b4c8;font-size:.86rem;cursor:pointer;text-align:left;transition:all .2s;line-height:1.5;font-family:'DM Sans',sans-serif;}
+  .quiz-opt:hover:not(.disabled){border-color:#f0a500;color:var(--text);}
+  .quiz-opt.correct{border-color:var(--accent4)!important;background:rgba(126,200,126,.08)!important;color:var(--accent4)!important;}
+  .quiz-opt.wrong{border-color:var(--accent2)!important;background:rgba(224,92,92,.08)!important;color:var(--accent2)!important;}
+  .quiz-opt.disabled{cursor:not-allowed;}
+  .quiz-fb{font-size:.84rem;line-height:1.65;padding:12px 15px;border-radius:8px;}
+  .quiz-fb.ok{background:rgba(126,200,126,.07);border:1px solid rgba(126,200,126,.25);color:var(--accent4);}
+  .quiz-fb.bad{background:rgba(224,92,92,.07);border:1px solid rgba(224,92,92,.25);color:#d08080;}
+  .quiz-next-btn{padding:10px 26px;border-radius:8px;background:rgba(240,165,0,.12);border:1px solid rgba(240,165,0,.28);color:var(--accent1);font-size:.82rem;font-weight:600;cursor:pointer;transition:opacity .2s;width:fit-content;}
+  .quiz-next-btn:hover{opacity:.72;}
+  .score-screen{text-align:center;padding:30px 20px;}
+  .score-screen h3{font-family:'Playfair Display',serif;font-size:1.6rem;margin-bottom:10px;}
+  .score-screen p{color:var(--muted);font-size:.9rem;margin-bottom:20px;}
+
+  /* SUMMARY */
+  .summary-grid{display:grid;gap:12px;}
+  .sum-card{background:var(--surface2);border-radius:11px;border:1px solid var(--border);padding:15px 18px;}
+  .sum-card h4{font-size:.88rem;font-weight:600;margin-bottom:5px;color:var(--text);}
+  .sum-card p{font-size:.82rem;color:var(--muted);line-height:1.65;}
+
+  .tag{display:inline-block;font-size:.65rem;padding:3px 8px;border-radius:20px;font-family:'DM Mono',monospace;font-weight:500;}
+  .tg1{background:rgba(240,165,0,.1);color:var(--accent1);border:1px solid rgba(240,165,0,.22);}
+  .tg2{background:rgba(92,200,224,.08);color:var(--accent3);border:1px solid rgba(92,200,224,.22);}
+  .tg3{background:rgba(224,92,92,.08);color:var(--accent2);border:1px solid rgba(224,92,92,.22);}
+  .tg4{background:rgba(126,200,126,.08);color:var(--accent4);border:1px solid rgba(126,200,126,.22);}
+
+  ::-webkit-scrollbar{width:5px;}
+  ::-webkit-scrollbar-track{background:var(--bg);}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+  @media(max-width:600px){.modal-header,.modal-body{padding:18px;}.modal-tabs{padding:0 14px;}.tab-btn{padding:10px 10px;font-size:.72rem;}}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Social Psychology<br>Learning Explorer</h1>
+  <p>4 Units &nbsp;·&nbsp; Concepts · Flashcards · Quiz · Summary</p>
+</div>
+
+<div class="blocks" id="blocksGrid"></div>
+
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h2 id="mTitle"></h2>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <div class="modal-tabs" id="mTabs"></div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+const UNITS=[
+  {id:'u1',cls:'u1',tc:'tg1',ac:'#f0a500',ab:'1',label:'Unit 1',
+   title:'Introduction to Attitude & Stereotypes',
+   topics:['Nature of Attitudes','ABC Components','Attitude vs Beliefs','Heider Balance Theory','Katz Functional Theory','Kelman Three Process Theory','Stereotypes','Stereotype Development','Stereotype vs Prejudice'],
+   concepts:[
+    {n:'Nature of Attitudes',b:'An attitude is a <strong>hypothetical construct</strong> — observable only through behaviour. Modern view gives attitude <strong>three components</strong> (the ABC model):<ul><li><strong>Affective:</strong> How strongly one feels emotionally about an object or event.</li><li><strong>Cognitive:</strong> Beliefs and opinions about the object.</li><li><strong>Behavioural:</strong> Actions a person takes for or against the object.</li></ul><br>Key properties of attitude components include <em>Valence</em> (degree of favourableness), <em>Multiplexity</em> (number of elements in a component), and <em>Consistency</em>.'},
+    {n:'Characteristics of Attitudes',b:'<ul><li><strong>Learnt:</strong> Not innate — acquired through socialisation and life experience.</li><li><strong>Gives direction:</strong> Guides behaviour toward or away from an object.</li><li><strong>Relative permanence:</strong> Stable over time; changes occur gradually.</li><li><strong>Object-linked:</strong> Always related to a specific issue, object or event — not in a vacuum.</li><li><strong>Motivational properties:</strong> Energises and directs specific behaviours; e.g., a sports-loving person readily goes to play over reading.</li></ul>'},
+    {n:'Attitude vs Beliefs',b:'A <strong>belief</strong> is an enduring organisation of perceptions/cognitions about some aspect of the world — primarily cognitive. An <strong>attitude</strong> includes all three components (ABC).<br><br>Key differences:<ul><li>Attitude has affective + behavioural + cognitive; belief is mainly cognitive.</li><li>Attitude has motivational properties; belief does not.</li><li>Beliefs are grounded more in real facts; attitudes involve more imagination.</li><li>Beliefs are part of attitudes — all attitudes include relevant beliefs.</li><li>Attitude changes faster than belief.</li></ul>'},
+    {n:"Heider's Balance Theory (P-O-X)",b:'Proposed by Heider (1946, 1958). Three elements form a triad: <strong>P</strong> (perceiver), <strong>O</strong> (another person), <strong>X</strong> (object). Relationships are unit relations (similarity, ownership) or affective relations (liking/disliking).<br><br><strong>Balance</strong> = relaxed state, no tension. <strong>Imbalance</strong> = tension → motivation to restore balance by changing an attitude.<br><br>Example: Sunil(P) likes Krishan(O) + likes Preeti(X), but Krishan dislikes Preeti → IMBALANCE → Sunil must change one relationship to restore balance.'},
+    {n:"Katz's Functional Theory",b:'Katz (1960) argued that the motivational basis — what <strong>function</strong> an attitude serves — is the key to understanding attitudes. Four functions:<ul><li><strong>Instrumental/Utilitarian:</strong> Maximise reward, minimise punishment; develop favourable attitudes toward rewarding objects.</li><li><strong>Ego-Defensive:</strong> Protects self from unpleasant realities; e.g., insecure person develops prejudice to compensate.</li><li><strong>Value-Expressive:</strong> Holding attitudes aligned with personal values gives satisfaction.</li><li><strong>Knowledge function:</strong> Structures experience and makes sense of the world; inconsistencies get rearranged.</li></ul>'},
+    {n:"Kelman's Three Process Theory",b:'Three processes of social influence shape attitude organisation:<ul><li><strong>Compliance:</strong> Accepts influence to gain favourable reaction — does not personally agree. Example: laughing at boss\'s unfunny joke to avoid displeasure.</li><li><strong>Identification:</strong> Adopts behaviour/attitudes from another to maintain a satisfying self-defining relationship. Requires the relation to be active (e.g., children mimicking parents).</li><li><strong>Internalisation:</strong> Accepts influence because the attitude aligns with one\'s own value system — internally rewarding and the most stable form.</li></ul>'},
+    {n:'What is a Stereotype?',b:'A stereotype is a <strong>cluster of beliefs, usually lacking rational basis</strong>, about members of some group. Term coined by <strong>Walter Lippman</strong> in "Public Opinion" (1922).<br><br>Key features:<ul><li>Set of beliefs used to categorise people — assumed to apply to ALL members.</li><li>Exaggerated, may lack truth.</li><li>Can be positive (Japanese = industrious) or negative (Bengali = timid).</li><li>Resistant to change — contradictory evidence is dismissed as an "exception."</li></ul>'},
+    {n:'Development & Maintenance of Stereotypes',b:'Factors that create and sustain stereotypes:<ul><li><strong>Inadequate information:</strong> Experiences with a few people wrongly generalised to the whole group.</li><li><strong>Socialisation:</strong> Parents transmit stereotypes during upbringing; children imitate without questioning.</li><li><strong>Imitation:</strong> Blindly copying in-group beliefs to gain social acceptance.</li><li><strong>Traditions & folkways:</strong> Cultural norms reinforce stereotyped expectations.</li><li><strong>Social & cultural distance:</strong> Lack of real exposure creates misrepresentation and breeding ground for stereotypes.</li></ul>'},
+    {n:'Stereotype vs Prejudice',b:'Though closely related, they differ:<ul><li><strong>Scope:</strong> Stereotype = all members treated alike based on assumed traits. Prejudice = can be positive or negative — a broader attitude.</li><li><strong>Components:</strong> Stereotype is primarily cognitive/expectational. Prejudice is a full attitude with affective + cognitive + behavioural components.</li><li><strong>Stability:</strong> Stereotypes are comparatively more stable than prejudices.</li></ul>'}
+   ],
+   flashcards:[
+    {q:'What are the three components of attitude (the ABC model)?',a:'A = Affective (emotional feelings), B = Behavioural (actions taken), C = Cognitive (beliefs and opinions).'},
+    {q:"What is 'Valence' in the context of attitudes?",a:'Valence refers to the degree of favourableness or unfavourableness toward an object or event — how positive or negative the attitude is.'},
+    {q:"What is Heider's P-O-X Balance Theory?",a:'A triad model: P (perceiver), O (another person), X (object). Balanced states cause no tension; imbalanced states create tension, motivating attitude change to restore balance.'},
+    {q:"Name Katz's four functions of attitude.",a:'(1) Instrumental/Utilitarian, (2) Ego-Defensive, (3) Value-Expressive, (4) Knowledge function.'},
+    {q:"What is Internalisation in Kelman's Three Process Theory?",a:'Accepting influence because the induced attitude aligns with one\'s own value system — the most stable form, internally rewarding and independent of external relationships.'},
+    {q:'Who coined the term "Stereotype" and where?',a:'Walter Lippman, in his 1922 book "Public Opinion."'},
+    {q:'How is attitude different from belief?',a:'Attitude has all 3 ABC components + motivational properties. Belief is primarily cognitive. Attitudes change faster than beliefs; beliefs are based more on real facts.'},
+    {q:'Why are stereotypes resistant to change?',a:'When contradictory evidence appears (e.g., a brave Bengali), people label it an "exception" rather than revising the stereotype — a confirmation bias mechanism.'}
+   ],
+   quiz:[
+    {q:'According to Katz\'s Functional Theory, which function explains why an insecure person may develop strong prejudice against a minority group?',o:['Instrumental','Ego-Defensive','Value-Expressive','Knowledge'],a:1,e:'The Ego-Defensive function protects the person from acknowledging uncomfortable truths (like insecurity) by directing negative feelings outward onto a target group.'},
+    {q:"In Heider's Balance Theory, Sunil likes Anita and likes Cricket. Anita hates Cricket. What is the state of this triad?",o:['Balanced — all positive','Imbalanced — tension will arise','Balanced — two negatives cancel','Neutral — no attitude formed'],a:1,e:"P(Sunil) likes O(Anita) +, P likes X(Cricket) +, O(Anita) dislikes X(Cricket) -. Two positives + one negative = IMBALANCED. Sunil will feel tension and must change one relationship."},
+    {q:"Which process in Kelman's theory involves laughing at a boss's joke you don't find funny, to avoid displeasure?",o:['Identification','Internalisation','Compliance','Conformity'],a:2,e:'Compliance = accepting influence to gain a favourable reaction or avoid punishment — not from genuine agreement. It is situational and stops when surveillance ends.'},
+    {q:'What is the key distinction between a stereotype and a prejudice?',o:['Prejudice is positive; stereotype is negative','Stereotype is primarily cognitive; prejudice includes affective and behavioural components','Stereotypes are less stable than prejudices','Prejudice applies only to racial groups'],a:1,e:'Stereotypes are cognitive expectations/beliefs. Prejudice is a full attitude with affective (emotional), cognitive, and behavioural components.'},
+    {q:"Which of Katz's functions explains why a person holds attitudes that match their core personal values, giving them a sense of integrity?",o:['Instrumental','Ego-Defensive','Value-Expressive','Knowledge'],a:2,e:'The Value-Expressive function: holding attitudes congruent with one\'s personal values or self-concept provides satisfaction and a sense of authenticity.'}
+   ]},
+
+  {id:'u2',cls:'u2',tc:'tg2',ac:'#5cc8e0',ab:'2',label:'Unit 2',
+   title:'Formation of Attitude & Attitude Change',
+   topics:['Need Satisfaction','Classical Conditioning','Instrumental Conditioning','Observational Learning','Group Affiliations','Cultural Factors','Persuasive Communication','One-sided vs Two-sided','Primacy vs Recency'],
+   concepts:[
+    {n:'Factors of Attitude Formation',b:'Multiple interacting factors shape attitude formation:<ul><li><strong>Need Satisfaction:</strong> Favourable attitudes develop toward things that help reach goals; negative attitudes toward things that frustrate us.</li><li><strong>Social Learning:</strong> Three processes — Classical conditioning, Instrumental conditioning, Observational learning.</li><li><strong>Group Affiliations:</strong> Primary groups (family, peers) and Reference groups (groups we aspire to join) both shape attitudes.</li><li><strong>Cultural Factors:</strong> Different cultures foster different attitudes (e.g., Muslim vs Hindu cultural views on cousin marriage).</li><li><strong>Personality Factors:</strong> Traits in consonance with an attitude ease its acquisition.</li><li><strong>Stereotypes & Given Information:</strong> Media and existing social stereotypes shape new attitudes.</li></ul>'},
+    {n:'Classical Conditioning of Attitudes',b:'A <strong>neutral stimulus</strong> acquires attitude-eliciting power when repeatedly paired with an existing attitude-eliciting stimulus.<br><br>Classic experiment: "Dutch" was paired with positive adjectives (happy, laborious, sacred) → subjects formed POSITIVE attitudes toward Dutch. "Swedish" was paired with negative adjectives (dirty, ugly, bitter) → NEGATIVE attitudes formed. The mechanism: repeated pairing, not any direct experience.'},
+    {n:'Instrumental Conditioning',b:'We <strong>retain responses that are rewarded</strong> and abandon those that are punished. Children develop parental attitudes because conformity is rewarded with praise; deviation is punished with admonition. This explains attitudinal similarity within families — holding the same attitudes as parents is instrumentally useful for getting desired results.'},
+    {n:'Observational Learning',b:'Many attitudes are formed by <strong>watching others</strong> and noting the outcomes of their behaviour. Children observe parents and significant others — and follow without questioning their wisdom, simply because they trust these sources. This is how cultural attitudes propagate across generations without being explicitly taught.'},
+    {n:'Congruent vs Incongruent Attitude Change',b:'Two types of change:<ul><li><strong>Congruent:</strong> A favourable attitude becomes MORE favourable — easier to produce.</li><li><strong>Incongruent:</strong> Direction of change is OPPOSITE to the existing attitude — harder to produce.</li></ul>Key rule: if an attitude\'s strength, stability, and internal consistency are high, even congruent change becomes harder. Attitude change follows two paths: changing reference group (e.g., college liberalising conservative girls) and changing group affiliations.'},
+    {n:'Persuasive Communication',b:'Attitude change through persuasion depends on four factors:<ul><li><strong>Source:</strong> (a) Credibility = trustworthiness + expertise. (b) Attractiveness = physical beauty + similarity to audience. <em>Sleeper Effect:</em> over time the source is forgotten and only content remains.</li><li><strong>Content:</strong> One-sided vs two-sided; fear-arousing appeals; message organisation.</li><li><strong>Channel:</strong> Personal contact > mass media. Active participation > passive (pamphlets).</li><li><strong>Audience:</strong> High self-esteem, confidence, age → less susceptible to persuasion.</li></ul>'},
+    {n:'One-sided vs Two-sided Communication',b:'Allied soldiers experiment findings:<ul><li>No overall difference in immediate effectiveness.</li><li>One-sided was more effective with high-school-educated soldiers; two-sided was more effective with graduates.</li><li><strong>Inoculation effect (key!):</strong> Two-sided communication dramatically protects against later counter-propaganda. 67% of two-sided recipients retained position vs only 2% of one-sided recipients when exposed to counter-messages later.</li></ul>'},
+    {n:'Primacy vs Recency Effect',b:'<ul><li><strong>Primacy effect:</strong> Information presented FIRST is more influential — we anchor to first impressions.</li><li><strong>Recency effect:</strong> Information presented LAST is more influential.</li></ul>Which dominates depends on the time interval between messages and between the final message and the recall test.<br><br>Also: attitude change is greater when information is received through <strong>active participation</strong> (discussion) vs. passive reception (lecture). In the beef consumption study: 30% of discussion group shifted attitudes vs only 3% of lecture group.'},
+    {n:'Group Affiliations & Reference Groups',b:'Changing group affiliation → attitude change, especially when:<ul><li>The new group\'s norms and values are more attractive.</li><li>Membership provides greater status, power, and prestige.</li></ul>Reference group: a group one aspires to belong to, used as a standard for comparison. A person changes values and norms to match the reference group.<br><br>Newcomb\'s study: conservative girls became liberal by final college year because the college promoted liberalism — a reference group effect.'}
+   ],
+   flashcards:[
+    {q:"What is the 'Sleeper Effect' in persuasive communication?",a:'Over time, the source of information loses its influence, and only the message content is retained. A low-credibility source can become as persuasive as a high-credibility source after time passes.'},
+    {q:'In the Dutch/Swedish classical conditioning experiment, why did subjects develop positive attitudes toward "Dutch"?',a:'"Dutch" was repeatedly paired with positive adjectives (happy, laborious, sacred), causing the neutral nation word to acquire positive attitude-eliciting properties through classical conditioning.'},
+    {q:"What is the 'Inoculation Effect' in attitude research?",a:'Two-sided communication protects against later counter-propaganda. In one study, 67% of two-sided recipients retained their position vs only 2% of one-sided recipients when exposed to contrary messages.'},
+    {q:'What is incongruent attitude change?',a:'A change where the new attitude is in the OPPOSITE direction to the existing attitude. Harder to produce than congruent change, especially for strongly held, stable attitudes.'},
+    {q:'How does personal contact compare to mass media for attitude change?',a:'Personal contact is more effective because it involves face-to-face interaction, first-hand information, and the opportunity to test that information directly.'},
+    {q:'What two dimensions make a communicator\'s source effective in persuasion?',a:'(1) Credibility = trustworthiness + expertise in the subject. (2) Attractiveness = physical beauty + similarity to the audience.'},
+    {q:"What did Newcomb's experiment on college girls demonstrate?",a:'Conservative girls from conservative families became more liberal by their final year due to the college\'s liberal environment — demonstrating how reference group change leads to attitude change.'},
+    {q:'In the beef consumption experiment, which method produced more attitude change — discussion or lecture?',a:'Discussion (30% shifted attitudes) vs Lecture (only 3%). Active participation through discussion is far more effective than passive reception of information.'}
+   ],
+   quiz:[
+    {q:'A child sees her mother grimace every time an advertisement for bitter gourd appears. Without any explicit instruction, the child develops dislike for bitter gourd. Which learning process explains this?',o:['Instrumental conditioning','Observational learning','Classical conditioning','Group affiliation'],a:1,e:'The child observes the mother\'s response (outcome) and imitates it without direct experience of the object — this is observational/social learning.'},
+    {q:'In the Allied soldiers experiment, which type of communication was better at protecting against later counter-propaganda?',o:['One-sided communication','Two-sided communication','Fear-arousing appeals','Lecture-based communication'],a:1,e:'Two-sided communication produced a dramatic inoculation effect — 67% retained their position vs only 2% of one-sided recipients when exposed to counter-messages.'},
+    {q:"The 'Sleeper Effect' in persuasion means:",o:['Old attitudes return during sleep','Tired audiences are more persuadable','Source credibility fades over time, leaving only the content','Fear appeals work better at night'],a:2,e:'Over time, people forget the source but remember the content. So even a low-credibility source can become influential after sufficient time passes.'},
+    {q:'A housewives\' group experiment compared discussion vs. lecture for attitude change toward beef. What was the main finding?',o:['Lecture was more effective (30% vs 3%)','Discussion was more effective (30% vs 3%)','Both were equally effective','Neither method worked'],a:1,e:'30% of the discussion group changed their attitude vs only 3% of the lecture group — demonstrating the power of active participation in attitude change.'},
+    {q:'Which type of communication is more effective for inoculating educated people against counter-propaganda?',o:['One-sided','Two-sided','Fear-based','Channel-based'],a:1,e:'Two-sided communication was more effective for graduate soldiers — presenting both sides helps educated audiences resist later contrary messages.'}
+   ]},
+
+  {id:'u3',cls:'u3',tc:'tg3',ac:'#e05c5c',ab:'3',label:'Unit 3',
+   title:'Prejudice & Discrimination',
+   topics:['Defining Prejudice','Characteristics','Types of Prejudice','Discrimination','Development of Prejudice','Frustration-Aggression','Authoritarian Personality','Manifestation','Reducing Prejudice'],
+   concepts:[
+    {n:'Defining Prejudice',b:'<strong>Secord & Backman:</strong> "Prejudice is an attitude that predisposes a person to think, perceive, feel and act in favourable and unfavourable ways towards a group or its individual members."<br><br><strong>Baron & Byrne:</strong> "Prejudice is generally a negative attitude towards the members of some social, ethnic or religious group."<br><br>Whether positive or negative, prejudice is a full attitude with all three components: affective (feelings), cognitive (beliefs), and behavioural (actions/tendencies).'},
+    {n:'Characteristics of Prejudice',b:'<ul><li><strong>Acquired:</strong> Learned through socialisation — classical conditioning, instrumental and observational learning. Children learn to hate by watching significant others.</li><li><strong>Emotional overtones:</strong> Always coloured with emotion — love/sympathy or hatred/hostility.</li><li><strong>Irrational:</strong> Does not yield to reason or evidence to the contrary.</li><li><strong>Functional:</strong> Helps the person justify hostility, exploitation, and boost self-esteem.</li><li><strong>No connection with reality:</strong> Based on hearsay, incomplete information, and tradition — cannot stand test of logic.</li></ul>'},
+    {n:'Types of Prejudice',b:'<ul><li><strong>Racial:</strong> Against members of another race — e.g., Whites vs Blacks; Nazis vs Jews (leading to Holocaust).</li><li><strong>Sex/Gender:</strong> Women historically viewed as weak, dependent, intellectually inferior to men.</li><li><strong>Caste:</strong> Indian caste system — each caste assigned specific characteristics; upper castes justified exploitation of lower castes.</li><li><strong>Language:</strong> South Indians despising Hindi despite it being the national language; linguistic basis for state formation in India.</li><li><strong>Religious:</strong> Positive attitude toward own religion, unfavourable toward others. Hindu-Muslim tensions in India; creation of Pakistan due to religious differences.</li><li>Also: Political prejudice, communal prejudice, etc.</li></ul>'},
+    {n:'Discrimination',b:'Discrimination is the <strong>differential treatment of individuals based on group membership</strong>. It is the overt/behavioural expression of prejudice — the target is denied privileges accorded to majority group members.<br><br><strong>Exchange Theory perspective:</strong> When reward-cost outcomes of two groups are mutually exclusive and groups are unequal in power, the dominant group establishes better outcomes for itself — creating status differences.<br><br><strong>Important:</strong> Discrimination can occur WITHOUT prejudice — e.g., a proprietor refusing minority group patrons not from prejudice but to protect business.'},
+    {n:'Development & Maintenance of Prejudice',b:'Key causal factors:<ul><li><strong>Status & Power structures:</strong> Dominant groups construct negative beliefs about subordinates to justify control. Slaves seen as "lazy" because the power structure prevents them from showing initiative.</li><li><strong>Historical factors:</strong> Jews stereotyped as money-lenders due to historical roles (Church prevented Christians from lending money at interest). Economic conflict generates enduring prejudice.</li><li><strong>Social learning:</strong> Parents, schools, religious institutions transmit prejudices to children.</li><li><strong>Job Competition:</strong> Scarcity of jobs → "Sons of Soil" theory (e.g., Marathi movement against North Indians in Mumbai who accept lower wages and longer hours).</li><li><strong>Conformity to Norms:</strong> Once prejudice is a group norm, conforming is rewarded; nonconformity is punished.</li></ul>'},
+    {n:'Psychodynamic Factors',b:'<ul><li><strong>Frustration-Aggression (Scapegoating):</strong> When frustrated by a powerful source, aggression is displaced onto a weaker, safer scapegoat. The weak person/group becomes the outlet.</li><li><strong>Authoritarian Personality:</strong> Rigid thinking, punitive tendencies, power-orientation. Idealize those above in power hierarchy; despise and exploit those below → highly prone to prejudice.</li><li><strong>Intolerance for Ambiguity:</strong> People who cannot tolerate uncertainty use prejudice to simplify complex social reality — black-and-white thinking.</li><li><strong>Need for Superior Status:</strong> Prejudice provides a group of persons "beneath" oneself, satisfying the need to feel superior.</li></ul>'},
+    {n:'Manifestation of Prejudice (Allport\'s Scale)',b:'Five levels, from mild to extreme:<ul><li><strong>Withdrawal:</strong> Moving away from situations where the target is present (reactive).</li><li><strong>Avoidance:</strong> Proactively avoiding situations where one might encounter the target group.</li><li><strong>Discrimination:</strong> Biased behaviour — e.g., teacher failing students of a particular community despite merit.</li><li><strong>Lynching:</strong> Physical violence or harm directed at the target person.</li><li><strong>Extermination:</strong> Most extreme — systematic elimination. Example: Hitler\'s Holocaust; millions of Jews massacred.</li></ul>'},
+    {n:'Reducing Prejudice & Discrimination',b:'<ul><li><strong>Intergroup Contact (Allport):</strong> Effective when (a) groups have equal status, (b) contact is intimate not superficial, (c) success of both parties is interdependent (common goal).</li><li><strong>Education:</strong> Informal (parents not modeling prejudice) + formal (curriculum promoting harmony). Cultural Assimilator method: explaining other groups\' norms and values to reduce misunderstanding.</li><li><strong>Antiprejudice Propaganda:</strong> Films and documentaries can reduce prejudice up to 60%.</li><li><strong>Incongruent Role:</strong> Person made to act against their prejudice publicly → cognitive dissonance → cannot undo public behaviour → changes internal prejudice.</li><li><strong>Social Legislation:</strong> Laws prohibit public expression of prejudice (Indian Constitution: no discrimination on caste, creed, sex, religion).</li><li><strong>Personality Change Techniques:</strong> Psychotherapy; Play therapy for early detection in children.</li></ul>'}
+   ],
+   flashcards:[
+    {q:'What is the key difference between prejudice and discrimination?',a:'Prejudice is an internal attitude (predisposition to think/feel/act). Discrimination is the overt behavioural expression — the actual differential treatment of individuals based on group membership.'},
+    {q:'What is the Frustration-Aggression (Scapegoating) hypothesis?',a:'When frustrated by a powerful/threatening source, aggression is displaced onto a weaker, safer scapegoat rather than the actual cause of frustration.'},
+    {q:"What are Allport's three conditions for intergroup contact to reduce prejudice?",a:'(1) Both groups must have equal status. (2) Contact must be intimate, not superficial. (3) Both parties\' success must be mutually interdependent — a shared common goal.'},
+    {q:'What is Authoritarian Personality and how does it create prejudice?',a:'People with authoritarian personality show rigid thinking and punitive tendencies. They idolize those above them in power and despise/exploit those below — making them highly susceptible to prejudice.'},
+    {q:"How does the 'Incongruent Role' method reduce prejudice?",a:'A person is made to publicly act against their prejudice → cognitive dissonance → cannot change their visible behaviour → must change their internal prejudice to restore cognitive balance.'},
+    {q:'Can discrimination occur without prejudice? Give an example.',a:'Yes. A proprietor may refuse minority group patrons not due to personal prejudice but to avoid perceived business losses. The behaviour is discriminatory but prejudice is not the motivation.'},
+    {q:'What is the Cultural Assimilator method?',a:'A method where prejudiced persons are educated about the traditions, norms, beliefs, and values of other communities so they can appreciate and understand them, reducing misunderstanding and prejudice.'},
+    {q:"Name the five manifestations of prejudice on Allport's scale (mild to extreme).",a:'(1) Withdrawal, (2) Avoidance, (3) Discrimination, (4) Lynching, (5) Extermination.'}
+   ],
+   quiz:[
+    {q:'A teacher consistently gives lower grades to students from a particular caste despite their demonstrated merit. This is an example of:',o:['Prejudice','Discrimination','Avoidance','Withdrawal'],a:1,e:'Discrimination is the biased behavioural treatment of individuals based on group membership — exactly what the teacher is doing through differential grading.'},
+    {q:'Scapegoating as a mechanism of prejudice is derived from which theory?',o:['Social Learning Theory','Authoritarian Personality research','Frustration-Aggression Theory','Exchange Theory'],a:2,e:'Frustration-Aggression hypothesis: when frustrated by a powerful source, aggression is displaced onto a weaker, safer scapegoat who becomes the target of prejudice.'},
+    {q:'Which method of reducing prejudice uses Cognitive Dissonance as its mechanism?',o:['Social Legislation','Intergroup Contact','Incongruent Role','Educational propaganda'],a:2,e:'Incongruent role creates dissonance — the person acts publicly against their prejudice, cannot undo that public behaviour, so changes the internal prejudice to restore cognitive consistency.'},
+    {q:'According to Exchange Theory, discrimination between groups occurs when:',o:['Both groups have equal power','Reward-cost outcomes are mutually exclusive and groups are unequal in power','A person has authoritarian personality','Social legislation is absent'],a:1,e:'When gains of one group can only come at the cost of the other, and power is unequal, the dominant group establishes better outcomes — creating structural discrimination.'},
+    {q:'Antiprejudice films and documentaries have been found to reduce prejudice by approximately:',o:['10%','30%','60%','90%'],a:2,e:'Research shows that films and documentaries aimed at reducing prejudice successfully reduced it by up to 60% — making media a powerful tool.'}
+   ]},
+
+  {id:'u4',cls:'u4',tc:'tg4',ac:'#7ec87e',ab:'4',label:'Unit 4',
+   title:'Social Conflict & Its Resolution',
+   topics:['Nature of Social Conflict','Overt Conflict','Objective Conflict','Subjective Conflict','Win-Lose Approach','Lose-Lose Approach','Win-Win Approach','Blake & Mouton Strategies','Two Dimensional Model','Third Party Intervention','Group Conflict in India'],
+   concepts:[
+    {n:'Nature of Social Conflict',b:'Social conflict occurs when two or more actors <strong>oppose each other in social interaction</strong>, reciprocally exerting social power to attain scarce/incompatible goals while preventing the opponent from attaining theirs.<br><br>Key elements:<ul><li><strong>Power is central:</strong> The more powerful group wins (e.g., Meenas blocked Gurjars from entering Scheduled Tribe category in Rajasthan due to political, bureaucratic, and economic clout).</li><li><strong>Incompatibility:</strong> Some get what they want; others do not — creating vicious cycles of discontent.</li><li><strong>Cooperation is always intertwined:</strong> Pure conflict without any cooperation is rare in real social situations.</li></ul>'},
+    {n:'Three Forms of Social Conflict',b:'<ul><li><strong>Overt Conflict:</strong> Open and explicit. Competition is fierce and direct. Examples: labour-management negotiations, war between countries, a debate where each side aims to defeat the other.</li><li><strong>Objective Conflict:</strong> A social situation that inherently benefits some while causing loss to others — built into the structure. Example: OBC reservation where dominant castes (Jats, Ahirs) captured most benefits, leaving Gurjars with little — leading to the Gurjar movement for a separate quota.</li><li><strong>Subjective Conflict:</strong> A person perceives a situation as involving struggle internally but does not bring it to the overt level — remains unexpressed tension.</li></ul>'},
+    {n:'Methods of Conflict Resolution',b:'Key approaches:<ul><li><strong>Mutually Beneficial (Superordinate) Goal — Sherif\'s experiment:</strong> Two warring groups placed in a situation requiring joint effort reduced animosity and increased mutual understanding. Neither could reach the goal alone → cooperation became necessary.</li><li><strong>Compromise:</strong> No party gains or loses at the other\'s expense. Example: Gurjar-Meena compromise — Gurjars dropped ST demand, asked for separate quota; Meenas supported it.</li><li><strong>Developing Special Norms:</strong> Third-party rules remove the cause of conflict (e.g., coin toss for who goes first).</li><li><strong>Prosocial Behaviour:</strong> Helping members of the other group creates positive social influence. Four stages: assess seriousness → take responsibility → develop wish to help → recognise capability.</li></ul>'},
+    {n:'Win-Lose, Lose-Lose & Win-Win Approaches',b:'<ul><li><strong>Win-Lose:</strong> One party uses all means (democratic or subversive) to defeat the opponent. Assumes conflict is inevitable and only one party can win. Aphorism: "everything is fair in love and war — the end justifies the means."</li><li><strong>Lose-Lose:</strong> No party gains much; quick solution but values/motives are ignored. Assumptions: something is better than nothing; better to avoid struggle than waste resources. Reconciliation after initial conflict often exemplifies this.</li><li><strong>Win-Win (IDEAL):</strong> Both parties cooperate cooperatively to find a solution that maximally benefits all. Conflict is treated as a mutual problem — not about ensuring one side wins. Requires strong human relations skills.</li></ul>'},
+    {n:'Blake & Mouton\'s Five Strategies',b:'Five strategies people adopt in conflict situations:<ul><li><strong>Withdrawing:</strong> Stepping back from the conflict entirely (Lose-Lose approach).</li><li><strong>Smoothing:</strong> Emphasising common interests; minimising or avoiding discussion of differences (Lose-Lose).</li><li><strong>Compromising:</strong> Decreasing differences through discussion and mutual concessions (Lose-Lose).</li><li><strong>Forcing:</strong> Competitive, all-or-nothing approach — "this way or the highway" (Win-Lose).</li><li><strong>Confrontation & Problem Solving:</strong> Both parties openly discuss all matters; best mutually acceptable solution is selected (Win-Win).</li></ul>'},
+    {n:'Two Dimensional Model (Thomas-Kilmann)',b:'All conflict behaviour understood in terms of two dimensions: <strong>Assertiveness</strong> (pursuing own concerns) and <strong>Cooperativeness</strong> (satisfying others\' concerns).<br><br><ul><li><strong>Competing:</strong> High assertive + Low cooperative. Power-oriented; win at others\' expense.</li><li><strong>Accommodating:</strong> Low assertive + High cooperative. Self-sacrifice; neglects own concerns for others\'.</li><li><strong>Avoiding:</strong> Low assertive + Low cooperative. Neither side\'s concerns are pursued; sidesteps or postpones.</li><li><strong>Collaborating:</strong> High assertive + High cooperative. Digs into the issue to find creative solutions that FULLY satisfy both.</li><li><strong>Compromising:</strong> Moderate on both. Expedient, partially satisfying middle ground — gives up more than Competing, less than Accommodating.</li></ul>'},
+    {n:'Third Party Intervention',b:'A neutral arbitrator mediates between warring factions. Key features:<ul><li>Solution is arrived at through open discussion and negotiation — NOT imposed unilaterally.</li><li>Decision is binding on all concerned parties.</li><li>Requires the third party to be highly mature and skilled in human relations.</li></ul>Distinguishes itself from other approaches by being driven by dialogue rather than power or dominance.'},
+    {n:'Group Conflict in Indian Society',b:'Major forms of social conflict in India:<ul><li><strong>Tribal Problems:</strong> Tribes resist assimilation with the majority to protect separate identity. Formation of Jharkhand from Bihar is a key example of tribal assertion.</li><li><strong>Caste Conflict:</strong> Forward, backward, scheduled castes perpetually compete to outmanoeuvre each other. OBC reservation disputes exemplify this.</li><li><strong>Communal Problems:</strong> Hindu-Muslim tensions since pre-independence. Babri Masjid demolition is a blatant example. Innumerable bloody riots and thousands of lives lost.</li><li><strong>Other conflicts:</strong> Labour-management disputes, student problems, landlord-tenant conflicts, language disputes, job competition conflicts.</li></ul>'}
+   ],
+   flashcards:[
+    {q:'What are the three forms of social conflict?',a:'(1) Overt Conflict — open and explicit, direct competition. (2) Objective Conflict — situation structurally benefits some while harming others. (3) Subjective Conflict — perceived internally but not acted upon.'},
+    {q:"What is the key finding from Sherif's Superordinate Goal experiment?",a:'When two warring groups were placed in a situation requiring joint effort (a superordinate goal neither could achieve alone), animosity reduced and mutual understanding increased significantly.'},
+    {q:'How does the Win-Win approach differ fundamentally from Win-Lose?',a:'Win-Win treats conflict as a MUTUAL PROBLEM to be solved cooperatively, aiming to maximally benefit all parties. Win-Lose assumes conflict is zero-sum — one must win and the other must lose.'},
+    {q:'In Blake & Mouton\'s model, which strategy corresponds to the Win-Win approach?',a:'Confrontation and Problem Solving — both parties openly discuss all matters and accept the best mutually acceptable solution through dialogue.'},
+    {q:'In the Two Dimensional Model, how is Collaborating different from Compromising?',a:'Collaborating = high assertiveness + high cooperativeness → FULLY satisfying both parties. Compromising = moderate on both → PARTIALLY satisfying both — an expedient middle ground.'},
+    {q:"What characterises the 'Avoiding' mode in the Thomas-Kilmann model?",a:'Low assertiveness + low cooperativeness. The person neither pursues their own concerns nor the other party\'s — they sidestep, postpone, or withdraw from the conflict.'},
+    {q:'What is Objective Conflict? Give an Indian example.',a:'A social situation that structurally benefits some while causing loss to others. Example: OBC reservation — dominant castes captured most benefits, leaving Gurjars with little, causing conflict.'},
+    {q:'What are the four stages of Prosocial Behaviour in conflict resolution?',a:'(1) Assess seriousness of the situation, (2) Take responsibility to help, (3) Develop the wish/desire to help, (4) Recognise own capability to help.'}
+   ],
+   quiz:[
+    {q:'A politician refuses any negotiation and insists "either ALL my demands are met or there\'s no deal." Which Blake & Mouton strategy is this?',o:['Smoothing','Withdrawing','Forcing','Compromising'],a:2,e:'Forcing = Win-Lose, all-or-nothing, competitive approach. "This way or the highway" — uses power to win outright rather than seeking common ground.'},
+    {q:'In the Two Dimensional Model, which mode involves HIGH assertiveness AND HIGH cooperativeness?',o:['Competing','Compromising','Avoiding','Collaborating'],a:3,e:'Collaborating = both dimensions at their highest. It involves working with others to find creative solutions that FULLY satisfy both parties — the most thorough conflict resolution mode.'},
+    {q:'The Gurjar movement for ST status in Rajasthan is best described as which form of social conflict?',o:['Overt Conflict','Subjective Conflict','Objective Conflict','Win-Win Conflict'],a:2,e:'Objective conflict: the OBC reservation structure itself inherently benefited dominant castes (Jats/Ahirs) over Gurjars — a structurally created inequality, not merely a perception.'},
+    {q:'Which approach to conflict resolution is considered ideal but requires the strongest human relations skills?',o:['Win-Lose','Lose-Lose','Win-Win','Third Party Intervention'],a:2,e:'The Win-Win approach requires both parties to cooperate, treat conflict as a mutual problem, and work toward a solution that maximally benefits ALL — demanding sophisticated interpersonal and negotiation skills.'},
+    {q:"In the Two Dimensional Model, 'Accommodating' involves:",o:['High assertiveness, Low cooperativeness','Low assertiveness, High cooperativeness','Moderate on both dimensions','Low assertiveness, Low cooperativeness'],a:1,e:'Accommodating = Low assertiveness + High cooperativeness. The person neglects their own concerns to satisfy others\' concerns — an element of self-sacrifice is present.'}
+   ]}
+];
+
+let CU=null,CT='concepts',FI=0,QI=0,QS=0,QA=false;
+
+function renderBlocks(){
+  document.getElementById('blocksGrid').innerHTML=UNITS.map(u=>`
+    <div class="block-card ${u.cls}">
+      <div class="block-header"><span class="block-num">${u.label}</span><span class="block-title">${u.title}</span></div>
+      <div class="block-topics">${u.topics.map(t=>`<span class="topic-pill" onclick="openUnit('${u.id}')">${t}</span>`).join('')}</div>
+      <button class="block-explore-btn" onclick="openUnit('${u.id}')">Explore All Concepts →</button>
+    </div>`).join('');
+}
+
+function openUnit(uid){
+  CU=UNITS.find(u=>u.id===uid);
+  CT='concepts';FI=0;QI=0;QS=0;QA=false;
+  document.getElementById('mTitle').textContent=CU.title;
+  const tabs=['concepts','flashcards','quiz','summary'];
+  const labs=['📖 Concepts','🃏 Flashcards','🧠 Quiz','📋 Summary'];
+  document.getElementById('mTabs').innerHTML=tabs.map((t,i)=>
+    `<button class="tab-btn ${i===0?'active':''}" onclick="switchTab('${t}')">${labs[i]}</button>`).join('');
+  renderConcepts();
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+
+function closeModal(){
+  document.getElementById('overlay').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('overlay').addEventListener('click',e=>{if(e.target===document.getElementById('overlay'))closeModal();});
+
+function switchTab(t){
+  CT=t;
+  document.querySelectorAll('.tab-btn').forEach(b=>{
+    const txt=b.textContent.toLowerCase();
+    b.classList.toggle('active',(t==='concepts'&&txt.includes('concept'))||(t==='flashcards'&&txt.includes('flash'))||(t==='quiz'&&txt.includes('quiz'))||(t==='summary'&&txt.includes('summary')));
+  });
+  if(t==='concepts')renderConcepts();
+  else if(t==='flashcards')renderFlash();
+  else if(t==='quiz'){QI=0;QS=0;QA=false;renderQuiz();}
+  else renderSummary();
+}
+
+function renderConcepts(){
+  const u=CU;
+  document.getElementById('mBody').innerHTML=u.concepts.map((c,i)=>`
+    <div class="concept-block" id="cb${i}">
+      <h3><span class="accent-bar" style="background:${u.ac}"></span>${c.n} <span class="tag ${u.tc}" style="margin-left:auto">${u.label}</span></h3>
+      <p>${c.b}</p>
+    </div>`).join('');
+}
+
+function renderFlash(){
+  const u=CU,c=u.flashcards[FI];
+  document.getElementById('mBody').innerHTML=`
+    <div class="fc-area">
+      <div class="progress-wrap"><div class="progress-fill" style="width:${((FI+1)/u.flashcards.length)*100}%;background:${u.ac}"></div></div>
+      <div class="fc-wrap" onclick="this.querySelector('.flashcard').classList.toggle('flipped')">
+        <div class="flashcard">
+          <div class="fc-front"><span class="fc-label">Question ${FI+1} of ${u.flashcards.length}</span><span class="fc-q">${c.q}</span><span class="fc-hint">Tap to reveal answer</span></div>
+          <div class="fc-back"><span class="fc-label">Answer</span><span class="fc-a">${c.a}</span></div>
+        </div>
+      </div>
+      <div class="fc-nav">
+        <button onclick="FI=(FI-1+${u.flashcards.length})%${u.flashcards.length};renderFlash()">← Prev</button>
+        <span class="fc-counter">${FI+1} / ${u.flashcards.length}</span>
+        <button onclick="FI=(FI+1)%${u.flashcards.length};renderFlash()">Next →</button>
+      </div>
+    </div>`;
+}
+
+function renderQuiz(){
+  const u=CU;
+  if(QI>=u.quiz.length){
+    const pct=Math.round((QS/u.quiz.length)*100);
+    document.getElementById('mBody').innerHTML=`
+      <div class="score-screen">
+        <h3 style="color:${u.ac}">${pct}% — ${pct>=80?'Excellent!':pct>=50?'Good Effort!':'Keep Reviewing!'}</h3>
+        <p>You scored ${QS} out of ${u.quiz.length}.</p>
+        <button class="quiz-next-btn" onclick="QI=0;QS=0;QA=false;renderQuiz()">Retake Quiz</button>
+      </div>`;
+    return;
+  }
+  const q=u.quiz[QI];
+  document.getElementById('mBody').innerHTML=`
+    <div class="quiz-area">
+      <div class="quiz-meta">Question ${QI+1} / ${u.quiz.length} &nbsp;·&nbsp; Score: ${QS}</div>
+      <div class="quiz-q">${q.q}</div>
+      <div class="quiz-opts" id="qOpts">
+        ${q.o.map((o,i)=>`<button class="quiz-opt" id="qo${i}" onclick="ansQ(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+      </div>
+      <div id="qFb"></div>
+      <div id="qNxt"></div>
+    </div>`;
+}
+
+function ansQ(c){
+  if(QA)return;QA=true;
+  const q=CU.quiz[QI];
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.classList.add('disabled'));
+  document.getElementById('qo'+c).classList.add(c===q.a?'correct':'wrong');
+  if(c===q.a)QS++;
+  else document.getElementById('qo'+q.a).classList.add('correct');
+  document.getElementById('qFb').innerHTML=`<div class="quiz-fb ${c===q.a?'ok':'bad'}">${c===q.a?'✓ Correct! ':'✗ Incorrect. '}${q.e}</div>`;
+  document.getElementById('qNxt').innerHTML=`<button class="quiz-next-btn" onclick="QI++;QA=false;renderQuiz()">Next Question →</button>`;
+}
+
+function renderSummary(){
+  document.getElementById('mBody').innerHTML=`<div class="summary-grid">${CU.concepts.map(c=>`
+    <div class="sum-card"><h4>${c.n}</h4><p>${strip(c.b).slice(0,200)}…</p></div>`).join('')}</div>`;
+}
+
+function strip(h){return h.replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();}
+
+renderBlocks();
+</script>
+</body>
+</html>
 
