@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Design — Learning Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F7F5F0;
+    --surface: #FFFFFF;
+    --surface2: #F0EDE6;
+    --border: rgba(60,50,30,0.12);
+    --border-strong: rgba(60,50,30,0.25);
+    --text: #1A1612;
+    --text2: #6B6055;
+    --text3: #A09484;
+    --accent: #2D5A8E;
+    --accent-light: #E8EFF8;
+    --accent-dark: #1A3A5C;
+    --green: #2A6B4A;
+    --green-light: #E6F4ED;
+    --red: #8E2D2D;
+    --red-light: #F8E8E8;
+    --amber: #8E6A2D;
+    --amber-light: #F8F2E8;
+    --radius: 10px;
+    --radius-lg: 14px;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.10);
+  }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: var(--shadow);
+  }
+  .header-brand { display: flex; align-items: center; gap: 10px; }
+  .header-logo {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--accent); display: flex; align-items: center; justify-content: center;
+  }
+  .header-logo svg { width: 18px; height: 18px; fill: white; }
+  .header-title { font-size: 15px; font-weight: 600; color: var(--text); }
+  .header-sub { font-size: 12px; color: var(--text3); font-weight: 400; }
+  .breadcrumb-bar {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--text3);
+  }
+  .breadcrumb-bar span { cursor: pointer; transition: color 0.15s; }
+  .breadcrumb-bar span:hover { color: var(--accent); }
+  .breadcrumb-bar .sep { color: var(--border-strong); }
+  .breadcrumb-bar .current { color: var(--text2); font-weight: 500; }
+
+  /* LAYOUT */
+  .main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+  /* BLOCKS GRID */
+  .intro { margin-bottom: 1.5rem; }
+  .intro h1 { font-family: 'Lora', serif; font-size: 26px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  .intro p { font-size: 14px; color: var(--text2); }
+
+  .blocks-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  @media (max-width: 600px) { .blocks-grid { grid-template-columns: 1fr; } }
+
+  .block-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.4rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .block-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--block-color, var(--accent));
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  }
+  .block-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); border-color: var(--border-strong); }
+  .block-num { font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 6px; }
+  .block-icon { font-size: 24px; margin-bottom: 10px; }
+  .block-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .block-desc { font-size: 13px; color: var(--text2); margin-bottom: 10px; }
+  .block-meta { font-size: 12px; color: var(--text3); display: flex; gap: 12px; }
+  .block-meta span { display: flex; align-items: center; gap: 4px; }
+
+  /* UNITS */
+  .section-header { margin-bottom: 1.2rem; }
+  .section-header h2 { font-family: 'Lora', serif; font-size: 20px; font-weight: 500; color: var(--text); margin-bottom: 4px; }
+  .section-header p { font-size: 13px; color: var(--text2); }
+
+  .units-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 1rem; }
+  @media (max-width: 500px) { .units-grid { grid-template-columns: 1fr; } }
+
+  .unit-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .unit-btn:hover { border-color: var(--accent); background: var(--accent-light); box-shadow: var(--shadow); }
+  .unit-btn .u-num { font-size: 11px; color: var(--text3); font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; }
+  .unit-btn .u-name { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.3; }
+  .unit-btn .u-count { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* CONCEPTS */
+  .concepts-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; margin-bottom: 12px; box-shadow: var(--shadow); }
+  .concepts-panel-header { padding: 14px 16px; border-bottom: 1px solid var(--border); background: var(--surface2); }
+  .concepts-panel-header h3 { font-size: 13px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.06em; }
+  .concept-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 16px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.12s;
+  }
+  .concept-row:last-child { border-bottom: none; }
+  .concept-row:hover { background: var(--accent-light); }
+  .concept-row .c-name { font-size: 14px; color: var(--text); }
+  .concept-row .c-chevron { color: var(--text3); font-size: 16px; }
+
+  .tools-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 16px; box-shadow: var(--shadow); }
+  .tools-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .tools-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tool-btn {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 8px 14px; font-size: 13px; font-family: 'Sora', sans-serif;
+    color: var(--text); cursor: pointer; transition: all 0.15s; font-weight: 500;
+  }
+  .tool-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+  .tool-btn.primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .tool-btn.primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+
+  /* CONCEPT DETAIL */
+  .concept-detail { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow); }
+  .concept-detail h2 { font-family: 'Lora', serif; font-size: 22px; font-weight: 500; color: var(--text); margin-bottom: 12px; }
+  .concept-detail .body { font-size: 15px; color: var(--text2); line-height: 1.75; margin-bottom: 1rem; }
+  .concept-detail .body strong { color: var(--text); font-weight: 600; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 1.2rem; }
+  .tag { font-size: 12px; padding: 4px 10px; border-radius: 20px; background: var(--accent-light); color: var(--accent-dark); font-weight: 500; }
+  .divider { border: none; border-top: 1px solid var(--border); margin: 1.2rem 0; }
+  .go-deeper-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text3); margin-bottom: 10px; }
+  .deep-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.2rem; }
+  .nav-row { display: flex; align-items: center; gap: 10px; padding-top: 12px; border-top: 1px solid var(--border); }
+  .nav-btn {
+    flex: 1; padding: 9px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface2); font-family: 'Sora',sans-serif; font-size: 13px;
+    color: var(--text); cursor: pointer; font-weight: 500; transition: all 0.15s;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+  .nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .nav-counter { flex: 0.6; text-align: center; font-size: 12px; color: var(--text3); }
+
+  /* FLASHCARDS */
+  .flashcard-wrap { margin-bottom: 12px; }
+  .flashcard {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem; text-align: center; cursor: pointer; min-height: 160px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    box-shadow: var(--shadow); transition: box-shadow 0.2s, transform 0.2s;
+    position: relative; overflow: hidden;
+  }
+  .flashcard:hover { box-shadow: var(--shadow-lg); transform: translateY(-1px); }
+  .flashcard::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--accent);
+  }
+  .fc-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text3); margin-bottom: 12px; }
+  .fc-text { font-size: 17px; color: var(--text); line-height: 1.5; font-weight: 500; }
+  .fc-hint { font-size: 12px; color: var(--text3); text-align: center; margin-bottom: 12px; }
+  .fc-nav { display: flex; gap: 10px; align-items: center; }
+  .fc-counter { flex: 1; text-align: center; font-size: 12px; color: var(--text3); }
+
+  /* QUIZ */
+  .quiz-panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.5rem; box-shadow: var(--shadow); }
+  .quiz-meta { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 10px; }
+  .quiz-q { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 16px; line-height: 1.5; }
+  .quiz-opt {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
+    padding: 11px 16px; margin-bottom: 8px; cursor: pointer; font-size: 14px;
+    color: var(--text); transition: all 0.15s; font-family: 'Sora',sans-serif; text-align: left; width: 100%;
+  }
+  .quiz-opt:hover:not(.answered) { border-color: var(--accent); background: var(--accent-light); }
+  .quiz-opt.correct { background: var(--green-light); border-color: var(--green); color: #1A4A32; }
+  .quiz-opt.wrong { background: var(--red-light); border-color: var(--red); color: #5A1A1A; }
+  .quiz-feedback {
+    padding: 12px 16px; border-radius: 8px; font-size: 13px;
+    margin-top: 10px; line-height: 1.5;
+  }
+  .quiz-feedback.ok { background: var(--green-light); color: var(--green); border: 1px solid var(--green); }
+  .quiz-feedback.bad { background: var(--red-light); color: var(--red); border: 1px solid var(--red); }
+  .quiz-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+
+  /* BACK BTN */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--text2); cursor: pointer;
+    background: none; border: none; font-family: 'Sora',sans-serif;
+    padding: 0; margin-bottom: 14px; transition: color 0.15s;
+  }
+  .back-btn:hover { color: var(--accent); }
+
+  /* PROGRESS BAR */
+  .progress-bar { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 1.2rem; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.3s; }
+
+  /* VIEW TRANSITIONS */
+  .view { animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+  .hidden { display: none; }
+
+  /* SCORE CARD */
+  .score-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; text-align: center; box-shadow: var(--shadow); }
+  .score-big { font-family: 'Lora',serif; font-size: 52px; color: var(--accent); margin-bottom: 6px; }
+  .score-label { font-size: 14px; color: var(--text2); margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-brand">
+    <div class="header-logo">
+      <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+    </div>
+    <div>
+      <div class="header-title">Research Design</div>
+      <div class="header-sub">Interactive Learning Hub</div>
+    </div>
+  </div>
+  <div class="breadcrumb-bar" id="breadcrumb"></div>
+</header>
+
+<main class="main" id="app"></main>
+
+<script>
+const DATA = {
+  blocks: [
+    {
+      id: 1, num: "Block 1", title: "Experimental Designs",
+      desc: "Manipulation, control, and causal inference",
+      icon: "🔬", color: "#2D5A8E",
+      units: [
+        {
+          id: "1-1", num: "Unit 1", name: "Basics of Experimental Design",
+          concepts: [
+            { name: "What is Experimental Design?", body: "Experimental design is a plan for how to conduct an experiment. It specifies <strong>how participants are assigned</strong> to conditions, <strong>how variables are measured</strong>, and <strong>how data is collected</strong>. Good experimental design helps control extraneous variables and allows valid causal inferences.", tags: ["causal inference","control","manipulation"] },
+            { name: "Independent & Dependent Variables", body: "The <strong>independent variable (IV)</strong> is the variable the researcher manipulates — the presumed cause. The <strong>dependent variable (DV)</strong> is the outcome that is measured — the presumed effect. For example: if studying how caffeine affects reaction time, caffeine dose is the IV and reaction time is the DV.", tags: ["IV","DV","manipulation"] },
+            { name: "Control & Experimental Groups", body: "The <strong>experimental group</strong> receives the treatment or manipulation. The <strong>control group</strong> does not receive treatment (or receives a placebo). Comparing the two allows the researcher to attribute differences to the IV. Without a control group, we cannot rule out other explanations.", tags: ["control","comparison","validity"] },
+            { name: "Randomisation", body: "Randomisation means <strong>randomly assigning participants to conditions</strong>. This ensures that any pre-existing differences between participants are distributed evenly across groups by chance, reducing systematic bias. It is the cornerstone of true experimental design and supports causal conclusions.", tags: ["random assignment","bias","validity"] },
+            { name: "Internal & External Validity", body: "<strong>Internal validity</strong> refers to whether the IV actually caused the change in DV — ruling out confounds. <strong>External validity</strong> refers to whether findings generalise beyond the specific study context, sample, or setting. Experimental designs aim to maximise internal validity; applied studies prioritise external validity.", tags: ["validity","generalisability","confounds"] }
+          ],
+          quiz: [
+            { q: "Which variable does the researcher manipulate in an experiment?", opts: ["Dependent variable","Independent variable","Confounding variable","Criterion variable"], ans: 1, exp: "The independent variable (IV) is deliberately manipulated by the researcher to observe its effect." },
+            { q: "What is the main purpose of randomisation in experimental design?", opts: ["To increase sample size","To manipulate variables","To evenly distribute participant differences across groups","To measure the dependent variable"], ans: 2, exp: "Randomisation ensures pre-existing differences between participants are spread evenly, reducing bias." }
+          ],
+          flashcards: [
+            { term: "Independent Variable (IV)", def: "The variable deliberately manipulated by the researcher — the presumed cause in an experiment." },
+            { term: "Dependent Variable (DV)", def: "The outcome measured to see if the IV had an effect — the presumed effect." },
+            { term: "Control Group", def: "The group that does not receive the treatment, used as a baseline for comparison." },
+            { term: "Randomisation", def: "Randomly assigning participants to conditions to reduce systematic bias." },
+            { term: "Internal Validity", def: "The degree to which the IV (not confounds) caused the observed change in the DV." }
+          ]
+        },
+        {
+          id: "1-2", num: "Unit 2", name: "Factorial Design",
+          concepts: [
+            { name: "Meaning of Factorial Design", body: "A factorial design involves <strong>two or more independent variables</strong>, each with multiple levels, combined in <strong>all possible combinations</strong>. This allows researchers to study both the independent (main) effects of each variable and the combined (interaction) effects simultaneously.", tags: ["factorial","multiple IVs","combinations"] },
+            { name: "Main Effect", body: "A <strong>main effect</strong> is the effect of one independent variable averaged across all levels of the other independent variable(s). In a 2×2 design with factors A and B, the main effect of A is calculated by averaging across both levels of B. Main effects can sometimes be misleading when an interaction is present.", tags: ["main effect","average","factors"] },
+            { name: "Interaction Effect", body: "An <strong>interaction</strong> occurs when the effect of one IV depends on the level of another IV. In graphs, non-parallel lines indicate interaction. Three types exist: antagonistic, synergistic, and ceiling effect interactions.", tags: ["interaction","non-parallel lines","synergistic"] },
+            { name: "Types of Interaction", body: "<strong>Antagonistic interaction:</strong> Two IVs reverse each other's effects (main effects non-significant, interaction significant). <strong>Synergistic interaction:</strong> Higher level of one IV enhances the effect of another. <strong>Ceiling effect interaction:</strong> Higher level of one IV reduces the differential effect of the other — diminishing returns.", tags: ["antagonistic","synergistic","ceiling effect"] },
+            { name: "Within-Subject Factorial Design", body: "In a <strong>within-subject design</strong>, each participant experiences ALL conditions. Example: Godden & Baddeley (1975) — divers learned words on land or underwater, then recalled them on land or underwater. All divers experienced all 4 conditions. Controls individual differences but risks carryover effects.", tags: ["repeated measures","carryover","within-subject"] },
+            { name: "Between-Subject Factorial Design", body: "In a <strong>between-subject design</strong>, different groups of participants experience different conditions. No participant is in more than one condition. A 2×2 design needs 4 separate groups. No carryover effects, but requires more participants.", tags: ["independent groups","between-subject","sample size"] },
+            { name: "Mixed Factorial Design", body: "A <strong>mixed design</strong> has at least one within-subject variable AND at least one between-subject variable. Example: studying gender (between-subject) and alcohol levels (within-subject) on driving risk.", tags: ["mixed","within","between"] }
+          ],
+          quiz: [
+            { q: "A 2×3 factorial design has:", opts: ["2 IVs each with 3 levels","One IV with 2 levels, one with 3 levels","3 IVs with 2 levels each","6 independent variables"], ans: 1, exp: "A 2×3 design means one factor has 2 levels and another factor has 3 levels, giving 6 treatment combinations." },
+            { q: "What do non-parallel lines in a factorial design graph indicate?", opts: ["Main effect only","No effect","Interaction between the two IVs","Equal variance"], ans: 2, exp: "Non-parallel lines indicate that the effect of one IV depends on the level of the other IV — an interaction effect." },
+            { q: "In which design does each participant experience ALL conditions?", opts: ["Between-subject","Causal comparative","Within-subject","Correlational"], ans: 2, exp: "Within-subject (repeated measures) designs expose each participant to all conditions." }
+          ],
+          flashcards: [
+            { term: "Factorial Design", def: "A design with 2+ IVs combined in all possible combinations, allowing study of main effects and interactions." },
+            { term: "Main Effect", def: "The effect of one IV averaged across all levels of the other IV(s)." },
+            { term: "Interaction Effect", def: "When the effect of one IV depends on the level of another IV — shown by non-parallel lines on a graph." },
+            { term: "Antagonistic Interaction", def: "Two IVs reverse each other's effects; main effects are non-significant but interaction is significant." },
+            { term: "Synergistic Interaction", def: "Two IVs together produce a greater combined effect than either alone." },
+            { term: "Mixed Factorial Design", def: "Has at least one within-subject variable and one between-subject variable." }
+          ]
+        },
+        {
+          id: "1-3", num: "Unit 3", name: "Quasi-Experimental Design",
+          concepts: [
+            { name: "What is Quasi-Experimental Design?", body: "Quasi-experimental designs <strong>lack random assignment</strong> but still involve manipulation of an independent variable. They are used when random assignment is not feasible. They provide <strong>more causal evidence than correlational studies</strong> but less than true experiments.", tags: ["no randomisation","manipulation","field research"] },
+            { name: "Non-Equivalent Control Group Design", body: "This design uses a pre-existing control group that is <strong>similar but not randomly assigned</strong>. Both groups are pre-tested and post-tested. Differences in pre-test scores must be accounted for in the analysis.", tags: ["non-equivalent","pre-test","post-test"] },
+            { name: "Time Series Design", body: "Observations are made at <strong>multiple time points before and after a treatment</strong>. Pattern of change is analysed. Helps rule out maturation effects. Example: tracking monthly crime rates before and after a new policing policy.", tags: ["time series","multiple observations","maturation"] },
+            { name: "Threats to Internal Validity", body: "Key threats: <strong>History</strong> (external events between pre/post-test), <strong>Maturation</strong> (natural changes over time), <strong>Testing effects</strong> (familiarity with test), <strong>Regression to the mean</strong> (extreme scores drift toward average), and <strong>Selection bias</strong> (pre-existing group differences).", tags: ["history","maturation","selection bias"] }
+          ],
+          quiz: [
+            { q: "What distinguishes quasi-experimental from true experimental design?", opts: ["No dependent variable","No independent variable","Lack of random assignment","No comparison group"], ans: 2, exp: "Quasi-experimental designs lack random assignment to conditions, though they still manipulate an IV." },
+            { q: "History as a threat to validity refers to:", opts: ["Researcher's past experience","External events occurring between pre and post-test","Participants remembering the test","Regression to the mean"], ans: 1, exp: "History refers to external events unrelated to the study that occur between the pre-test and post-test." }
+          ],
+          flashcards: [
+            { term: "Quasi-Experimental Design", def: "Resembles an experiment but lacks random assignment; still manipulates an IV." },
+            { term: "Non-Equivalent Control Group", def: "A pre-existing comparison group that was not randomly assigned." },
+            { term: "Time Series Design", def: "Multiple pre and post observations to track change patterns after an intervention." },
+            { term: "Maturation", def: "Natural biological or psychological changes over time that could explain DV changes." },
+            { term: "Regression to the Mean", def: "Extreme scores tend to move closer to average on re-testing, a threat to validity." }
+          ]
+        },
+        {
+          id: "1-4", num: "Unit 4", name: "Correlational & Comparative Design",
+          concepts: [
+            { name: "Correlational Research Design", body: "Correlational design measures the <strong>relationship between two or more quantitative variables</strong> in the same group of participants. No variable is manipulated. The coefficient (r) ranges from -1.00 to +1.00, indicating direction and strength.", tags: ["relationship","r value","quantitative"] },
+            { name: "Types of Correlation", body: "<strong>Positive correlation:</strong> Both variables move in the same direction. <strong>Negative correlation:</strong> Variables move oppositely. <strong>Multiple correlation:</strong> One variable related to several others. <strong>Regression:</strong> Uses one variable (predictor) to predict another (criterion).", tags: ["positive","negative","regression","predictor"] },
+            { name: "Advantages of Correlational Design", body: "Uses naturally occurring data. Avoids pretest sensitisation. Realistic measurement of behaviour. Avoids non-representative research contexts. Permits large, carefully chosen samples. Can serve as foundation for later causal research.", tags: ["naturalistic","large sample","foundation"] },
+            { name: "Disadvantages of Correlational Design", body: "Cannot establish cause and effect — only association. <strong>Third variable problem:</strong> a hidden variable may cause both correlated variables. <strong>Directionality problem:</strong> unclear which variable causes which. Internal validity is very low.", tags: ["causation","third variable","directionality","validity"] },
+            { name: "Causal Comparative Design", body: "Compares <strong>two or more pre-existing groups</strong> on a dependent variable to explain differences. The researcher does NOT manipulate the IV — groups already differ on it. Also called 'ex post facto' research.", tags: ["ex post facto","group comparison","no manipulation"] },
+            { name: "Causal Comparative vs Correlational", body: "<strong>Similarities:</strong> Both are non-experimental; neither uses random assignment; both use attribute variables. <strong>Differences:</strong> Causal comparative compares groups; correlational looks within a single group. Causal comparative includes categorical variables; correlational uses only quantitative variables.", tags: ["comparison","similarity","difference"] },
+            { name: "Data Analysis for Causal Comparative", body: "<strong>t-test:</strong> Compares means of two groups. <strong>One-way ANOVA:</strong> Compares three or more group means. <strong>Chi-square test:</strong> Used when the DV is in frequency/count form (categorical DV).", tags: ["t-test","ANOVA","chi-square","statistics"] }
+          ],
+          quiz: [
+            { q: "A correlation of -0.80 indicates:", opts: ["Weak positive relationship","Strong positive relationship","Weak negative relationship","Strong negative relationship"], ans: 3, exp: "A value of -0.80 is close to -1.00, indicating a strong negative (inverse) relationship between variables." },
+            { q: "In causal comparative research, the independent variable is:", opts: ["Manipulated by the researcher","A randomly assigned condition","A pre-existing group characteristic","Always quantitative"], ans: 2, exp: "In causal comparative design, groups already differ on the IV before the study begins — the researcher does not manipulate it." },
+            { q: "Which statistic is used to compare three or more group means?", opts: ["t-test","Chi-square","Pearson r","One-way ANOVA"], ans: 3, exp: "One-way ANOVA (Analysis of Variance) is used when comparing means across three or more independent groups." }
+          ],
+          flashcards: [
+            { term: "Correlational Design", def: "Studies relationships among variables using quantitative data from the same group; no manipulation." },
+            { term: "Positive Correlation", def: "Both variables increase together (r between 0 and +1)." },
+            { term: "Negative Correlation", def: "As one variable increases, the other decreases (r between 0 and -1)." },
+            { term: "Third Variable Problem", def: "An unmeasured variable causes both correlated variables, creating a spurious association." },
+            { term: "Causal Comparative Design", def: "Compares pre-existing groups on a DV to explain differences; no random assignment or IV manipulation." },
+            { term: "Predictor Variable", def: "In regression, the variable used to forecast or predict the criterion variable." },
+            { term: "Criterion Variable", def: "The outcome variable being predicted in a regression analysis." }
+          ]
+        }
+      ]
+    },
+    {
+      id: 2, num: "Block 2", title: "Research Methods",
+      desc: "Survey, observation, interview & case study",
+      icon: "📋", color: "#2A6B4A",
+      units: [
+        { id:"2-1", num:"Unit 1", name:"Survey Research", concepts:[{name:"Survey Design Basics",body:"Survey research collects data by asking participants questions. Surveys can be <strong>cross-sectional</strong> (one point in time) or <strong>longitudinal</strong> (over time). Key concerns: question wording, order effects, and response bias.",tags:["survey","questionnaire","sampling"]},{name:"Types of Questions",body:"<strong>Open-ended questions</strong> allow free responses and provide rich qualitative data. <strong>Closed-ended questions</strong> give fixed response options and are easier to analyse quantitatively. <strong>Likert scales</strong> measure attitudes on a continuum, typically from 1–5 or 1–7.",tags:["open-ended","Likert","closed-ended"]},{name:"Sampling in Surveys",body:"<strong>Random sampling</strong> gives every member of the population an equal chance of selection. <strong>Stratified sampling</strong> ensures proportional representation of subgroups. <strong>Convenience sampling</strong> is easiest but least representative.",tags:["random","stratified","convenience"]}],quiz:[{q:"Which type of question allows participants to respond in their own words?",opts:["Closed-ended","Likert scale","Open-ended","Dichotomous"],ans:2,exp:"Open-ended questions allow free-form responses, providing qualitative richness."},{q:"Stratified sampling ensures:",opts:["Random selection only","Equal sample sizes","Proportional representation of subgroups","The smallest possible sample"],ans:2,exp:"Stratified sampling divides the population into subgroups and samples proportionally from each."}],flashcards:[{term:"Cross-sectional Survey",def:"Data collected from a sample at a single point in time."},{term:"Likert Scale",def:"A rating scale measuring degree of agreement, typically from 1–5 or 1–7."},{term:"Stratified Sampling",def:"Dividing the population into subgroups and sampling proportionally from each."}]},
+        { id:"2-2", num:"Unit 2", name:"Observation Methods", concepts:[{name:"Naturalistic Observation",body:"Studying behaviour in its <strong>natural environment without intervention</strong>. High external validity but low control — cannot establish causation. Example: observing children's play behaviour in a school yard.",tags:["naturalistic","field","external validity"]},{name:"Structured Observation",body:"Observation conducted in a <strong>controlled setting</strong> using a <strong>pre-defined coding scheme</strong>. Balances control with real-world behaviour.",tags:["structured","coding","controlled"]},{name:"Participant vs Non-Participant",body:"In <strong>participant observation</strong>, the researcher joins the group being studied. In <strong>non-participant observation</strong>, the researcher remains separate. Participant observation can reveal insider perspectives but risks researcher bias.",tags:["participant","non-participant","bias"]}],quiz:[{q:"Which method has highest external validity?",opts:["Lab experiment","Structured observation","Naturalistic observation","Survey"],ans:2,exp:"Naturalistic observation takes place in real-world settings, giving it high external (ecological) validity."},{q:"Participant observation risks:",opts:["High control","Researcher bias","Large sample size","Random assignment"],ans:1,exp:"When researchers participate in the group, their presence can influence behaviour and their objectivity may be compromised."}],flashcards:[{term:"Naturalistic Observation",def:"Observing behaviour in its natural setting without intervention."},{term:"Structured Observation",def:"Observation in controlled settings using a pre-coded scheme."},{term:"Participant Observation",def:"Researcher joins and participates in the group being observed."}]},
+        { id:"2-3", num:"Unit 3", name:"Case Study & Interview", concepts:[{name:"Case Study Method",body:"An in-depth investigation of a <strong>single individual, group, or event</strong>. Provides rich, detailed data. Cannot generalise findings to a wider population. Example: Phineas Gage's brain injury and personality change.",tags:["in-depth","single case","idiographic"]},{name:"Interview Methods",body:"<strong>Structured interviews</strong> use fixed questions in a set order. <strong>Semi-structured</strong> have a guide but allow elaboration. <strong>Unstructured</strong> are open conversations. Interviews capture subjective experience but are time-consuming.",tags:["structured","semi-structured","unstructured"]},{name:"Focus Groups",body:"A <strong>group interview</strong> technique where 6–10 participants discuss a topic facilitated by a researcher. Captures group dynamics and social norms. Risk: dominant voices may suppress quieter members.",tags:["group","facilitated","social dynamics"]}],quiz:[{q:"A case study is best suited for:",opts:["Testing causal hypotheses","Studying large populations","In-depth investigation of a single case","Random sampling"],ans:2,exp:"Case studies provide rich detail about individual cases but cannot establish causation or generalise broadly."},{q:"Which interview type follows a strict predetermined question order?",opts:["Unstructured","Semi-structured","Focus group","Structured"],ans:3,exp:"Structured interviews use a fixed set of questions asked in the same order to all participants."}],flashcards:[{term:"Case Study",def:"An in-depth study of a single individual, group, or event to gain rich detail."},{term:"Structured Interview",def:"Fixed questions in a set order — consistent but limits depth."},{term:"Semi-structured Interview",def:"Has a guide/schedule but allows follow-up and elaboration."},{term:"Focus Group",def:"A facilitated group discussion (6–10 people) used to explore opinions and social norms."}]},
+        { id:"2-4", num:"Unit 4", name:"Reliability & Validity", concepts:[{name:"Reliability",body:"<strong>Reliability</strong> is the consistency of a measure. Types: <strong>Test-retest reliability</strong> (same result over time), <strong>Inter-rater reliability</strong> (agreement between different observers), <strong>Internal consistency</strong> (Cronbach's alpha).",tags:["consistency","test-retest","inter-rater","Cronbach alpha"]},{name:"Types of Validity",body:"<strong>Content validity:</strong> Does the test cover the full domain? <strong>Construct validity:</strong> Does it measure the theoretical construct it claims to? <strong>Criterion validity:</strong> Does it predict an external criterion? <strong>Face validity:</strong> Does it appear to measure what it should?",tags:["content","construct","criterion","face validity"]},{name:"Reliability–Validity Relationship",body:"A test can be <strong>reliable without being valid</strong> (consistently measuring the wrong thing). But a test <strong>cannot be valid without being reliable</strong>. High reliability is necessary but not sufficient for validity.",tags:["reliability","validity","relationship"]}],quiz:[{q:"Which type of reliability assesses consistency of a test over time?",opts:["Inter-rater","Internal consistency","Test-retest","Content validity"],ans:2,exp:"Test-retest reliability measures whether the same test gives similar results when taken again after a period of time."},{q:"Can a test be reliable but not valid?",opts:["No, they always go together","Yes — it can consistently measure the wrong construct","No — reliability guarantees validity","Only in experimental designs"],ans:1,exp:"A test can consistently (reliably) measure something other than what it intends to — making it reliable but not valid."}],flashcards:[{term:"Reliability",def:"The consistency or stability of a measurement over time and across raters."},{term:"Test-Retest Reliability",def:"Consistency of scores when the same test is taken again after an interval."},{term:"Construct Validity",def:"Does the measure actually capture the theoretical construct it claims to?"},{term:"Internal Consistency",def:"The degree to which all items on a test measure the same underlying construct (Cronbach's α)."}]}
+      ]
+    },
+    {
+      id: 3, num: "Block 3", title: "Psychological Assessment",
+      desc: "Tests, scales & measurement",
+      icon: "🧠", color: "#7A3B8E",
+      units: [
+        { id:"3-1", num:"Unit 1", name:"Introduction to Psychological Tests", concepts:[{name:"What is a Psychological Test?",body:"A <strong>psychological test</strong> is a standardised procedure for measuring a sample of behaviour. Tests must be <strong>objective</strong>, <strong>standardised</strong>, <strong>reliable</strong>, and <strong>valid</strong>. They measure intelligence, personality, aptitude, and more.",tags:["standardised","objective","measurement"]},{name:"Types of Psychological Tests",body:"<strong>Intelligence tests:</strong> Measure cognitive ability. <strong>Personality tests:</strong> Assess traits or types (e.g., MMPI, NEO-PI). <strong>Aptitude tests:</strong> Predict future performance. <strong>Achievement tests:</strong> Measure knowledge gained.",tags:["intelligence","personality","aptitude","achievement"]},{name:"Norms and Standardisation",body:"<strong>Norms</strong> are statistical data describing score distributions in a defined population. A test is <strong>standardised</strong> when it has fixed instructions, materials, and scoring derived from a representative sample.",tags:["norms","standardisation","population"]}],quiz:[{q:"What does standardisation of a psychological test refer to?",opts:["Making the test very difficult","Uniform procedures for administration and scoring","Using only one type of question","Removing all cultural content"],ans:1,exp:"Standardisation means the test is administered, scored, and interpreted in exactly the same way for all examinees."},{q:"Norms in psychological testing serve to:",opts:["Replace validity","Provide a meaningful comparison baseline","Ensure random sampling","Eliminate bias completely"],ans:1,exp:"Norms allow individual scores to be compared against a reference group, giving scores meaning."}],flashcards:[{term:"Psychological Test",def:"A standardised procedure measuring a sample of behaviour, scored objectively."},{term:"Norm",def:"Statistical reference data showing score distributions in a defined population."},{term:"Standardisation",def:"Uniform procedures for test administration, scoring, and interpretation."}]},
+        { id:"3-2", num:"Unit 2", name:"Intelligence Testing", concepts:[{name:"Concept of Intelligence",body:"Intelligence is defined as the <strong>capacity to learn, adapt, reason, and solve problems</strong>. Major theories: <strong>Spearman's g factor</strong>, <strong>Thurstone's primary mental abilities</strong>, <strong>Gardner's multiple intelligences</strong>, and <strong>Sternberg's triarchic theory</strong>.",tags:["g factor","multiple intelligences","Sternberg"]},{name:"IQ and its Calculation",body:"Modern IQ is a <strong>deviation IQ</strong> — a standardised score with mean 100 and SD 15. An IQ of 130 = 2 SDs above average (top ~2%). IQ tests measure specific cognitive abilities, not all forms of intelligence.",tags:["IQ","deviation score","mean 100","SD 15"]},{name:"Major Intelligence Tests",body:"<strong>Wechsler Adult Intelligence Scale (WAIS):</strong> Measures verbal comprehension, working memory, processing speed, and perceptual reasoning. <strong>Stanford-Binet Intelligence Scales:</strong> One of the oldest IQ tests, covering five cognitive areas.",tags:["WAIS","Stanford-Binet","Wechsler"]}],quiz:[{q:"In the deviation IQ model, what is the mean IQ score?",opts:["85","115","100","130"],ans:2,exp:"Deviation IQ is standardised with a mean of 100 and standard deviation of 15."},{q:"Spearman's theory proposes:",opts:["8 types of intelligence","A single general intelligence factor 'g'","No measurable intelligence","Intelligence declines with age"],ans:1,exp:"Spearman argued that a single general factor 'g' underlies all cognitive abilities."}],flashcards:[{term:"IQ (Deviation)",def:"Standardised score with mean=100 and SD=15; shows how far above/below average a score falls."},{term:"g Factor",def:"Spearman's concept of a single general intelligence underlying all cognitive abilities."},{term:"WAIS",def:"Wechsler Adult Intelligence Scale — measures verbal comprehension, working memory, processing speed, and perceptual reasoning."}]},
+        { id:"3-3", num:"Unit 3", name:"Personality Assessment", concepts:[{name:"Projective Tests",body:"<strong>Projective tests</strong> present ambiguous stimuli to which participants respond, supposedly revealing unconscious motives. Examples: <strong>Rorschach Inkblot Test</strong> and <strong>TAT (Thematic Apperception Test)</strong>.",tags:["projective","Rorschach","TAT","unconscious"]},{name:"Self-Report Inventories",body:"Participants respond to structured statements about themselves. Example: <strong>MMPI-2</strong> — 567 true/false items assessing psychopathology. <strong>NEO-PI-R</strong> measures the Big Five: Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism.",tags:["MMPI","NEO-PI","Big Five","self-report"]},{name:"The Big Five (OCEAN)",body:"<strong>O</strong>penness, <strong>C</strong>onscientiousness, <strong>E</strong>xtraversion, <strong>A</strong>greeableness, <strong>N</strong>euroticism. The most widely accepted personality model, robust across cultures and predictive of behaviour.",tags:["OCEAN","Big Five","traits","NEO"]}],quiz:[{q:"The Rorschach test is an example of:",opts:["Intelligence test","Self-report inventory","Projective test","Aptitude test"],ans:2,exp:"The Rorschach presents ambiguous inkblots and asks participants to describe what they see — a projective technique."},{q:"Which personality model uses the acronym OCEAN?",opts:["MMPI","Eysenck's theory","Big Five","Cattell's 16PF"],ans:2,exp:"OCEAN stands for Openness, Conscientiousness, Extraversion, Agreeableness, and Neuroticism — the Big Five."}],flashcards:[{term:"Projective Test",def:"Uses ambiguous stimuli to reveal unconscious motives (e.g., Rorschach, TAT)."},{term:"MMPI-2",def:"A 567-item true/false self-report inventory assessing psychopathology."},{term:"Big Five (OCEAN)",def:"Openness, Conscientiousness, Extraversion, Agreeableness, Neuroticism — the dominant personality trait model."},{term:"TAT",def:"Thematic Apperception Test — participants create stories about ambiguous pictures."}]},
+        { id:"3-4", num:"Unit 4", name:"Attitude Measurement", concepts:[{name:"What is an Attitude?",body:"Attitudes are <strong>evaluative dispositions</strong> toward people, objects, or ideas — with cognitive (belief), affective (feeling), and behavioural (action tendency) components. Attitudes are learned, relatively stable, and guide behaviour.",tags:["attitude","cognitive","affective","behavioural"]},{name:"Likert Scale",body:"Participants rate agreement with statements on a scale (usually 1–5 or 1–7: Strongly Disagree to Strongly Agree). Total score across items represents the attitude. Easy to construct and analyse.",tags:["Likert","rating scale","agreement"]},{name:"Thurstone Scale",body:"Also called the <strong>equal-appearing interval scale</strong>. Judges rate statements on an 11-point continuum. Median value becomes the scale value of each item. More complex to construct than Likert scales.",tags:["Thurstone","equal interval","judges","median"]}],quiz:[{q:"Which component of attitudes involves beliefs and thoughts about the attitude object?",opts:["Affective","Behavioural","Cognitive","Motivational"],ans:2,exp:"The cognitive component refers to beliefs, thoughts, and knowledge about the attitude object."},{q:"A Likert scale typically asks respondents to:",opts:["Choose one statement from a set","Rate agreement on a continuum","Rank items from most to least preferred","Answer yes or no"],ans:1,exp:"Likert scales ask participants to rate their degree of agreement with each statement, usually on a 5 or 7 point scale."}],flashcards:[{term:"Attitude",def:"An evaluative disposition with cognitive (belief), affective (feeling), and behavioural (action) components."},{term:"Likert Scale",def:"Participants rate agreement with statements, typically on a 1–5 or 1–7 scale."},{term:"Thurstone Scale",def:"Equal-appearing interval scale where expert judges assign scale values to attitude statements."}]}
+      ]
+    },
+    {
+      id: 4, num: "Block 4", title: "Statistics in Research",
+      desc: "Descriptive statistics, inferential tests & regression",
+      icon: "📊", color: "#8E6A2D",
+      units: [
+        { id:"4-1", num:"Unit 1", name:"Descriptive Statistics", concepts:[{name:"Measures of Central Tendency",body:"<strong>Mean:</strong> Arithmetic average — sensitive to outliers. <strong>Median:</strong> Middle value in a ranked dataset — robust to outliers. <strong>Mode:</strong> Most frequently occurring value. Use mean for normally distributed interval data; median for skewed data.",tags:["mean","median","mode","central tendency"]},{name:"Measures of Variability",body:"<strong>Range:</strong> Max − Min. <strong>Variance:</strong> Average squared deviation from the mean. <strong>Standard Deviation (SD):</strong> Square root of variance — in original units. <strong>Interquartile Range (IQR):</strong> Spread of the middle 50% — robust to outliers.",tags:["variance","SD","range","IQR"]},{name:"Normal Distribution",body:"A bell-shaped, symmetrical distribution where mean = median = mode. <strong>68%</strong> of scores fall within ±1 SD, <strong>95%</strong> within ±2 SD, <strong>99.7%</strong> within ±3 SD. Z-scores standardise any score relative to its distribution.",tags:["bell curve","68-95-99.7","z-score","normal"]}],quiz:[{q:"Which measure of central tendency is most affected by extreme outliers?",opts:["Mode","Median","Mean","IQR"],ans:2,exp:"The mean includes all values in its calculation, so extreme scores pull it significantly in their direction."},{q:"What percentage of scores fall within ±1 SD of the mean in a normal distribution?",opts:["50%","68%","95%","99.7%"],ans:1,exp:"In a normal distribution, approximately 68% of scores fall within one standard deviation of the mean."}],flashcards:[{term:"Mean",def:"Sum of all scores divided by the number of scores — the arithmetic average."},{term:"Standard Deviation",def:"Average distance of scores from the mean; sqrt of variance."},{term:"Normal Distribution",def:"Symmetrical bell-shaped curve where mean=median=mode and 68% of data falls within ±1 SD."},{term:"Z-score",def:"Number of standard deviations a score is above or below the mean."}]},
+        { id:"4-2", num:"Unit 2", name:"Inferential Statistics", concepts:[{name:"Hypothesis Testing",body:"<strong>Null hypothesis (H₀):</strong> States no effect or no difference. <strong>Alternative hypothesis (H₁):</strong> States that an effect exists. The <strong>p-value</strong> tells us the probability of getting our results if H₀ were true. Typically, p < .05 is the threshold for significance.",tags:["null hypothesis","p-value","significance","H0"]},{name:"Type I and Type II Errors",body:"<strong>Type I error (α):</strong> Rejecting a true null hypothesis — false positive. <strong>Type II error (β):</strong> Failing to reject a false null hypothesis — false negative. <strong>Power (1−β):</strong> Probability of correctly detecting a true effect.",tags:["Type I","Type II","alpha","beta","power"]},{name:"t-test",body:"Used to compare <strong>means of two groups</strong>. <strong>Independent samples t-test:</strong> Two separate groups. <strong>Paired samples t-test:</strong> Same participants in both conditions. The t-statistic is the ratio of mean difference to standard error.",tags:["t-test","two groups","independent","paired"]}],quiz:[{q:"A Type I error means:",opts:["Accepting a false hypothesis","Rejecting a true null hypothesis","Failing to detect a real effect","Using the wrong statistical test"],ans:1,exp:"Type I error = false positive: rejecting H₀ when it is actually true. Its probability equals the significance level (α)."},{q:"The p-value represents:",opts:["Probability that H₁ is true","Effect size","Probability of data given H₀ is true","Sample variance"],ans:2,exp:"The p-value is the probability of obtaining results as extreme as observed, assuming the null hypothesis is true."}],flashcards:[{term:"Null Hypothesis (H₀)",def:"The default claim that there is no effect or difference; what we try to disprove."},{term:"p-value",def:"Probability of getting results as extreme as observed if H₀ is true; p<.05 typically indicates significance."},{term:"Type I Error",def:"Rejecting a true null hypothesis (false positive); probability = α."},{term:"Type II Error",def:"Failing to reject a false null hypothesis (false negative); probability = β."},{term:"Statistical Power",def:"Probability of correctly detecting a real effect (1−β); increased by larger samples."}]},
+        { id:"4-3", num:"Unit 3", name:"ANOVA & Chi-Square", concepts:[{name:"One-Way ANOVA",body:"Analysis of Variance compares means across <strong>three or more independent groups</strong>. Tests whether between-group variance is significantly larger than within-group variance (F-ratio). If significant, <strong>post-hoc tests</strong> identify which groups differ.",tags:["ANOVA","F-ratio","three groups","post-hoc"]},{name:"Two-Way ANOVA",body:"Extends one-way ANOVA to <strong>two independent variables</strong>. Tests: (1) Main effect of A, (2) Main effect of B, (3) Interaction A×B. If the interaction is significant, main effects are interpreted with caution.",tags:["two-way","factorial","interaction","main effect"]},{name:"Chi-Square Test",body:"Used when the <strong>dependent variable is categorical</strong> (frequency data). <strong>Chi-square goodness-of-fit:</strong> Tests if observed frequencies match expected. <strong>Chi-square test of independence:</strong> Tests whether two categorical variables are related. Non-parametric.",tags:["chi-square","categorical","frequency","non-parametric"]}],quiz:[{q:"When do you use a one-way ANOVA instead of a t-test?",opts:["When comparing two group means","When there are three or more groups","When data is categorical","When sample sizes are unequal"],ans:1,exp:"ANOVA extends the logic of the t-test to three or more groups, reducing the risk of Type I error inflation."},{q:"Chi-square is most appropriate when the DV is:",opts:["Continuous","Normally distributed","Categorical/frequency data","Interval scale"],ans:2,exp:"Chi-square tests work on count/frequency data — whether the DV falls into categories, not how much."}],flashcards:[{term:"ANOVA",def:"Analysis of Variance — compares means across 3+ groups using F-ratio."},{term:"F-ratio",def:"Ratio of between-group to within-group variance; large F → groups likely differ significantly."},{term:"Post-hoc Test",def:"Conducted after a significant ANOVA to identify which groups differ (e.g., Tukey's HSD)."},{term:"Chi-square",def:"Non-parametric test for categorical data; tests independence or goodness-of-fit of frequencies."}]},
+        { id:"4-4", num:"Unit 4", name:"Correlation & Regression", concepts:[{name:"Pearson's r",body:"Measures the <strong>linear relationship between two continuous variables</strong>. Ranges from -1 to +1. Requires both variables to be normally distributed (interval/ratio scale). Sensitive to outliers.",tags:["Pearson r","linear","continuous","correlation"]},{name:"Spearman's rho",body:"A <strong>non-parametric alternative</strong> to Pearson's r. Used when variables are ordinal or when the normality assumption is violated. Based on the ranks of scores rather than raw values.",tags:["Spearman","rank","non-parametric","ordinal"]},{name:"Simple Linear Regression",body:"Models the <strong>linear relationship between a predictor (X) and a criterion (Y)</strong>. The regression line: Ŷ = a + bX, where a = intercept and b = slope. R² tells us what proportion of variance in Y is explained by X.",tags:["regression","slope","intercept","R squared"]},{name:"Multiple Regression",body:"Extends regression to <strong>multiple predictor variables</strong> to predict one criterion variable. Allows controlling for confounds. Beta weights allow comparison across predictors.",tags:["multiple predictors","beta weight","R squared","multicollinearity"]}],quiz:[{q:"Spearman's rho differs from Pearson's r in that it:",opts:["Requires interval data","Uses raw scores","Is based on ranked scores","Assumes normality"],ans:2,exp:"Spearman's rho is calculated on the ranks of scores, not raw values, making it suitable for ordinal data."},{q:"In Y = a + bX, what does 'b' represent?",opts:["The intercept","The criterion variable","The slope (change in Y per unit X)","The correlation coefficient"],ans:2,exp:"'b' is the slope — it tells you how many units Y changes for every 1-unit increase in X."}],flashcards:[{term:"Pearson's r",def:"Measures linear relationship between two continuous variables; ranges from -1 to +1."},{term:"Spearman's ρ",def:"Non-parametric rank-based correlation; used with ordinal data or non-normal distributions."},{term:"Regression Slope (b)",def:"How much Y changes for every 1-unit increase in X."},{term:"R²",def:"Proportion of variance in Y explained by the predictor(s) — ranges from 0 to 1."}]}
+      ]
+    }
+  ]
+};
+
+let S = { view: 'blocks', blockId: null, unitId: null, conceptIdx: null, fcIdx: 0, fcSide: 'term', quizIdx: 0, quizDone: false, quizScore: 0 };
+
+function getBlock(id) { return DATA.blocks.find(b => b.id === id); }
+function getUnit() { return getBlock(S.blockId)?.units.find(u => u.id === S.unitId); }
+
+function go(view, extra = {}) {
+  Object.assign(S, { view }, extra);
+  render();
+}
+
+function render() {
+  const app = document.getElementById('app');
+  const bc = document.getElementById('breadcrumb');
+  let html = '', bcHtml = '';
+
+  if (S.view === 'blocks') {
+    bcHtml = '';
+    html = renderBlocks();
+  } else if (S.view === 'units') {
+    const b = getBlock(S.blockId);
+    bcHtml = `<span onclick="go('blocks')">All blocks</span><span class="sep">›</span><span class="current">${b.num}</span>`;
+    html = renderUnits(b);
+  } else if (S.view === 'concepts') {
+    const b = getBlock(S.blockId); const u = getUnit();
+    bcHtml = `<span onclick="go('blocks')">Blocks</span><span class="sep">›</span><span onclick="go('units',{blockId:S.blockId})">${b.num}</span><span class="sep">›</span><span class="current">${u.num}</span>`;
+    html = renderConcepts(b, u);
+  } else if (S.view === 'concept-detail') {
+    const b = getBlock(S.blockId); const u = getUnit(); const c = u.concepts[S.conceptIdx];
+    bcHtml = `<span onclick="go('blocks')">Blocks</span><span class="sep">›</span><span onclick="go('units',{blockId:S.blockId})">${b.num}</span><span class="sep">›</span><span onclick="go('concepts',{blockId:S.blockId,unitId:S.unitId})">${u.num}</span><span class="sep">›</span><span class="current">${c.name}</span>`;
+    html = renderConceptDetail(b, u, c);
+  } else if (S.view === 'flashcards') {
+    const b = getBlock(S.blockId); const u = getUnit();
+    bcHtml = `<span onclick="go('blocks')">Blocks</span><span class="sep">›</span><span onclick="go('concepts',{blockId:S.blockId,unitId:S.unitId})">${u.num}</span><span class="sep">›</span><span class="current">Flashcards</span>`;
+    html = renderFlashcards(u);
+  } else if (S.view === 'quiz') {
+    const b = getBlock(S.blockId); const u = getUnit();
+    bcHtml = `<span onclick="go('blocks')">Blocks</span><span class="sep">›</span><span onclick="go('concepts',{blockId:S.blockId,unitId:S.unitId})">${u.num}</span><span class="sep">›</span><span class="current">Quiz</span>`;
+    html = renderQuiz(u);
+  }
+
+  bc.innerHTML = bcHtml;
+  app.innerHTML = `<div class="view">${html}</div>`;
+}
+
+function renderBlocks() {
+  return `
+    <div class="intro">
+      <h1>Research Design Learning Hub</h1>
+      <p>Choose a block to explore its units, concepts, flashcards, and quizzes.</p>
+    </div>
+    <div class="blocks-grid">
+      ${DATA.blocks.map(b => `
+        <div class="block-card" style="--block-color:${b.color}" onclick="go('units',{blockId:${b.id}})">
+          <div class="block-num">${b.num}</div>
+          <div class="block-icon">${b.icon}</div>
+          <div class="block-title">${b.title}</div>
+          <div class="block-desc">${b.desc}</div>
+          <div class="block-meta">
+            <span>📚 ${b.units.length} units</span>
+            <span>🃏 ${b.units.reduce((s,u)=>s+u.flashcards.length,0)} flashcards</span>
+            <span>❓ ${b.units.reduce((s,u)=>s+u.quiz.length,0)} questions</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderUnits(b) {
+  return `
+    <button class="back-btn" onclick="go('blocks')">← All blocks</button>
+    <div class="section-header">
+      <h2>${b.icon} ${b.title}</h2>
+      <p>${b.desc}</p>
+    </div>
+    <div class="units-grid">
+      ${b.units.map(u => `
+        <div class="unit-btn" onclick="go('concepts',{blockId:${b.id},unitId:'${u.id}'})">
+          <div class="u-num">${u.num}</div>
+          <div class="u-name">${u.name}</div>
+          <div class="u-count">${u.concepts.length} concepts · ${u.flashcards.length} cards · ${u.quiz.length} questions</div>
+        </div>
+      `).join('')}
+    </div>`;
+}
+
+function renderConcepts(b, u) {
+  return `
+    <button class="back-btn" onclick="go('units',{blockId:${b.id}})">← ${b.num} units</button>
+    <div class="section-header">
+      <h2>${u.num}: ${u.name}</h2>
+      <p>${u.concepts.length} concepts to explore</p>
+    </div>
+    <div class="concepts-panel" style="margin-bottom:12px;">
+      <div class="concepts-panel-header"><h3>Concepts</h3></div>
+      ${u.concepts.map((c, i) => `
+        <div class="concept-row" onclick="go('concept-detail',{blockId:${b.id},unitId:'${u.id}',conceptIdx:${i}})">
+          <span class="c-name">${c.name}</span>
+          <span class="c-chevron">›</span>
+        </div>
+      `).join('')}
+    </div>
+    <div class="tools-panel">
+      <div class="tools-label">Study tools</div>
+      <div class="tools-row">
+        <button class="tool-btn primary" onclick="go('flashcards',{blockId:${b.id},unitId:'${u.id}',fcIdx:0,fcSide:'term'})">🃏 Flashcards (${u.flashcards.length})</button>
+        <button class="tool-btn primary" onclick="go('quiz',{blockId:${b.id},unitId:'${u.id}',quizIdx:0,quizDone:false,quizScore:0})">❓ Quiz (${u.quiz.length} questions)</button>
+      </div>
+    </div>`;
+}
+
+function renderConceptDetail(b, u, c) {
+  const isFirst = S.conceptIdx === 0;
+  const isLast = S.conceptIdx === u.concepts.length - 1;
+  return `
+    <button class="back-btn" onclick="go('concepts',{blockId:${b.id},unitId:'${u.id}'})">← ${u.num} concepts</button>
+    <div class="progress-bar"><div class="progress-fill" style="width:${((S.conceptIdx+1)/u.concepts.length*100).toFixed(0)}%"></div></div>
+    <div class="concept-detail">
+      <h2>${c.name}</h2>
+      <div class="body">${c.body}</div>
+      <div class="tags">${c.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>
+      <hr class="divider">
+      <div class="go-deeper-label">Go deeper</div>
+      <div class="deep-btns">
+        <button class="tool-btn" onclick="alert('Copy this question and paste it into an AI chat:\\n\\nExplain ${c.name.replace(/'/g,"\\'")} in more detail with examples')">Explain more</button>
+        <button class="tool-btn" onclick="alert('Copy this question and paste it into an AI chat:\\n\\nGive me a real-world example of ${c.name.replace(/'/g,"\\'")}')">Real-world example</button>
+        <button class="tool-btn" onclick="alert('Copy this question and paste it into an AI chat:\\n\\nHow does ${c.name.replace(/'/g,"\\'")} relate to other research methods concepts?')">Connect concepts</button>
+        <button class="tool-btn" onclick="alert('Copy this question and paste it into an AI chat:\\n\\nGive me a tricky exam question about ${c.name.replace(/'/g,"\\'")}')">Exam question</button>
+      </div>
+      <div class="nav-row">
+        <button class="nav-btn" ${isFirst?'disabled':''} onclick="go('concept-detail',{blockId:${b.id},unitId:'${u.id}',conceptIdx:${S.conceptIdx-1}})">← Previous</button>
+        <span class="nav-counter">${S.conceptIdx+1} / ${u.concepts.length}</span>
+        <button class="nav-btn" ${isLast?'disabled':''} onclick="go('concept-detail',{blockId:${b.id},unitId:'${u.id}',conceptIdx:${S.conceptIdx+1}})">Next →</button>
+      </div>
+    </div>`;
+}
+
+function renderFlashcards(u) {
+  const fc = u.flashcards[S.fcIdx];
+  const isAnswer = S.fcSide === 'def';
+  return `
+    <button class="back-btn" onclick="go('concepts',{blockId:S.blockId,unitId:'${u.id}'})">← Back to unit</button>
+    <div class="section-header"><h2>Flashcards — ${u.name}</h2></div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${((S.fcIdx+1)/u.flashcards.length*100).toFixed(0)}%"></div></div>
+    <div class="flashcard-wrap">
+      <div class="flashcard" onclick="go('flashcards',{fcSide:S.fcSide==='term'?'def':'term'})">
+        <div class="fc-label">${isAnswer ? '✓ Definition' : 'Term — click to reveal'}</div>
+        <div class="fc-text">${isAnswer ? fc.def : fc.term}</div>
+      </div>
+    </div>
+    <p class="fc-hint">Tap the card to flip · ${S.fcIdx+1} of ${u.flashcards.length}</p>
+    <div class="fc-nav">
+      <button class="tool-btn" ${S.fcIdx===0?'disabled style="opacity:0.35"':''} onclick="go('flashcards',{fcIdx:${S.fcIdx-1},fcSide:'term'})">← Prev</button>
+      <span class="fc-counter" style="flex:1;text-align:center;font-size:13px;color:var(--text3);">${S.fcIdx+1} / ${u.flashcards.length}</span>
+      <button class="tool-btn" ${S.fcIdx===u.flashcards.length-1?'disabled style="opacity:0.35"':''} onclick="go('flashcards',{fcIdx:${S.fcIdx+1},fcSide:'term'})">Next →</button>
+    </div>`;
+}
+
+function renderQuiz(u) {
+  if (S.quizDone) {
+    const pct = Math.round(S.quizScore / u.quiz.length * 100);
+    return `
+      <button class="back-btn" onclick="go('concepts',{blockId:S.blockId,unitId:'${u.id}'})">← Back to unit</button>
+      <div class="score-card">
+        <div class="score-big">${S.quizScore}/${u.quiz.length}</div>
+        <div class="score-label">${pct >= 80 ? '🎉 Excellent work!' : pct >= 50 ? '👍 Good effort — review and retry!' : '📖 Review the concepts and try again'}</div>
+        <div class="tools-row" style="justify-content:center;margin-top:1rem;">
+          <button class="tool-btn primary" onclick="go('quiz',{quizIdx:0,quizDone:false,quizScore:0})">Retry quiz</button>
+          <button class="tool-btn" onclick="go('flashcards',{fcIdx:0,fcSide:'term'})">Review flashcards</button>
+          <button class="tool-btn" onclick="go('concepts',{blockId:S.blockId,unitId:'${u.id}'})">Back to unit</button>
+        </div>
+      </div>`;
+  }
+  const q = u.quiz[S.quizIdx];
+  return `
+    <button class="back-btn" onclick="go('concepts',{blockId:S.blockId,unitId:'${u.id}'})">← Back to unit</button>
+    <div class="progress-bar"><div class="progress-fill" style="width:${((S.quizIdx)/u.quiz.length*100).toFixed(0)}%"></div></div>
+    <div class="quiz-panel">
+      <div class="quiz-meta">Question ${S.quizIdx+1} of ${u.quiz.length}</div>
+      <div class="quiz-q">${q.q}</div>
+      <div id="opts">
+        ${q.opts.map((opt,i) => `
+          <button class="quiz-opt" id="opt${i}" onclick="answerQuiz(${i},${q.ans},${S.quizIdx})">
+            ${String.fromCharCode(65+i)}. ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div id="qfb"></div>
+      <div id="qnav"></div>
+    </div>`;
+}
+
+function answerQuiz(chosen, correct, idx) {
+  document.querySelectorAll('.quiz-opt').forEach(el => { el.classList.add('answered'); el.onclick = null; });
+  document.getElementById('opt'+correct).classList.add('correct');
+  if (chosen !== correct) document.getElementById('opt'+chosen).classList.add('wrong');
+  const u = getUnit();
+  const q = u.quiz[idx];
+  const isCorrect = chosen === correct;
+  const newScore = S.quizScore + (isCorrect ? 1 : 0);
+  document.getElementById('qfb').innerHTML = `<div class="quiz-feedback ${isCorrect?'ok':'bad'}">${isCorrect?'✓ Correct!':'✗ Not quite.'} ${q.exp}</div>`;
+  const isLast = S.quizIdx === u.quiz.length - 1;
+  document.getElementById('qnav').innerHTML = `<div class="quiz-actions">
+    ${isLast
+      ? `<button class="tool-btn primary" onclick="go('quiz',{quizIdx:0,quizDone:true,quizScore:${newScore}})">See results</button>`
+      : `<button class="tool-btn primary" onclick="go('quiz',{quizIdx:${S.quizIdx+1},quizDone:false,quizScore:${newScore}})">Next question →</button>`}
+  </div>`;
+  S.quizScore = newScore;
+}
+
+render();
+</script>
+</body>
+</html>
