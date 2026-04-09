@@ -1,1 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect | Advanced Study Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .blueprint-bg {
+            background-color: #020617;
+            background-image: 
+                linear-gradient(rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+        .glass-card {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        .perspective-1000 { perspective: 1000px; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        .backface-hidden { backface-visibility: hidden; }
+        .card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flipped .card-inner { transform: rotateY(180deg); }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body class="blueprint-bg text-blue-100 min-h-screen">
+    <div id="root"></div>
 
+    <script type="text/babel">
+        const { useState, useMemo } = React;
+
+        const Icon = ({ name, size = 24, className = "" }) => {
+            const icons = {
+                Book: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>,
+                Zap: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+                Brain: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.04-2.44 2.5 2.5 0 0 1-2-2.5 2.5 2.5 0 0 1 0-5 2.5 2.5 0 0 1 2-2.5 2.5 2.5 0 0 1 2.04-2.44A2.5 2.5 0 0 1 9.5 2z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.04-2.44 2.5 2.5 0 0 0 2-2.5 2.5 2.5 0 0 0 0-5 2.5 2.5 0 0 0-2-2.5 2.5 2.5 0 0 0-2.04-2.44A2.5 2.5 0 0 0 14.5 2z"/></svg>,
+                Check: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="20 6 9 17 4 12"/></svg>,
+                Shield: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+                ChevronRight: <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polyline points="9 18 15 12 9 6"/></svg>
+            };
+            return icons[name] || null;
+        };
+
+        const Flashcard = ({ term, definition }) => {
+            const [isFlipped, setIsFlipped] = useState(false);
+            return (
+                <div 
+                    className={`perspective-1000 w-full h-48 cursor-pointer ${isFlipped ? 'flipped' : ''}`}
+                    onClick={() => setIsFlipped(!isFlipped)}
+                >
+                    <div className="card-inner relative w-full h-full text-center">
+                        <div className="backface-hidden glass-card absolute inset-0 flex flex-col items-center justify-center p-6 rounded-2xl border-blue-500/30">
+                            <span className="text-[10px] font-mono text-blue-500 uppercase mb-2">Term</span>
+                            <h3 className="text-lg font-black uppercase tracking-wider">{term}</h3>
+                        </div>
+                        <div className="backface-hidden rotate-y-180 glass-card absolute inset-0 flex flex-col items-center justify-center p-6 rounded-2xl bg-blue-600/10 border-blue-400">
+                            <span className="text-[10px] font-mono text-blue-400 uppercase mb-2">Definition</span>
+                            <p className="text-xs leading-relaxed">{definition}</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('study');
+            const [selectedUnit, setSelectedUnit] = useState(1);
+            const [quizIndex, setQuizIndex] = useState(0);
+            const [score, setScore] = useState(0);
+            const [showResults, setShowResults] = useState(false);
+
+            const curriculum = [
+                {
+                    unit: 1,
+                    title: "Nature & Classification",
+                    content: [
+                        { sub: "Greeno's Taxonomy", text: "Categorizes problems into Arrangement (Anagrams), Inducing Structure (Analogies), and Transformation (Tower of Hanoi).", detail: "Transformation problems are defined by a specific goal and set of operators to change states." },
+                        { sub: "Wallas's Molar Stages", text: "1. Preparation, 2. Incubation, 3. Illumination, 4. Verification.", detail: "Incubation is the period where the problem is set aside while the brain processes it unconsciously." },
+                        { sub: "Insight Problems", text: "Sudden restructuring of a problem leading to an immediate solution ('Aha!' moment).", detail: "Often involves overcoming a mental impasse or functional fixedness." }
+                    ],
+                    flashcards: [
+                        { term: "Anagram", definition: "A type of Arrangement problem requiring reorganization of letters." },
+                        { term: "Incubation", definition: "The phase where a solver steps away and works on a problem unconsciously." }
+                    ],
+                    quiz: [
+                        { q: "Which of Greeno's categories includes the Tower of Hanoi?", options: ["Arrangement", "Transformation", "Inducing Structure"], correct: 1 },
+                        { q: "What is the third stage of Wallas's Molar Stages?", options: ["Verification", "Illumination", "Preparation"], correct: 1 }
+                    ]
+                },
+                {
+                    unit: 2,
+                    title: "Stages & Techniques",
+                    content: [
+                        { sub: "Means-Ends Analysis", text: "Reducing the gap between initial and goal states via sub-goals.", detail: "Standard method used by the General Problem Solver (GPS) computer program." },
+                        { sub: "Backward Search", text: "Starting from the goal and working back to the initial state.", detail: "Effective for math proofs and mazes with clear exits but many start paths." },
+                        { sub: "Generate & Test", text: "Trial and error approach; generating a solution and testing its validity.", detail: "Low-efficiency heuristic used when the search space is small." }
+                    ],
+                    flashcards: [
+                        { term: "Sub-goal", definition: "An intermediate state created to reduce task complexity." },
+                        { term: "Heuristic", definition: "A 'rule of thumb' strategy that doesn't guarantee a solution but narrows it down." }
+                    ],
+                    quiz: [
+                        { q: "Which technique works backward from the goal?", options: ["Means-Ends", "Backward Search", "Generate & Test"], correct: 1 }
+                    ]
+                },
+                {
+                    unit: 3,
+                    title: "Theoretical Models",
+                    content: [
+                        { sub: "Problem Space", text: "A mental representation of all possible states in a problem.", detail: "Introduced by Newell & Simon; involves initial state, goal state, and operators." },
+                        { sub: "Gestalt Approach", text: "Problem solving through restructuring the whole field of thought.", detail: "Focuses on 'Productive' vs 'Reproductive' thinking." },
+                        { sub: "Information Processing", text: "Seeing the human mind as a symbolic processor similar to a computer.", detail: "Focuses on encoding, storage, and retrieval during problem solving." }
+                    ],
+                    flashcards: [
+                        { term: "Operator", definition: "Action taken to move from one state in the problem space to another." },
+                        { term: "Restructuring", definition: "A core Gestalt concept where the solver views a problem from a new perspective." }
+                    ],
+                    quiz: [
+                        { q: "Who proposed the 'Problem Space Hypothesis'?", options: ["Newell & Simon", "Wickelgren", "Wertheimer"], correct: 0 }
+                    ]
+                },
+                {
+                    unit: 4,
+                    title: "Impediments & Barriers",
+                    content: [
+                        { sub: "Einstellung (Mental Set)", text: "Sticking to an old solution when a better one exists.", detail: "Commonly tested with the 'Luchins Water Jar' experiment." },
+                        { sub: "Functional Fixedness", text: "Inability to see a new use for a common object.", detail: "The 'Candle Problem' is the most famous example of this barrier." },
+                        { sub: "The Six Blocks", text: "Perceptual, Emotional, Cultural, Intellectual, Environmental, and Expressive.", detail: "Adams (1987) argued these blocks prevent creative problem solving." }
+                    ],
+                    flashcards: [
+                        { term: "Einstellung", definition: "The mechanization of thought or habit that blocks new solutions." },
+                        { term: "Cultural Block", definition: "Barriers created by social taboos or conventional norms." }
+                    ],
+                    quiz: [
+                        { q: "Which block is defined by the inability to see objects in new ways?", options: ["Emotional", "Functional Fixedness", "Perceptual"], correct: 1 }
+                    ]
+                }
+            ];
+
+            const handleQuizAnswer = (idx) => {
+                const currentUnit = curriculum[selectedUnit-1];
+                if (idx === currentUnit.quiz[quizIndex].correct) setScore(score + 1);
+                
+                if (quizIndex < currentUnit.quiz.length - 1) {
+                    setQuizIndex(quizIndex + 1);
+                } else {
+                    setShowResults(true);
+                }
+            };
+
+            const resetQuiz = () => {
+                setQuizIndex(0);
+                setScore(0);
+                setShowResults(false);
+            };
+
+            return (
+                <div className="max-w-6xl mx-auto p-4 md:p-12 relative">
+                    {/* Header */}
+                    <header className="mb-12 border-b border-blue-500/30 pb-6 flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div>
+                            <h1 className="text-4xl font-black uppercase tracking-tighter text-white">
+                                PS-ARCHITECT <span className="text-blue-500 italic">STUDY SYSTEM</span>
+                            </h1>
+                            <p className="text-xs font-mono text-blue-400 opacity-60 uppercase mt-1 tracking-widest">Mastering Units 1-4</p>
+                        </div>
+                        <nav className="flex bg-slate-900/80 p-1 rounded-xl border border-blue-500/20">
+                            {[
+                                { id: 'study', label: 'Theory', icon: 'Book' },
+                                { id: 'flash', label: 'Flashcards', icon: 'Zap' },
+                                { id: 'quiz', label: 'Quiz', icon: 'Brain' }
+                            ].map(tab => (
+                                <button
+                                    key={tab.id}
+                                    onClick={() => { setActiveTab(tab.id); resetQuiz(); }}
+                                    className={`px-6 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all flex items-center gap-2 ${
+                                        activeTab === tab.id ? 'bg-blue-600 text-white shadow-lg' : 'text-blue-400 hover:text-white'
+                                    }`}
+                                >
+                                    <Icon name={tab.icon} size={14} /> {tab.label}
+                                </button>
+                            ))}
+                        </nav>
+                    </header>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        {/* Sidebar */}
+                        <div className="lg:col-span-3 space-y-2">
+                            {curriculum.map(unit => (
+                                <button 
+                                    key={unit.unit}
+                                    onClick={() => { setSelectedUnit(unit.unit); resetQuiz(); }}
+                                    className={`w-full p-4 rounded-xl text-left border transition-all ${
+                                        selectedUnit === unit.unit 
+                                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' 
+                                        : 'glass-card text-blue-400 border-transparent hover:border-blue-500/30'
+                                    }`}
+                                >
+                                    <div className="text-[10px] font-mono uppercase opacity-70">Unit 0{unit.unit}</div>
+                                    <div className="font-black uppercase text-xs tracking-wide">{unit.title}</div>
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Main Content Area */}
+                        <div className="lg:col-span-9">
+                            {activeTab === 'study' && (
+                                <div className="space-y-8 animate-in fade-in duration-500">
+                                    {/* Detailed Text Sections */}
+                                    <div className="glass-card rounded-3xl p-8 relative overflow-hidden">
+                                        <h2 className="text-2xl font-black uppercase mb-6 flex items-center gap-3">
+                                            <Icon name="Book" className="text-blue-500" />
+                                            Module Analysis: {curriculum[selectedUnit-1].title}
+                                        </h2>
+                                        <div className="grid grid-cols-1 gap-6">
+                                            {curriculum[selectedUnit-1].content.map((section, i) => (
+                                                <div key={i} className="border-l-4 border-blue-500 bg-blue-500/5 p-6 rounded-r-xl">
+                                                    <h3 className="text-blue-400 font-black uppercase mb-2 text-sm">{section.sub}</h3>
+                                                    <p className="text-white text-sm leading-relaxed mb-3">{section.text}</p>
+                                                    <p className="text-blue-300/60 text-xs italic font-mono">{section.detail}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Visual Diagram Section */}
+                                    <div className="glass-card rounded-3xl p-8 flex flex-col items-center">
+                                        <h3 className="text-xs font-mono uppercase tracking-[0.5em] text-blue-500 mb-8">Structural Diagram</h3>
+                                        <div className="w-full h-48 flex items-center justify-center bg-slate-900/50 rounded-2xl border border-blue-500/10">
+                                            {selectedUnit === 1 && (
+                                                <svg width="400" height="150" viewBox="0 0 400 150">
+                                                    <circle cx="50" cy="75" r="25" className="fill-blue-500/20 stroke-blue-500" strokeWidth="2" />
+                                                    <circle cx="150" cy="75" r="25" className="fill-blue-500/20 stroke-blue-500" strokeWidth="2" />
+                                                    <circle cx="250" cy="75" r="25" className="fill-blue-500/20 stroke-blue-500" strokeWidth="2" />
+                                                    <circle cx="350" cy="75" r="25" className="fill-blue-500/20 stroke-blue-500" strokeWidth="2" />
+                                                    <path d="M75 75 H125 M175 75 H225 M275 75 H325" className="stroke-blue-500/50" strokeWidth="2" markerEnd="url(#arrow)" />
+                                                    <text x="50" y="120" textAnchor="middle" className="fill-blue-400 text-[10px] font-mono">Prep</text>
+                                                    <text x="150" y="120" textAnchor="middle" className="fill-blue-400 text-[10px] font-mono">Incub</text>
+                                                    <text x="250" y="120" textAnchor="middle" className="fill-blue-400 text-[10px] font-mono">Illum</text>
+                                                    <text x="350" y="120" textAnchor="middle" className="fill-blue-400 text-[10px] font-mono">Verif</text>
+                                                </svg>
+                                            )}
+                                            {selectedUnit === 2 && (
+                                                <svg width="400" height="150" viewBox="0 0 400 150">
+                                                    <rect x="150" y="25" width="100" height="40" className="fill-blue-500/10 stroke-blue-500" />
+                                                    <path d="M200 65 V110" className="stroke-blue-500" strokeDasharray="5,5" />
+                                                    <rect x="50" y="110" width="80" height="30" className="fill-blue-400/20 stroke-blue-400" />
+                                                    <rect x="270" y="110" width="80" height="30" className="fill-blue-400/20 stroke-blue-400" />
+                                                    <text x="200" y="50" textAnchor="middle" className="fill-white text-[10px]">GOAL STATE</text>
+                                                    <text x="90" y="130" textAnchor="middle" className="fill-blue-300 text-[8px]">SUB-GOAL A</text>
+                                                    <text x="310" y="130" textAnchor="middle" className="fill-blue-300 text-[8px]">SUB-GOAL B</text>
+                                                </svg>
+                                            )}
+                                            {selectedUnit === 3 && (
+                                                <svg width="400" height="150" viewBox="0 0 400 150">
+                                                    <rect x="50" y="30" width="300" height="90" className="fill-blue-900/20 stroke-blue-500/30" rx="10" />
+                                                    <circle cx="100" cy="75" r="10" className="fill-blue-500 animate-pulse" />
+                                                    <path d="M110 75 Q200 20 290 75" className="stroke-blue-400 fill-none" />
+                                                    <path d="M110 75 Q200 130 290 75" className="stroke-blue-400 fill-none opacity-50" />
+                                                    <circle cx="300" cy="75" r="10" className="fill-cyan-400" />
+                                                    <text x="200" y="140" textAnchor="middle" className="fill-blue-400 text-[10px] font-mono uppercase">Search Space Search</text>
+                                                </svg>
+                                            )}
+                                            {selectedUnit === 4 && (
+                                                <svg width="400" height="150" viewBox="0 0 400 150">
+                                                    <path d="M50 75 H350" className="stroke-red-500/30" strokeWidth="8" />
+                                                    <rect x="180" y="40" width="40" height="70" className="fill-red-600/50" />
+                                                    <text x="200" y="30" textAnchor="middle" className="fill-red-500 text-[10px] font-bold uppercase">Constraint Block</text>
+                                                    <path d="M70 75 C100 20, 300 20, 330 75" className="stroke-blue-400 fill-none" strokeWidth="2" strokeDasharray="4" />
+                                                    <text x="200" y="140" textAnchor="middle" className="fill-blue-300 text-[10px]">Restructuring Bypass</text>
+                                                </svg>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'flash' && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in zoom-in-95 duration-500">
+                                    {curriculum[selectedUnit-1].flashcards.map((card, idx) => (
+                                        <Flashcard key={idx} term={card.term} definition={card.definition} />
+                                    ))}
+                                    <div className="md:col-span-2 glass-card p-4 rounded-xl text-center text-[10px] font-mono opacity-50 uppercase italic tracking-widest">
+                                        Click a card to reveal the definition
+                                    </div>
+                                </div>
+                            )}
+
+                            {activeTab === 'quiz' && (
+                                <div className="glass-card rounded-3xl p-12 min-h-[400px] flex flex-col justify-center animate-in slide-in-from-bottom-4 duration-500">
+                                    {!showResults ? (
+                                        <>
+                                            <div className="flex justify-between items-center mb-8">
+                                                <span className="text-[10px] font-mono text-blue-500 uppercase tracking-widest">Question {quizIndex + 1} / {curriculum[selectedUnit-1].quiz.length}</span>
+                                                <span className="text-[10px] font-mono text-blue-500 uppercase tracking-widest">Score: {score}</span>
+                                            </div>
+                                            <h3 className="text-2xl font-black uppercase mb-10 leading-tight">
+                                                {curriculum[selectedUnit-1].quiz[quizIndex].q}
+                                            </h3>
+                                            <div className="space-y-4">
+                                                {curriculum[selectedUnit-1].quiz[quizIndex].options.map((opt, i) => (
+                                                    <button 
+                                                        key={i}
+                                                        onClick={() => handleQuizAnswer(i)}
+                                                        className="w-full p-6 rounded-2xl glass-card border-transparent hover:border-blue-500 hover:bg-blue-600/10 transition-all text-left flex items-center justify-between group"
+                                                    >
+                                                        <span className="font-bold uppercase tracking-wide text-sm">{opt}</span>
+                                                        <Icon name="ChevronRight" size={18} className="opacity-0 group-hover:opacity-100 transition-opacity" />
+                                                    </button>
+                                                ))}
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <div className="text-center">
+                                            <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(59,130,246,0.5)]">
+                                                <Icon name="Check" size={48} className="text-white" />
+                                            </div>
+                                            <h3 className="text-3xl font-black uppercase mb-2 tracking-tighter">Quiz Complete</h3>
+                                            <p className="text-blue-400 font-mono mb-10 uppercase tracking-widest">You scored {score} out of {curriculum[selectedUnit-1].quiz.length}</p>
+                                            <button 
+                                                onClick={resetQuiz}
+                                                className="bg-blue-600 hover:bg-blue-700 px-10 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-colors"
+                                            >
+                                                Restart Module Quiz
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <footer className="mt-20 py-10 border-t border-blue-500/10 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] font-mono opacity-40 uppercase tracking-[0.4em] text-center">
+                        <div className="flex items-center gap-4">
+                            <span className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" />
+                            Unified Study Module v4.5
+                        </div>
+                        <span>Core Curriculum Units 1-4</span>
+                        <span>Diagrams | Quiz | Cards</span>
+                    </footer>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
