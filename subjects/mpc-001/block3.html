@@ -1,1 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Language & Cognition — Interactive Study App</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f4f0;
+    --bg3: #eeedea;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #9a9a94;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --success-bg: #eaf3de; --success-text: #27500a; --success-border: #3b6d11;
+    --danger-bg: #fcebeb; --danger-text: #791f1f; --danger-border: #a32d2d;
+    --info-bg: #e6f1fb; --info-text: #0c447c; --info-border: #185fa5;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c; --bg2: #262624; --bg3: #2e2e2b;
+      --text: #e8e6de; --text2: #a8a69e; --text3: #6a6a64;
+      --border: rgba(255,255,255,0.1); --border2: rgba(255,255,255,0.2);
+      --success-bg: #173404; --success-text: #c0dd97; --success-border: #3b6d11;
+      --danger-bg: #501313; --danger-text: #f7c1c1; --danger-border: #a32d2d;
+      --info-bg: #042c53; --info-text: #b5d4f4; --info-border: #185fa5;
+    }
+  }
+
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg2); color: var(--text); min-height: 100vh; }
+
+  header { background: var(--bg); border-bottom: 0.5px solid var(--border); padding: 16px 24px; }
+  header h1 { font-size: 18px; font-weight: 500; }
+  header p { font-size: 13px; color: var(--text2); margin-top: 2px; }
+
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  .unit-nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .unit-btn { padding: 7px 16px; border: 0.5px solid var(--border2); border-radius: 20px; background: transparent; color: var(--text2); font-size: 13px; cursor: pointer; transition: all .15s; }
+  .unit-btn:hover { color: var(--text); border-color: var(--border2); }
+  .unit-btn.active { background: var(--text); color: var(--bg); border-color: transparent; }
+
+  .unit-header { margin-bottom: 20px; }
+  .unit-header h2 { font-size: 20px; font-weight: 500; }
+  .unit-header p { font-size: 13px; color: var(--text2); margin-top: 4px; }
+
+  .tab-row { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn { padding: 6px 16px; border: 0.5px solid var(--border); border-radius: 20px; background: transparent; font-size: 13px; color: var(--text2); cursor: pointer; transition: all .15s; }
+  .tab-btn.active { background: var(--bg3); color: var(--text); border-color: var(--border2); }
+
+  /* Flashcards */
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); margin-bottom: 12px; }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; margin-bottom: 24px; }
+  .flip-card { height: 100px; cursor: pointer; perspective: 800px; }
+  .flip-inner { position: relative; width: 100%; height: 100%; transition: transform .4s; transform-style: preserve-3d; }
+  .flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+  .flip-front, .flip-back { position: absolute; inset: 0; backface-visibility: hidden; border-radius: var(--radius-lg); border: 0.5px solid var(--border); padding: 14px; background: var(--bg); }
+  .flip-back { transform: rotateY(180deg); background: var(--bg2); }
+  .flip-front .term { font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+  .flip-front .hint { font-size: 12px; color: var(--text3); }
+  .flip-back .def-label { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 5px; }
+  .flip-back .def { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .flip-hint { font-size: 11px; color: var(--text3); position: absolute; bottom: 8px; right: 10px; }
+
+  /* Timeline */
+  .timeline { border-left: 1.5px solid var(--border2); padding-left: 20px; margin-bottom: 20px; }
+  .tl-item { margin-bottom: 22px; position: relative; }
+  .tl-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--text); position: absolute; left: -26px; top: 5px; }
+  .tl-age { font-size: 11px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: .05em; margin-bottom: 3px; }
+  .tl-stage { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .tl-desc { font-size: 13px; color: var(--text2); line-height: 1.55; }
+
+  /* Theories accordion */
+  .theory-list { display: grid; gap: 8px; margin-bottom: 20px; }
+  .theory-card { border: 0.5px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg); }
+  .theory-header { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; cursor: pointer; user-select: none; }
+  .theory-header:hover { background: var(--bg2); }
+  .theory-name { font-size: 14px; font-weight: 500; }
+  .theory-badge { display: inline-block; padding: 2px 8px; background: var(--info-bg); color: var(--info-text); border-radius: 10px; font-size: 11px; font-weight: 500; margin-left: 8px; }
+  .theory-toggle { font-size: 18px; color: var(--text3); line-height: 1; }
+  .theory-body { max-height: 0; overflow: hidden; transition: max-height .3s ease, padding .3s; padding: 0 16px; }
+  .theory-body.open { max-height: 400px; padding: 0 16px 14px; }
+  .theory-idea { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+  .theory-pro { font-size: 12px; color: var(--success-text); margin-bottom: 4px; }
+  .theory-con { font-size: 12px; color: var(--danger-text); }
+
+  /* Disorders explorer */
+  .disorder-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-bottom: 14px; }
+  .disorder-chip { padding: 10px 12px; border: 0.5px solid var(--border); border-radius: var(--radius-md); cursor: pointer; background: var(--bg); transition: all .15s; }
+  .disorder-chip:hover, .disorder-chip.active { border-color: var(--border2); background: var(--bg2); }
+  .disorder-chip .d-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .disorder-chip .d-type { font-size: 11px; color: var(--text3); }
+  .disorder-detail { background: var(--bg2); border-radius: var(--radius-lg); padding: 16px; margin-bottom: 20px; display: none; border: 0.5px solid var(--border); }
+  .disorder-detail.show { display: block; }
+  .dd-name { font-size: 15px; font-weight: 500; margin-bottom: 4px; }
+  .dd-brain { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
+  .dd-desc { font-size: 13px; color: var(--text2); line-height: 1.6; margin-bottom: 10px; }
+  .dd-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+  .dd-tag { font-size: 11px; padding: 3px 8px; border-radius: 10px; background: var(--info-bg); color: var(--info-text); }
+
+  /* Quiz */
+  .progress-wrap { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; }
+  .progress-bar { flex: 1; height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--text); border-radius: 2px; transition: width .3s; }
+  .score-txt { font-size: 12px; color: var(--text2); white-space: nowrap; }
+  .quiz-box { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 20px; margin-bottom: 16px; }
+  .quiz-q { font-size: 15px; line-height: 1.55; margin-bottom: 16px; }
+  .quiz-opts { display: grid; gap: 8px; }
+  .opt { text-align: left; padding: 10px 14px; border: 0.5px solid var(--border2); border-radius: var(--radius-md); background: var(--bg2); color: var(--text); font-size: 13px; cursor: pointer; transition: all .15s; width: 100%; }
+  .opt:hover:not(:disabled) { border-color: var(--text3); }
+  .opt.correct { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+  .opt.wrong { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+  .quiz-exp { font-size: 13px; color: var(--text2); margin-top: 14px; line-height: 1.5; display: none; }
+  .quiz-exp.show { display: block; }
+  .next-btn { margin-top: 12px; padding: 8px 20px; border: 0.5px solid var(--border2); border-radius: var(--radius-md); background: transparent; color: var(--text); font-size: 13px; cursor: pointer; display: none; }
+  .next-btn.show { display: inline-block; }
+  .score-result { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 32px; text-align: center; }
+  .score-pct { font-size: 40px; font-weight: 500; margin-bottom: 8px; }
+  .score-msg { font-size: 14px; color: var(--text2); margin-bottom: 20px; }
+  .retry-btn { padding: 10px 24px; border: 0.5px solid var(--border2); border-radius: var(--radius-md); background: transparent; color: var(--text); font-size: 13px; cursor: pointer; }
+  .retry-btn:hover { background: var(--bg2); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Language &amp; Cognition — Interactive Study App</h1>
+  <p>Units 1–4 · Flashcards · Timelines · Theories · Quizzes</p>
+</header>
+
+<div class="container">
+  <div class="unit-nav" id="unitNav"></div>
+  <div class="unit-header">
+    <h2 id="unitTitle"></h2>
+    <p id="unitSub"></p>
+  </div>
+  <div class="tab-row" id="tabRow"></div>
+  <div id="tabBody"></div>
+</div>
+
+<script>
+const DATA = [
+  {
+    title: "Language Acquisition",
+    sub: "How children learn language — theories, stages, and the biology behind it",
+    tabs: ["Flashcards", "Stages", "Theories", "Quiz"],
+    flashcards: [
+      { term: "Phoneme", hint: "Smallest unit", def: "The smallest distinguishable sound unit in a language. English has ~45 phonemes. E.g. /p/, /t/, /m/" },
+      { term: "Morpheme", hint: "Smallest meaning unit", def: "The smallest unit carrying meaning. 'Disliked' has three: dis + lik + ed." },
+      { term: "LAD", hint: "Chomsky's concept", def: "Language Acquisition Device — Chomsky's proposed innate brain mechanism that allows children to rapidly acquire language." },
+      { term: "Holophrase", hint: "One-word stage", def: "A single word used to convey a complete intention. A 12-month-old saying 'milk' may mean 'I want milk.'" },
+      { term: "Telegraphic speech", hint: "2-word stage", def: "Early two-word combinations missing function words. E.g. 'want juice', 'doggie bite' — like a telegram." },
+      { term: "Overextension", hint: "Common child error", def: "Applying a word too broadly. E.g. calling every four-legged animal 'doggie'." },
+      { term: "Critical period", hint: "Window of opportunity", def: "The window (roughly birth to puberty) during which language acquisition is most effective. Evidence: Genie's case." },
+      { term: "Babbling", hint: "~6 months old", def: "Infant vocalisation mixing vowels & consonants. Deaf infants stop babbling — showing the need for auditory feedback." },
+    ],
+    stages: [
+      { age: "0–2 months", stage: "Cooing", desc: "Vowel-only sounds. Universal across cultures and languages — even deaf infants coo at this stage." },
+      { age: "6–8 months", stage: "Babbling", desc: "Consonant + vowel combinations appear. Infants begin favouring the phonemes of their native language." },
+      { age: "12–18 months", stage: "First words (holophrases)", desc: "Single words carry full intentions. Vocabulary is 3–100 words. Overextension errors are common." },
+      { age: "18 months – 2.5 yrs", stage: "Two-word / telegraphic speech", desc: "Basic syntax emerges. 'Want juice', 'doggie bite'. Function words (the, a, of) are omitted." },
+      { age: "~4 years", stage: "Basic adult sentence structure", desc: "Vocabulary exceeds 1,000 words. Children grasp the foundations of adult syntax." },
+      { age: "~10 years", stage: "Adult-level language", desc: "Language is fundamentally the same as an adult's — complex constructions understood and produced." },
+    ],
+    theories: [
+      { name: "Behaviourist theory", who: "B.F. Skinner", idea: "Children learn language by imitating adults. Correct utterances are reinforced (positive reinforcement); incorrect ones fade out.", pro: "Explains why exposure and feedback matter", con: "Can't explain 'drinked' — children apply rules they weren't taught. Doesn't account for critical period." },
+      { name: "Innateness theory", who: "Noam Chomsky", idea: "Children are born with a Language Acquisition Device (LAD) containing universal grammar. The LAD is activated by hearing speech.", pro: "Explains rapid, universal acquisition; explains creole languages formed by children", con: "Doesn't study real children; ignores social interaction; Jim's case shows exposure alone isn't enough." },
+      { name: "Cognitive theory", who: "Jean Piaget", idea: "Language emerges from broader cognitive development. Children must understand a concept before they can name it (e.g., object permanence → labelling objects).", pro: "Explains the order in which language features are acquired", con: "Doesn't explain why apes don't develop language despite similar early cognition." },
+      { name: "Interactionist / Input theory", who: "Jerome Bruner", idea: "Language is learned through social interaction. Caregivers provide a 'scaffolding' system (LASS) that supports acquisition beyond the LAD.", pro: "Explains why interaction matters more than mere exposure (Jim's case)", con: "Child-directed speech is helpful but not universal — children acquire language in cultures without it." },
+    ],
+    quiz: [
+      { q: "Which stage comes BEFORE babbling?", opts: ["Telegraphic speech", "Cooing", "Holophrases", "Overextension"], ans: 1, exp: "Cooing (vowel sounds only) occurs at 0–2 months, before babbling which begins around 6 months." },
+      { q: "A child says 'goed' instead of 'went'. This is an example of:", opts: ["Underextension", "Holophrase", "Overextension of a grammatical rule", "Telegraphic speech"], ans: 2, exp: "The child has learned the past tense rule (-ed) and overapplied it to an irregular verb. This shows rule learning, not imitation." },
+      { q: "Chomsky's Language Acquisition Device (LAD) proposes that:", opts: ["Parents reinforce correct grammar", "Language emerges after cognitive development", "Children are born with innate language learning mechanisms", "Social interaction drives all language learning"], ans: 2, exp: "The LAD is Chomsky's proposed innate, species-specific brain module that enables rapid language acquisition." },
+      { q: "Genie's case is evidence for:", opts: ["The behaviourist theory", "The critical period for language acquisition", "The interactionist theory", "Object permanence"], ans: 1, exp: "Genie missed the critical period (birth to ~puberty). Despite training, she never achieved adult grammar — evidence of a neurological window." },
+    ],
+  },
+  {
+    title: "Language Processing",
+    sub: "How we produce, perceive, and comprehend language in real time",
+    tabs: ["Flashcards", "Production Steps", "Theories", "Quiz"],
+    flashcards: [
+      { term: "Syntax", hint: "Arrangement rules", def: "Rules governing how words are arranged into meaningful phrases and sentences. E.g. 'the' must precede a noun." },
+      { term: "Deep structure", hint: "Underlying meaning", def: "The underlying meaning of a sentence. 'Rohit threw the ball' and 'The ball was thrown by Rohit' share the same deep structure." },
+      { term: "Surface structure", hint: "As spoken/read", def: "The actual sequence of words as spoken or written. Different surface structures can share one deep structure." },
+      { term: "Phonemic restoration", hint: "Filling in gaps", def: "The brain 'fills in' missing speech sounds using context. Subjects couldn't identify where a cough replaced a phoneme." },
+      { term: "Gricean Maxims", hint: "4 rules of conversation", def: "Quantity (don't over/under-share), Quality (don't lie), Relation (stay on topic), Manner (be clear and brief)." },
+      { term: "Proposition", hint: "Unit of meaning", def: "An abstraction built from a predicate (verb/adjective) + arguments (nouns). Kintsch's basic unit of text comprehension." },
+      { term: "TRACE model", hint: "Speech perception", def: "A model where speech perception happens at 3 levels — acoustic features → phonemes → words — with each level influencing the others." },
+      { term: "Speech acts", hint: "What utterances do", def: "The social actions performed by utterances: assertions, commands, promises, questions. Can be direct or indirect." },
+    ],
+    stages: [
+      { age: "Step 1", stage: "Discourse plan", desc: "The speaker decides on the type of discourse: conversation, joke, instructions. Each has a different structure to follow." },
+      { age: "Step 2", stage: "Sentence plan", desc: "The speaker selects specific sentences. Determines speech act, propositional content, and thematic structure." },
+      { age: "Step 3", stage: "Constituent plan", desc: "Words, phrases, and ordering within each sentence are selected. This is where 'slips of the tongue' originate." },
+      { age: "Step 4", stage: "Articulatory program", desc: "Plans for the coordinated muscular movements of the mouth, tongue, and lips to produce sounds." },
+      { age: "Step 5", stage: "Articulation", desc: "The actual physical output of speech. The only externally observable step in the entire process." },
+    ],
+    theories: [
+      { name: "Kintsch's model", who: "Kintsch & van Dijk", idea: "Comprehension works in propositions stored in STM. New sentences are matched to old propositions. When no match is found, the reader searches LTM (reinstatement search).", pro: "Explains why high-proposition sentences take longer to read; links memory and comprehension", con: "Abstract and difficult to operationalise outside of reading tasks." },
+      { name: "TRACE model", who: "McClelland & Elman", idea: "Speech perception processes features → phonemes → words simultaneously and interactively. Higher levels influence lower ones (top-down).", pro: "Explains phonemic restoration effect — context fills in missing sounds", con: "Requires massive parallel processing; computationally expensive." },
+      { name: "Phonetic refinement theory", who: "Pisoni et al.", idea: "We start with raw auditory features and progressively refine them into phonemes and words. Bottom-up sequential processing.", pro: "Simple and intuitive — mimics a pipeline", con: "Doesn't easily explain top-down effects like phonemic restoration." },
+    ],
+    quiz: [
+      { q: "Which Gricean Maxim does a letter violate if it only says 'He dresses well and has a charming wife'?", opts: ["Quantity", "Quality", "Relation", "Manner"], ans: 2, exp: "The letter violates the Relation Maxim (relevance). By not mentioning job skills, the writer implies the candidate is unsuitable." },
+      { q: "Two sentences with the SAME deep structure but DIFFERENT surface structures are:", opts: ["Synonymous", "Ambiguous", "Telegraphic", "Holophrastic"], ans: 0, exp: "Sentences with one deep structure expressed two different ways are synonymous — they mean the same thing." },
+      { q: "In Kintsch's model, what happens when no match is found between new and old propositions in STM?", opts: ["Reading stops", "A reinstatement search of LTM occurs", "The proposition is discarded", "A new discourse plan is formed"], ans: 1, exp: "The reader searches Long Term Memory (LTM) for a connecting proposition — this is the reinstatement search, which slows reading." },
+      { q: "Phonemic restoration demonstrates that speech perception is:", opts: ["Purely bottom-up", "Influenced by context and knowledge (top-down)", "Independent of meaning", "Only possible in one's native language"], ans: 1, exp: "Subjects 'heard' a masked phoneme because context completed it — showing that higher-level knowledge influences low-level perception." },
+    ],
+  },
+  {
+    title: "Multilingualism & Cognition",
+    sub: "The cognitive effects of knowing more than one language",
+    tabs: ["Flashcards", "Benefits", "Theories", "Quiz"],
+    flashcards: [
+      { term: "Code-switching", hint: "Language mixing", def: "Switching between languages mid-sentence. Bilinguals code-switch faster than monolinguals process a single language — it is rule-governed, not random." },
+      { term: "Additive bilingualism", hint: "L2 adds to L1", def: "A second language is acquired alongside a well-developed first language. Associated with cognitive gains." },
+      { term: "Subtractive bilingualism", hint: "L2 replaces L1", def: "Elements of L2 replace elements of L1. Associated with cognitive disadvantages." },
+      { term: "Single-system hypothesis", hint: "One brain store", def: "Proposes that all languages a person knows are represented in one shared brain region or system." },
+      { term: "Dual-system hypothesis", hint: "Separate brain stores", def: "Proposes that different languages are stored in separate brain regions. Evidence from brain-damaged bilinguals is mixed." },
+      { term: "LASS", hint: "Bruner's concept", def: "Language Acquisition Support System — the social scaffolding provided by caregivers, proposed by Bruner as a complement to Chomsky's LAD." },
+      { term: "Diglossia", hint: "Two-language society", def: "A situation where two languages (or dialects) are used in a society, each with different social functions." },
+      { term: "Simultaneous bilingualism", hint: "Two languages from birth", def: "Learning two languages from birth. Distinct from sequential bilingualism where one language is learned after the other." },
+    ],
+    stages: [
+      { age: "Cognitive", stage: "Greater cognitive flexibility", desc: "Multilinguals are better at switching tasks, solving problems, and higher-order thinking — likely from constantly managing two language systems." },
+      { age: "Perceptual", stage: "Sharper language awareness", desc: "Bilinguals detect anomalous sentences and grammatical errors more readily — they have enhanced metalinguistic awareness." },
+      { age: "Memory", stage: "Better working memory", desc: "Bilingual children have better short-term memory and are more attentive to distractions — benefits persist into old age." },
+      { age: "Academic", stage: "Outperform on standardised tests", desc: "Multilingual children in Brussels schools outperformed peers in problem-solving and maths exercises." },
+      { age: "Social", stage: "Better voice identification", desc: "Bilinguals identify speakers across languages better than monolinguals, who only identify speakers best in their own language." },
+      { age: "Neural", stage: "Potential delay of cognitive decline", desc: "Research suggests bilingualism may delay the onset of dementia-related symptoms by engaging cognitive reserve." },
+    ],
+    theories: [
+      { name: "Concept mediation account", who: "Kroll & Sholl", idea: "Lexical (word-form) knowledge is stored in language-specific memory, but semantic (meaning) knowledge is shared in a common conceptual store.", pro: "Explains why translating a categorised word in L1 primes memory in L2", con: "Still debated for less-fluent bilinguals." },
+      { name: "Language-specific store model", who: "Paivio", idea: "Both lexical and semantic knowledge are stored in separate, language-specific memory systems.", pro: "Simple and intuitive architecture", con: "Evidence does not support this — semantic processing does transfer across languages in fluent bilinguals." },
+      { name: "Single vs dual-system hypothesis", who: "Various researchers", idea: "Debate over whether two languages occupy one shared brain region (single) or separate regions (dual). fMRI suggests early bilinguals share regions; late bilinguals may use separate areas.", pro: "Supported by fMRI and aphasic recovery evidence", con: "Brain damage studies show inconsistent recovery patterns — neither hypothesis wins cleanly." },
+    ],
+    quiz: [
+      { q: "In ADDITIVE bilingualism, a second language is:", opts: ["Learned before the first language", "Acquired alongside a well-developed first language", "Used to replace the first language", "Only learned in school"], ans: 1, exp: "Additive bilingualism means L2 is added to a strong L1 foundation — associated with cognitive benefits." },
+      { q: "Code-switching by bilinguals is best described as:", opts: ["A sign of language confusion", "Random and uncontrolled", "Rule-governed and often fast", "Only used when vocabulary is limited"], ans: 2, exp: "Code-switching is governed by grammatical rules and can actually be faster — bilinguals identify words across both their languages simultaneously." },
+      { q: "Which finding supports the 'concept mediation' account?", opts: ["L2 words are stored separately from L1 words", "Semantic processing of a word in L1 facilitates memory for the same concept in L2", "Bilinguals have two completely independent vocabularies", "Late bilinguals never develop shared semantic stores"], ans: 1, exp: "Semantic facilitation across languages shows a shared conceptual store — the 'concept mediation' model." },
+      { q: "Early bilinguals (learning two languages from birth) appear to:", opts: ["Build separate neural areas for each language", "Integrate both languages into one shared neural network", "Show faster decline in both languages", "Only have cognitive benefits after age 12"], ans: 1, exp: "fMRI research suggests early bilinguals build a sufficiently adaptable network that integrates both languages." },
+    ],
+  },
+  {
+    title: "Language & Speech Disorders",
+    sub: "What can go wrong — and what it tells us about how language works",
+    tabs: ["Flashcards", "Disorders Explorer", "Theories", "Quiz"],
+    flashcards: [
+      { term: "Aphasia", hint: "Brain damage", def: "Language impairment caused by damage to the left hemisphere of the brain. Types include Broca's, Wernicke's, Global, and Anomic aphasia." },
+      { term: "Broca's aphasia", hint: "Production affected", def: "Damage to the premotor area. Speech is effortful, agrammatical, with many pauses — but comprehension is largely preserved." },
+      { term: "Wernicke's aphasia", hint: "Comprehension affected", def: "Damage to the left temporal lobe. Fluent but meaningless speech — including neologisms (made-up words). Comprehension severely impaired." },
+      { term: "Dyslexia", hint: "Reading disorder", def: "Impairment in the brain's ability to translate visual/auditory input into language. Not due to low intelligence. More common in boys." },
+      { term: "SLI", hint: "No known cause", def: "Specific Language Impairment — language delay/deficit in the absence of neurological, cognitive, or sensorimotor deficits." },
+      { term: "Echolalia", hint: "Autism symptom", def: "Repetition of heard speech, sometimes hours later. A hallmark of autism — about 50% of children with autism develop this instead of functional speech." },
+      { term: "Stuttering", hint: "Fluency disorder", def: "Disruption in the normal rate/rhythm of speech — sounds or words are repeated or blocked, especially at the start of words." },
+      { term: "Dysarthria", hint: "Motor speech disorder", def: "Weakness or paralysis of speech muscles from nerve/brain damage. Causes slurred speech, slow rate, limited lip/tongue/jaw movement." },
+    ],
+    stages: [],
+    theories: [
+      { name: "Broca's vs Wernicke's aphasia", who: "Clinical research", idea: "Broca's = agrammatical but comprehension preserved. Wernicke's = fluent but meaningless. Together they show that phonological, syntactic, and semantic processing are separate brain modules.", pro: "Strong neurological evidence for modular language processing", con: "Brain damage is rarely clean — most aphasias involve mixed symptoms." },
+      { name: "Dyslexia subtypes", who: "Galaburda et al.", idea: "Primary dyslexia is hereditary and persistent; secondary/developmental dyslexia is hormonal and improves with age. Visual, auditory, and dysgraphic subtypes affect different processing pathways.", pro: "Explains why dyslexia manifests differently across individuals", con: "Subtype boundaries are blurry — most individuals show mixed patterns." },
+      { name: "SLI and phonological memory", who: "Tallal, Gathercole", idea: "SLI children have poor short-term memory for speech sounds and difficulty processing rapidly changing auditory information. This impairs vocabulary acquisition and grammar learning.", pro: "Explains the link between SLI and later dyslexia (~50% of SLI children)", con: "Not all SLI children show phonological memory deficits — the cause remains debated." },
+    ],
+    disorders: [
+      { name: "Broca's aphasia", type: "Language disorder", brain: "Left frontal lobe (premotor area)", desc: "Agrammatical, effortful speech with pauses and word-finding difficulty. Comprehension is largely preserved. The person understands 'The bicycle the man holds is blue' but struggles with 'The dog that the woman bites is grey' (requires syntax).", tags: ["Agrammatical", "Preserved comprehension", "Left hemisphere"] },
+      { name: "Wernicke's aphasia", type: "Language disorder", brain: "Left temporal lobe", desc: "Fluent but meaningless speech — sentences have correct structure but nonsensical or made-up words. E.g. 'the scroolish prastimer ate my spanstakes'. Comprehension is severely impaired.", tags: ["Fluent speech", "Neologisms", "Poor comprehension"] },
+      { name: "Global aphasia", type: "Language disorder", brain: "Both Broca's & Wernicke's areas", desc: "Combination of severely impaired comprehension AND production. Results from lesions to both major language areas, often after stroke.", tags: ["Severe", "Post-stroke", "Both areas"] },
+      { name: "Dyslexia", type: "Learning disability", brain: "Left hemisphere (cortex)", desc: "Difficulty translating written symbols into language. Not caused by low intelligence — most have average to superior IQ. Letter/number reversals are a common early sign.", tags: ["Reading difficulty", "Not low IQ", "Genetic component"] },
+      { name: "Autism", type: "Developmental disorder", brain: "Multiple brain areas", desc: "Identified by ~14 months when normal social interaction patterns don't appear. ~50% of children with autism fail to develop functional speech. Key feature: echolalia. Five times more common in males.", tags: ["Social behaviour", "Echolalia", "Biological origins"] },
+      { name: "SLI", type: "Language disorder", brain: "Not yet identified", desc: "Specific Language Impairment — language delay without any neurological, cognitive, or social-emotional explanation. Children use short sentences, struggle with function morphemes, and have word-finding difficulty. ~50% develop dyslexia.", tags: ["No known cause", "Grammar delay", "~50% → dyslexia"] },
+      { name: "Stuttering", type: "Speech / fluency disorder", brain: "Neurological + motor", desc: "Repetitions or blocks, especially at the start of words. Caused by a mix of neurological, familial, and motor factors. Treatment: fluency training and delayed auditory feedback (DAF).", tags: ["Fluency", "Childhood onset", "Treatable"] },
+      { name: "Dysarthria", type: "Speech disorder", brain: "Nervous system (varies)", desc: "Weakness or paralysis of speech muscles. Causes: stroke, Parkinson's, ALS, cerebral palsy, head injury. Symptoms: slurred speech, slow rate, limited jaw/tongue/lip movement.", tags: ["Motor speech", "Muscle weakness", "Multiple causes"] },
+      { name: "Alzheimer's disease", type: "Language + cognitive", brain: "Cortical regions (diffuse)", desc: "Progressive damage to cortical regions — primarily affects semantic memory. Patients lose specific words, replacing them with general terms. Phonological and syntactic knowledge is minimally affected early on.", tags: ["Semantic memory", "Progressive", "Elderly"] },
+    ],
+    quiz: [
+      { q: "A patient speaks in grammatically correct sentences but the words make no sense. Which type of aphasia is this?", opts: ["Broca's aphasia", "Anomic aphasia", "Wernicke's aphasia", "Global aphasia"], ans: 2, exp: "Wernicke's aphasia produces fluent but meaningless speech. Sentences have correct structure but contain neologisms and wrong word substitutions." },
+      { q: "Broca's aphasia affects primarily:", opts: ["Speech comprehension", "Written language only", "Speech production — agrammatical, effortful speech", "Memory for faces and names"], ans: 2, exp: "Broca's area controls speech production. Damage causes effortful, agrammatical speech — but comprehension is largely preserved." },
+      { q: "Which of the following is NOT true of dyslexia?", opts: ["It is caused by low intelligence", "More common in boys than girls", "Can include letter/number reversals", "Can be hereditary (primary dyslexia)"], ans: 0, exp: "Dyslexia is NOT caused by low intelligence — most people with dyslexia have average to superior IQ. It is a specific processing impairment." },
+      { q: "Children with SLI have language delays:", opts: ["Always due to hearing loss", "In the absence of neurological, cognitive, or sensorimotor deficits", "Only in their second language", "Always accompanied by autism"], ans: 1, exp: "By definition, SLI is a language disorder with no identifiable neurological, sensory, or cognitive cause — making it 'specific' to language." },
+    ],
+  },
+];
+
+let unit = 0, tab = 0, quizIdx = 0, quizScore = 0, quizAnswered = false;
+
+function buildNav() {
+  const nav = document.getElementById('unitNav');
+  nav.innerHTML = DATA.map((d,i) =>
+    `<button class="unit-btn${i===unit?' active':''}" onclick="switchUnit(${i})">${d.title}</button>`
+  ).join('');
+}
+
+function switchUnit(u) {
+  unit = u; tab = 0; quizIdx = 0; quizScore = 0; quizAnswered = false;
+  buildNav(); buildTabs(); renderTab();
+  document.getElementById('unitTitle').textContent = DATA[u].title;
+  document.getElementById('unitSub').textContent = DATA[u].sub;
+}
+
+function buildTabs() {
+  const d = DATA[unit];
+  document.getElementById('tabRow').innerHTML = d.tabs.map((t,i) =>
+    `<button class="tab-btn${i===tab?' active':''}" onclick="switchTab(${i})">${t}</button>`
+  ).join('');
+}
+
+function switchTab(t) {
+  tab = t; quizIdx = 0; quizScore = 0; quizAnswered = false;
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('active', i===t));
+  renderTab();
+}
+
+function renderTab() {
+  const d = DATA[unit];
+  const body = document.getElementById('tabBody');
+  if (tab === 0) renderFlashcards(body, d);
+  else if (tab === 1) {
+    if (unit === 3) renderDisorders(body, d);
+    else renderTimeline(body, d);
+  }
+  else if (tab === 2) renderTheories(body, d);
+  else renderQuiz(body, d);
+}
+
+function renderFlashcards(body, d) {
+  body.innerHTML = `<div class="section-label">Click a card to reveal the definition</div>
+  <div class="cards-grid">${d.flashcards.map((f,i) => `
+    <div class="flip-card" id="fc${i}" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="term">${f.term}</div>
+          <div class="hint">${f.hint}</div>
+          <div class="flip-hint">tap to flip</div>
+        </div>
+        <div class="flip-back">
+          <div class="def-label">Definition</div>
+          <div class="def">${f.def}</div>
+        </div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function renderTimeline(body, d) {
+  body.innerHTML = `<div class="section-label">${DATA[unit].tabs[1]}</div>
+  <div class="timeline">${d.stages.map(s => `
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-age">${s.age}</div>
+      <div class="tl-stage">${s.stage}</div>
+      <div class="tl-desc">${s.desc}</div>
+    </div>`).join('')}</div>`;
+}
+
+function renderTheories(body, d) {
+  body.innerHTML = `<div class="section-label">Theories &amp; key concepts — click to expand</div>
+  <div class="theory-list">${d.theories.map((t,i) => `
+    <div class="theory-card">
+      <div class="theory-header" onclick="toggleTheory(${i})">
+        <span class="theory-name">${t.name}<span class="theory-badge">${t.who}</span></span>
+        <span class="theory-toggle" id="tt${i}">+</span>
+      </div>
+      <div class="theory-body" id="tb${i}">
+        <div class="theory-idea">${t.idea}</div>
+        <div class="theory-pro">✓ ${t.pro}</div>
+        <div class="theory-con">✗ ${t.con}</div>
+      </div>
+    </div>`).join('')}</div>`;
+}
+
+function toggleTheory(i) {
+  const b = document.getElementById('tb'+i);
+  const t = document.getElementById('tt'+i);
+  const open = b.classList.toggle('open');
+  t.textContent = open ? '−' : '+';
+}
+
+function renderDisorders(body, d) {
+  body.innerHTML = `<div class="section-label">Select a disorder to explore</div>
+  <div class="disorder-grid">${d.disorders.map((dis,i) => `
+    <div class="disorder-chip" id="dc${i}" onclick="showDisorder(${i})">
+      <div class="d-name">${dis.name}</div>
+      <div class="d-type">${dis.type}</div>
+    </div>`).join('')}</div>
+  <div class="disorder-detail" id="disorderDetail"></div>`;
+}
+
+function showDisorder(i) {
+  const d = DATA[3].disorders[i];
+  document.querySelectorAll('.disorder-chip').forEach((c,j) => c.classList.toggle('active', j===i));
+  const el = document.getElementById('disorderDetail');
+  el.classList.add('show');
+  el.innerHTML = `<div class="dd-name">${d.name}</div>
+    <div class="dd-brain">Brain area: ${d.brain}</div>
+    <div class="dd-desc">${d.desc}</div>
+    <div class="dd-tags">${d.tags.map(t=>`<span class="dd-tag">${t}</span>`).join('')}</div>`;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderQuiz(body, d) {
+  const q = d.quiz[quizIdx];
+  const pct = Math.round((quizIdx / d.quiz.length) * 100);
+  body.innerHTML = `
+  <div class="progress-wrap">
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="score-txt">${quizScore}/${d.quiz.length}</div>
+  </div>
+  <div class="quiz-box">
+    <div class="quiz-q">${quizIdx+1}. ${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`<button class="opt" id="opt${i}" onclick="answerQuiz(${i})">${o}</button>`).join('')}</div>
+    <div class="quiz-exp" id="qexp"></div>
+    <button class="next-btn" id="qnext" onclick="nextQ()">${quizIdx < d.quiz.length-1 ? 'Next question →' : 'See results →'}</button>
+  </div>`;
+  quizAnswered = false;
+}
+
+function answerQuiz(i) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const q = DATA[unit].quiz[quizIdx];
+  const correct = i === q.ans;
+  if (correct) quizScore++;
+  document.querySelectorAll('.opt').forEach((b,j) => {
+    b.disabled = true;
+    if (j === q.ans) b.classList.add('correct');
+    else if (j === i && !correct) b.classList.add('wrong');
+  });
+  const exp = document.getElementById('qexp');
+  exp.textContent = (correct ? '✓ Correct! ' : '✗ Not quite. ') + q.exp;
+  exp.classList.add('show');
+  document.getElementById('qnext').classList.add('show');
+}
+
+function nextQ() {
+  const d = DATA[unit];
+  quizIdx++;
+  if (quizIdx >= d.quiz.length) {
+    const pct = Math.round((quizScore / d.quiz.length) * 100);
+    const msg = pct===100 ? 'Perfect score!' : pct>=75 ? 'Great job!' : pct>=50 ? 'Good effort — review and try again!' : 'Keep studying — you\'ve got this!';
+    document.getElementById('tabBody').innerHTML = `
+    <div class="score-result">
+      <div class="score-pct">${pct}%</div>
+      <div class="score-msg">${quizScore} of ${d.quiz.length} correct — ${msg}</div>
+      <button class="retry-btn" onclick="retryQuiz()">Try again</button>
+    </div>`;
+  } else {
+    renderQuiz(document.getElementById('tabBody'), d);
+  }
+}
+
+function retryQuiz() {
+  quizIdx = 0; quizScore = 0; quizAnswered = false;
+  renderQuiz(document.getElementById('tabBody'), DATA[unit]);
+}
+
+switchUnit(0);
+</script>
+</body>
+</html>
