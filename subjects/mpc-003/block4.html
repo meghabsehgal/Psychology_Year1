@@ -1,1 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personality Assessment Lab</title>
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f4f0;
+    --bg3: #eceae4;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #9a9a94;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --success-bg: #eaf3de; --success-text: #27500a; --success-border: #639922;
+    --danger-bg: #fcebeb; --danger-text: #791f1f; --danger-border: #e24b4a;
+    --info-bg: #e6f1fb; --info-text: #0c447c; --info-border: #378add;
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1c1c1a;
+      --bg2: #252522;
+      --bg3: #2e2e2a;
+      --text: #e8e6de;
+      --text2: #a8a69e;
+      --text3: #6a6a64;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.2);
+      --success-bg: #173404; --success-text: #c0dd97; --success-border: #3b6d11;
+      --danger-bg: #501313; --danger-text: #f7c1c1; --danger-border: #a32d2d;
+      --info-bg: #042c53; --info-text: #b5d4f4; --info-border: #185fa5;
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg3); color: var(--text); min-height: 100vh; padding: 20px 16px 40px; }
+  .wrapper { max-width: 800px; margin: 0 auto; }
+  .header { margin-bottom: 1.5rem; }
+  .header h1 { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .header p { font-size: 13px; color: var(--text2); }
+  .card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1.25rem; }
+
+  /* NAV */
+  .nav { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 0.5px solid var(--border); }
+  .nav-btn { font-size: 13px; font-weight: 500; padding: 6px 14px; border-radius: 20px; border: 0.5px solid var(--border2); background: transparent; color: var(--text2); cursor: pointer; transition: all .15s; font-family: var(--font); }
+  .nav-btn:hover { background: var(--bg2); }
+  .nav-btn.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .screen { display: none; }
+  .screen.active { display: block; }
+
+  /* UNIT MAP */
+  .unit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+  @media (max-width: 540px) { .unit-grid { grid-template-columns: 1fr; } }
+  .unit-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem 1.25rem; cursor: pointer; transition: border-color .15s; }
+  .unit-card:hover { border-color: var(--border2); }
+  .unit-badge { font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-bottom: 8px; }
+  .unit-card h3 { font-size: 14px; font-weight: 600; margin: 0 0 4px; color: var(--text); }
+  .unit-card p { font-size: 12px; color: var(--text2); line-height: 1.5; margin-bottom: 8px; }
+  .concept-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip { font-size: 11px; padding: 2px 8px; border-radius: 10px; border: 0.5px solid var(--border); color: var(--text2); }
+  #unit-detail { display:none; background: var(--bg2); border-radius: var(--radius); padding: 1.25rem; }
+  #unit-detail ul { padding-left: 1.2rem; }
+  #unit-detail li { font-size: 13px; color: var(--text); margin-bottom: 4px; line-height: 1.5; }
+  .section-label { font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+
+  /* FLASHCARDS */
+  .fc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+  .fc-meta { font-size: 13px; color: var(--text2); }
+  .fc-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1rem; }
+  .fc-filter button { font-size: 12px; padding: 4px 12px; border-radius: 12px; border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font); transition: all .15s; }
+  .fc-filter button.active { background: var(--bg2); border-color: var(--border2); color: var(--text); }
+  .progress-bar { height: 4px; background: var(--border); border-radius: 2px; overflow: hidden; margin-bottom: 1rem; }
+  .progress-fill { height: 100%; border-radius: 2px; background: var(--text); transition: width .3s; }
+  .card-area { perspective: 1000px; min-height: 200px; }
+  .card-3d { width: 100%; min-height: 200px; cursor: pointer; position: relative; transform-style: preserve-3d; transition: transform .5s; }
+  .card-3d.flipped { transform: rotateY(180deg); }
+  .card-face { position: absolute; width: 100%; min-height: 200px; backface-visibility: hidden; border-radius: var(--radius); border: 0.5px solid var(--border); padding: 1.5rem; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; background: var(--bg); }
+  .card-back { transform: rotateY(180deg); background: var(--bg2); }
+  .card-term { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .card-hint { font-size: 12px; color: var(--text3); margin-top: 12px; }
+  .card-def { font-size: 14px; color: var(--text); line-height: 1.6; }
+  .card-category { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; margin-bottom: 12px; display: inline-block; }
+  .fc-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 1.5rem; }
+  .fc-nav button { font-size: 14px; padding: 8px 20px; border-radius: var(--radius-sm); border: 0.5px solid var(--border2); background: transparent; color: var(--text); cursor: pointer; font-family: var(--font); }
+  .fc-nav button:hover { background: var(--bg2); }
+  .card-spacer { min-height: 200px; }
+
+  /* QUIZ */
+  .quiz-q { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 1.25rem; line-height: 1.5; }
+  .quiz-opts { display: grid; gap: 10px; }
+  .quiz-opt { padding: 12px 16px; border-radius: var(--radius-sm); border: 0.5px solid var(--border2); background: var(--bg); font-size: 14px; color: var(--text); cursor: pointer; text-align: left; transition: all .15s; line-height: 1.4; font-family: var(--font); }
+  .quiz-opt:hover:not(:disabled) { background: var(--bg2); border-color: var(--border2); }
+  .quiz-opt.correct { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+  .quiz-opt.wrong { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+  .quiz-feedback { margin-top: 1rem; padding: 12px 16px; border-radius: var(--radius-sm); font-size: 14px; line-height: 1.5; display: none; }
+  .quiz-feedback.show { display: block; }
+  .score-pill { font-size: 13px; font-weight: 500; padding: 3px 10px; border-radius: 10px; background: var(--bg2); color: var(--text); }
+  .btn-sm { font-size: 12px; padding: 5px 12px; border-radius: 10px; border: 0.5px solid var(--border); background: transparent; color: var(--text2); cursor: pointer; font-family: var(--font); }
+  .btn-sm:hover { background: var(--bg2); }
+
+  /* COMPARATOR */
+  .compare-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; }
+  .compare-card { background: var(--bg); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 1rem; cursor: pointer; transition: all .15s; }
+  .compare-card:hover { border-color: var(--border2); }
+  .compare-card.selected { border-color: #378add; border-width: 1.5px; }
+  .compare-name { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+  .compare-type { font-size: 11px; color: var(--text2); margin-bottom: 8px; }
+  .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 8px; margin: 2px 2px 2px 0; background: var(--bg2); color: var(--text2); }
+  .compare-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 1rem; }
+  .compare-table th { text-align: left; padding: 8px 10px; font-weight: 600; font-size: 12px; color: var(--text2); border-bottom: 0.5px solid var(--border); }
+  .compare-table td { padding: 10px 10px; border-bottom: 0.5px solid var(--border); color: var(--text); vertical-align: top; }
+  .compare-table tr:last-child td { border-bottom: none; }
+  .compare-table tr:first-child td { font-weight: 600; font-size: 14px; }
+  .row-label { color: var(--text2) !important; font-size: 12px !important; font-weight: 600 !important; width: 120px; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<div class="header">
+  <h1>Personality Assessment Lab</h1>
+  <p>Units 1–4 · Interactive learning tools</p>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="showScreen('map', this)">Concept Map</button>
+  <button class="nav-btn" onclick="showScreen('flashcards', this)">Flashcards</button>
+  <button class="nav-btn" onclick="showScreen('quiz', this)">Quiz</button>
+  <button class="nav-btn" onclick="showScreen('compare', this)">Test Comparator</button>
+</nav>
+
+<!-- CONCEPT MAP -->
+<div id="screen-map" class="screen active">
+  <div class="unit-grid">
+    <div class="unit-card" onclick="expandUnit(1)">
+      <span class="unit-badge" style="background:#EEEDFE;color:#3C3489">Unit 1</span>
+      <h3>Intro to Assessment & Testing</h3>
+      <p>History, purpose, standardisation, norms, reliability, validity</p>
+      <div class="concept-chips"><span class="chip">Standardisation</span><span class="chip">Reliability</span><span class="chip">Validity</span><span class="chip">Norms</span></div>
+    </div>
+    <div class="unit-card" onclick="expandUnit(2)">
+      <span class="unit-badge" style="background:#E1F5EE;color:#085041">Unit 2</span>
+      <h3>Approaches to Assessment</h3>
+      <p>Self-report, projective techniques, behavioural assessment</p>
+      <div class="concept-chips"><span class="chip">16PF</span><span class="chip">MBTI</span><span class="chip">MMPI</span><span class="chip">Rorschach</span><span class="chip">TAT</span></div>
+    </div>
+    <div class="unit-card" onclick="expandUnit(3)">
+      <span class="unit-badge" style="background:#FAECE7;color:#4A1B0C">Unit 3</span>
+      <h3>Behavioural Assessment</h3>
+      <p>Case study, interview methods, functional assessment</p>
+      <div class="concept-chips"><span class="chip">Case Study</span><span class="chip">FBA</span><span class="chip">Interview</span><span class="chip">Direct Obs.</span></div>
+    </div>
+    <div class="unit-card" onclick="expandUnit(4)">
+      <span class="unit-badge" style="background:#FBEAF0;color:#4B1528">Unit 4</span>
+      <h3>Other Measures of Personality</h3>
+      <p>MMPI, MCMI, NEO-PI, inkblot tests, apperception tests</p>
+      <div class="concept-chips"><span class="chip">MMPI</span><span class="chip">MCMI</span><span class="chip">NEO-PI</span><span class="chip">CAT/SAT</span></div>
+    </div>
+  </div>
+  <div id="unit-detail"></div>
+</div>
+
+<!-- FLASHCARDS -->
+<div id="screen-flashcards" class="screen">
+  <div class="fc-header">
+    <span class="fc-meta" id="fc-counter">Card 1 of 26</span>
+    <button class="btn-sm" onclick="shuffleCards()">Shuffle</button>
+  </div>
+  <div class="fc-filter">
+    <button class="active" onclick="filterCards('all',this)">All</button>
+    <button onclick="filterCards('unit1',this)">Unit 1</button>
+    <button onclick="filterCards('unit2',this)">Unit 2</button>
+    <button onclick="filterCards('unit3',this)">Unit 3</button>
+    <button onclick="filterCards('unit4',this)">Unit 4</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="fc-progress" style="width:4%"></div></div>
+  <div class="card-area">
+    <div class="card-3d" id="fc-card" onclick="flipCard()">
+      <div class="card-face">
+        <span class="card-category" id="fc-cat"></span>
+        <div class="card-term" id="fc-term"></div>
+        <div class="card-hint">Tap to reveal definition</div>
+      </div>
+      <div class="card-face card-back">
+        <div class="card-def" id="fc-def"></div>
+      </div>
+    </div>
+    <div class="card-spacer"></div>
+  </div>
+  <div class="fc-nav">
+    <button onclick="prevCard()">← Prev</button>
+    <span style="font-size:13px;color:var(--text2)" id="fc-pos">1 / 26</span>
+    <button onclick="nextCard()">Next →</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="screen-quiz" class="screen">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+    <div style="font-size:13px;color:var(--text2);display:flex;align-items:center;gap:8px;">Score: <span class="score-pill" id="quiz-score">0 / 0</span></div>
+    <button class="btn-sm" onclick="resetQuiz()">Restart</button>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="quiz-progress" style="width:0%"></div></div>
+  <div id="quiz-container"></div>
+</div>
+
+<!-- COMPARATOR -->
+<div id="screen-compare" class="screen">
+  <p style="font-size:13px;color:var(--text2);margin-bottom:1rem;">Select 2 or 3 tests to compare side by side</p>
+  <div class="compare-grid" id="compare-grid"></div>
+  <div id="compare-output" style="margin-top:1.5rem;display:none;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+      <h3 style="font-size:14px;font-weight:600">Comparison</h3>
+      <button class="btn-sm" onclick="clearCompare()">Clear</button>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="compare-table" id="compare-table"></table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+const UNITS = {
+  1: { title:"Intro to Assessment & Testing", color:"#EEEDFE", textColor:"#3C3489",
+    sections:[
+      {name:"History", items:["Ancient Chinese civil service tests (1000 BC)","Binet-Simon Scale (1905) for mental development","Army Alpha & Beta tests (WWI)","Hippocrates: 4 humors theory","Galen: sanguine, phlegmatic, choleric, melancholic","Jung's personality types (1922)","Myers-Briggs Type Indicator (1958)"]},
+      {name:"Key Concepts", items:["Standardisation: uniform administration & scoring","Norms: reference standards from sample groups","Reliability: consistency across time (test-retest, split-half, parallel forms)","Validity: does the test measure what it claims?"]},
+      {name:"Types of Validity", items:["Content validity: representative items","Criterion-related validity: predictive & concurrent","Construct validity: convergent + divergent","Predictive validity: forecasts future behaviour"]},
+      {name:"4 Traits Measured", items:["Social traits (friendliness, dominance, honesty)","Motives (achievement, affiliation, aggression)","Personal conceptions (values, attitudes)","Adjustment (emotional stability, adaptation)"]}
+    ]},
+  2: { title:"Approaches to Personality Assessment", color:"#E1F5EE", textColor:"#085041",
+    sections:[
+      {name:"Self-Report Tests", items:["Single-trait: Locus of Control, Sensation Seeking Scale","Multi-dimensional: 16PF (16 factors by Cattell)","MMPI-2: 567 items, 10 clinical + 8 validity scales","NEO-PI: Big Five dimensions","MBTI: Jung-based, 4 dimensions, 16 types"]},
+      {name:"Faking & Solutions", items:["Faking good: appearing better than reality","Faking bad: appearing more disturbed","Social desirability bias (Marlowe-Crowne scale)","Solutions: rapport, forced-choice, concealment, verification keys"]},
+      {name:"Projective Techniques (Lindzey 1959)", items:["Association (Rorschach, Holtzman, Word Association)","Construction (TAT, CAT, Rosenzweig PFT)","Completion (Sack's Sentence Completion)","Expressive (play, drawing, role-play)","Choice/Ordering (Szondi test)"]},
+      {name:"Behavioural Assessment", items:["Direct observation in natural settings","Naturalistic observation","Situational tests (OSS WWII origin)","Rating scales & frequency counts"]}
+    ]},
+  3: { title:"Behavioural Assessment", color:"#FAECE7", textColor:"#4A1B0C",
+    sections:[
+      {name:"Core Features", items:["Focus on overt & covert behaviour","Quantification for reliable comparisons","Empirically validated measures","Continuous assessment (baseline → intervention → follow-up)","Multi-method approach"]},
+      {name:"Types of Behavioural Assessment", items:["Direct: recorded as it occurs","Analogue: simulated conditions (role play)","Indirect: retrospective inference","Idiographic: disorder-focused individual","Contextual: environmental stimuli in focus"]},
+      {name:"Case Study Method", items:["Intensive study of one individual over time","Longitudinal approach","Types: individual vs community; deviant vs clinical","Strength: depth and idiosyncrasy","Weakness: limited generalisability, possible bias"]},
+      {name:"Interview Method", items:["Structured: preset questions, fixed order, higher validity","Unstructured: open-ended, flexible, preferred in clinical","Purpose varies: employment, research, clinical diagnosis","Limitation: interviewer bias, subjective data"]},
+      {name:"Other Measures", items:["Experience Sampling Method (ESM): pager/beep-based, real-time data","Biological measures: PET scans, hormone levels"]}
+    ]},
+  4: { title:"Other Measures of Personality", color:"#FBEAF0", textColor:"#4B1528",
+    sections:[
+      {name:"Self-Report Inventories", items:["MMPI (1943): 567 items, 10 clinical + 4 validity scales, empirical keying","MMPI-2 (1989): updated norms, removed sexist/outdated items","MCMI-III (Millon): 175 items, 22 personality disorders, Axis I & II","NEO-PI (Costa & McRae): Big Five – N, E, O, A, C with 6 facets each"]},
+      {name:"Inkblot Tests", items:["Rorschach (1921): 10 cards, bilaterally symmetrical, Exner's Comprehensive System scoring","Rorschach scoring: location (W/D/Dd), determinant (F/C/T/V/M), content, popularity","Holtzman (1961): 45 cards, 1 response per card, 22 scoring categories, higher reliability"]},
+      {name:"Apperception Tests", items:["TAT (Morgan & Murray 1935): 30 cards, Murray's Need Theory, hero analysis","SAT: 16 pictures for older adults, themes of loneliness, helplessness","CAT (Bellak 1949): 10 animal-figure cards for children 3-10; CAT-A, CAT-H, CAT-S versions"]},
+      {name:"Rorschach Interpretation Clues", items:["W (whole) responses → integrated thinking","Color responses → emotionality & impulsivity","Many details → compulsivity","White-space → oppositional tendencies","Movement responses → imagination","Reaction time delays → anxiety"]}
+    ]}
+};
+
+const CARDS = [
+  {unit:"unit1",term:"Standardisation",def:"Uniform procedures followed in administering and scoring an assessment tool so results can be meaningfully compared."},
+  {unit:"unit1",term:"Test-retest reliability",def:"Consistency of scores when the same test is administered to the same group on two different occasions; measured by correlation coefficient."},
+  {unit:"unit1",term:"Split-half reliability",def:"Internal consistency measured by correlating scores on odd-numbered items vs even-numbered items."},
+  {unit:"unit1",term:"Content validity",def:"The test items are representative of the entire domain being measured (e.g. a shyness test covers personal, social, and cognitive aspects of shyness)."},
+  {unit:"unit1",term:"Construct validity",def:"Evidence that a test measures a hypothetical construct, demonstrated through convergent (relates to similar tests) and divergent (doesn't relate to unrelated tests) validation."},
+  {unit:"unit1",term:"Predictive validity",def:"The test can accurately forecast some criterion behaviour in the future (e.g. an IQ test predicting school performance)."},
+  {unit:"unit1",term:"Norms",def:"Established standards (percentile scores, means) derived from a standardisation sample, allowing comparison of individual scores to a reference group."},
+  {unit:"unit2",term:"Social desirability bias",def:"Tendency to give socially acceptable answers rather than truthful ones; measured by the Marlowe-Crowne Social Desirability Scale."},
+  {unit:"unit2",term:"Acquiescence response set",def:"A tendency to agree with virtually every question on a test, regardless of content; a major problem on true-false formats."},
+  {unit:"unit2",term:"Projective technique",def:"Assessment method presenting ambiguous stimuli so people 'project' their unconscious feelings, needs, and conflicts onto the material."},
+  {unit:"unit2",term:"16PF",def:"Cattell's 187-item test measuring 16 source traits of normal personality, plotted as a profile for counselling and employment decisions."},
+  {unit:"unit2",term:"MBTI",def:"Myers-Briggs Type Indicator; based on Jung's theory; 4 dimensions (S/I, T/F, I/E, P/J) producing 16 personality types."},
+  {unit:"unit2",term:"Forced-choice technique",def:"Respondents choose between equally desirable/undesirable options, making faking good more difficult."},
+  {unit:"unit3",term:"Functional Behavioural Assessment",def:"Looks beyond 'bad' behaviour to identify the function it serves for the individual, informing effective intervention strategies."},
+  {unit:"unit3",term:"Case study method",def:"Detailed, intensive study of a single individual (or community) over time; primary tool in psychotherapy and personality theory development."},
+  {unit:"unit3",term:"Structured interview",def:"Questions are carefully worded and presented in a fixed order; higher reliability and validity, preferred in research settings."},
+  {unit:"unit3",term:"Unstructured interview",def:"Open-ended questions allow flexible exploration of thoughts and feelings; preferred in clinical/therapeutic settings."},
+  {unit:"unit3",term:"Experience Sampling Method",def:"Participants are beeped at random times to report their current behaviour; reveals stable patterns of individual behaviour (Stone et al., 1991)."},
+  {unit:"unit4",term:"MMPI-2",def:"Updated 1989 version of MMPI with 567 items, 10 clinical scales, modernised norms, and removal of sexist/outdated content."},
+  {unit:"unit4",term:"MCMI-III",def:"Millon Clinical Multiaxial Inventory; 175 items, 20-30 min, assesses 22 personality disorders (Axis I & II), 8th-grade reading level."},
+  {unit:"unit4",term:"NEO-PI Big Five",def:"Five factors: Neuroticism, Extraversion, Openness to Experience, Agreeableness, Conscientiousness; each with 6 facet scales."},
+  {unit:"unit4",term:"Rorschach inkblot test",def:"10 bilaterally symmetrical inkblot cards (5 B&W, 2 red-grey, 3 multicolour); scored on location, determinant, content, and popularity using Exner's Comprehensive System."},
+  {unit:"unit4",term:"Holtzman Inkblot Technique",def:"45 inkblot cards; one response per card; scored on 22 personality-related categories; higher standardisation and reliability than Rorschach."},
+  {unit:"unit4",term:"TAT (Thematic Apperception Test)",def:"30 black-and-white picture cards; respondents tell stories; based on Murray's Need Theory; analysis focuses on hero's needs and environmental press."},
+  {unit:"unit4",term:"CAT (Children's Apperception Test)",def:"10 animal-figure cards for children aged 3–10; assesses personality, reality testing, drive regulation, and conflicts; developed by Bellak (1949)."},
+  {unit:"unit4",term:"Apperception",def:"Conscious perception with full awareness; understanding newly observed qualities by relating them to past experience; introduced by Leibniz."},
+];
+
+const QUESTIONS = [
+  {q:"Which test was originally developed by Hathaway and McKinley (1943) to diagnose psychological disorders?",opts:["NEO-PI","MCMI","MMPI","16PF"],ans:2,exp:"The MMPI was devised by Hathaway & McKinley (1943) using an empirical strategy to establish 10 clinical scales."},
+  {q:"How many inkblot cards are in the Holtzman Inkblot Technique (HIT)?",opts:["10","22","45","30"],ans:2,exp:"The HIT consists of 45 inkblots (plus 2 practice cards), with one response requested per blot."},
+  {q:"The NEO-PI is based on which model of personality?",opts:["Murray's Need Theory","The Big Five (Five-Factor) Model","Jung's Type Theory","Cattell's 16 Source Traits"],ans:1,exp:"NEO-PI (Costa & McRae, 1989) measures the Big Five: Neuroticism, Extraversion, Openness, Agreeableness, Conscientiousness."},
+  {q:"Which Rorschach response category indicates 'emotionality and impulsivity'?",opts:["White-space responses","Whole (W) responses","Color responses","Movement (M) responses"],ans:2,exp:"Color responses are said to indicate emotionality and impulsivity, while W responses indicate integrated thinking."},
+  {q:"What is the primary criticism of projective tests?",opts:["Too many items","Poor standardisation and low reliability","Only suitable for children","No theoretical basis"],ans:1,exp:"Projective tests are criticised for lack of standardised administration/scoring and reliability dependent on examiner skill."},
+  {q:"In the TAT, who is the 'hero' assumed to represent?",opts:["The examiner","A fictional character","The examinee","Murray himself"],ans:2,exp:"The main character (hero/heroine) in TAT stories is assumed to represent the examinee, projecting their needs and conflicts."},
+  {q:"Which type of validity is demonstrated when a new self-esteem test correlates positively with existing validated self-esteem measures?",opts:["Divergent validity","Predictive validity","Convergent validity","Content validity"],ans:2,exp:"Convergent validity shows a test correlates with other measures purporting to assess the same construct."},
+  {q:"The forced-choice technique in self-report tests is primarily designed to prevent:",opts:["Test-retest inconsistency","Social desirability / faking good","Observer bias","Low construct validity"],ans:1,exp:"Forced-choice items present equally desirable options so respondents cannot simply choose the socially acceptable one."},
+  {q:"Which method of behavioural assessment involves measuring behaviour under simulated conditions?",opts:["Direct assessment","Idiographic assessment","Contextual assessment","Analogue assessment"],ans:3,exp:"Analogue assessment involves simulated conditions (e.g. role play) when behaviour may not occur naturally."},
+  {q:"The CAT uses animal figures primarily because:",opts:["Animals are less threatening to examiners","Children aged 3-10 were assumed to identify more easily with animals","Animals reduce cultural bias","Murray preferred animals"],ans:1,exp:"Bellak (1949) assumed children aged 3–10 would identify more easily with animal drawings than human figures."},
+  {q:"Exner's Comprehensive System for the Rorschach was developed in:",opts:["1921","1943","Late 1950s","1989"],ans:2,exp:"American psychologist John Exner developed the Comprehensive System in the late 1950s."},
+  {q:"The MCMI-III's Grossman Facet Scales were added to:",opts:["Replace the validity scales","Identify salient clinical domains for personalised therapy","Shorten the test to 10 items","Assess normal personality only"],ans:1,exp:"The Grossman Facet Scales identify the most salient clinical domains (e.g. interpersonal, cognitive) to guide personalised therapy."},
+];
+
+const TESTS = [
+  {name:"MMPI-2",type:"Self-report inventory",items:"567",population:"Adults",scales:"10 clinical + 8 validity",time:"60-90 min",use:"Clinical diagnosis, personnel decisions",validity:"4 validity scales (Lie, F, K, etc.)",creator:"Hathaway & McKinley (1943); revised 1989",theory:"Empirical keying"},
+  {name:"MCMI-III",type:"Self-report inventory",items:"175",population:"Adults in clinical settings",scales:"22 personality + 3 modifier + 1 validity",time:"20-30 min",use:"Axis I & II psychiatric diagnosis, personalised therapy",validity:"Modifier indices",creator:"Millon (1987, 1997)",theory:"Millon's theory of psychopathology"},
+  {name:"NEO-PI-R",type:"Self-report inventory",items:"240 + 3 validity",population:"Adults & adolescents",scales:"5 domain (Big Five) + 30 facets",time:"30-40 min",use:"Counselling, research, occupational settings",validity:"Form S (self) / Form R (observer)",creator:"Costa & McRae (1989)",theory:"Five-Factor Model"},
+  {name:"16PF",type:"Self-report inventory",items:"187",population:"Adults",scales:"16 source traits",time:"45-60 min",use:"Employment, counselling, personality profiling",validity:"Motivational distortion scale",creator:"Cattell (1965)",theory:"Factor-analytic trait theory"},
+  {name:"Rorschach",type:"Projective / inkblot",items:"10 cards",population:"Ages 5+",scales:"Location, determinant, content, popularity",time:"45-90 min",use:"Personality dynamics, psychopathology",validity:"Variable; Exner's system improves it",creator:"Rorschach (1921); Exner (1950s)",theory:"Psychodynamic projection"},
+  {name:"HIT",type:"Projective / inkblot",items:"45 cards",population:"Ages 5+",scales:"22 personality categories",time:"50-80 min",use:"Schizophrenia, depression, personality disorders",validity:"Higher than Rorschach; standardised",creator:"Holtzman (1961)",theory:"Psychodynamic projection"},
+  {name:"TAT",type:"Projective / apperception",items:"30 cards",population:"Adults & adolescents",scales:"Needs, press, frequency/intensity/duration",time:"~50 min",use:"Motivation, interpersonal relationships, clinical",validity:"Impressionistic; moderately reliable",creator:"Morgan & Murray (1935)",theory:"Murray's Need-Press theory"},
+  {name:"CAT",type:"Projective / apperception",items:"10 cards + supplement",population:"Children 3–10",scales:"Drives, conflicts, defences, autonomy",time:"20-45 min",use:"Child personality & psychopathology",validity:"Projective, trained examiner needed",creator:"Bellak & Bellak (1949)",theory:"Psychoanalytic projection"},
+];
+
+const ROWS = ["type","items","population","scales","time","use","validity","creator","theory"];
+const ROW_LABELS = {type:"Type",items:"No. of items",population:"Population",scales:"Scales",time:"Time",use:"Primary use",validity:"Validity/Checks",creator:"Creator",theory:"Theory basis"};
+
+let fcFiltered = [...CARDS], fcIdx = 0, fcFlipped = false;
+let qIdx = 0, qCorrect = 0, qTotal = 0, qAnswered = false, qShuffled = [];
+let selectedTests = [];
+
+function showScreen(id, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('screen-'+id).classList.add('active');
+  btn.classList.add('active');
+  if (id === 'flashcards') renderCard();
+  if (id === 'quiz') { qShuffled = shuffle([...QUESTIONS]); resetQuiz(); }
+  if (id === 'compare') renderCompareGrid();
+}
+
+function expandUnit(n) {
+  const div = document.getElementById('unit-detail');
+  const u = UNITS[n];
+  div.style.display = 'block';
+  div.innerHTML = `<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+    <h3 style="font-size:15px;font-weight:600">Unit ${n}: ${u.title}</h3>
+    <button class="btn-sm" onclick="document.getElementById('unit-detail').style.display='none'">Close</button>
+  </div>` + u.sections.map(s => `<div style="margin-bottom:1rem;"><div class="section-label">${s.name}</div><ul>${s.items.map(i=>`<li>${i}</li>`).join('')}</ul></div>`).join('');
+}
+
+function renderCard() {
+  if (!fcFiltered.length) return;
+  const c = fcFiltered[fcIdx];
+  const cats = {unit1:'Unit 1',unit2:'Unit 2',unit3:'Unit 3',unit4:'Unit 4'};
+  const cols = {unit1:'background:#EEEDFE;color:#3C3489',unit2:'background:#E1F5EE;color:#085041',unit3:'background:#FAECE7;color:#4A1B0C',unit4:'background:#FBEAF0;color:#4B1528'};
+  document.getElementById('fc-cat').textContent = cats[c.unit];
+  document.getElementById('fc-cat').setAttribute('style', cols[c.unit]+';font-size:11px;font-weight:600;padding:3px 10px;border-radius:10px;margin-bottom:12px;display:inline-block;');
+  document.getElementById('fc-term').textContent = c.term;
+  document.getElementById('fc-def').textContent = c.def;
+  document.getElementById('fc-counter').textContent = `Card ${fcIdx+1} of ${fcFiltered.length}`;
+  document.getElementById('fc-pos').textContent = `${fcIdx+1} / ${fcFiltered.length}`;
+  document.getElementById('fc-progress').style.width = ((fcIdx+1)/fcFiltered.length*100)+'%';
+  document.getElementById('fc-card').classList.remove('flipped');
+  fcFlipped = false;
+}
+function flipCard() { fcFlipped = !fcFlipped; document.getElementById('fc-card').classList.toggle('flipped', fcFlipped); }
+function nextCard() { fcIdx = (fcIdx+1) % fcFiltered.length; renderCard(); }
+function prevCard() { fcIdx = (fcIdx-1+fcFiltered.length) % fcFiltered.length; renderCard(); }
+function filterCards(unit, btn) {
+  document.querySelectorAll('.fc-filter button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  fcFiltered = unit === 'all' ? [...CARDS] : CARDS.filter(c => c.unit === unit);
+  fcIdx = 0; renderCard();
+}
+function shuffleCards() { fcFiltered = shuffle(fcFiltered); fcIdx = 0; renderCard(); }
+
+function resetQuiz() {
+  qIdx = 0; qCorrect = 0; qTotal = 0; qAnswered = false;
+  qShuffled = shuffle([...QUESTIONS]);
+  document.getElementById('quiz-score').textContent = '0 / 0';
+  document.getElementById('quiz-progress').style.width = '0%';
+  renderQuestion();
+}
+function renderQuestion() {
+  const container = document.getElementById('quiz-container');
+  if (qIdx >= qShuffled.length) {
+    container.innerHTML = `<div style="text-align:center;padding:2rem;">
+      <div style="font-size:32px;font-weight:600;margin-bottom:8px">${qCorrect}/${qShuffled.length}</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:1.5rem">${qCorrect>=9?'Excellent work! 🎉':qCorrect>=6?'Good effort – review the missed ones!':'Keep studying – you\'ve got this!'}</div>
+      <button onclick="resetQuiz()" style="padding:10px 24px;border-radius:var(--radius-sm);border:0.5px solid var(--border2);background:transparent;color:var(--text);cursor:pointer;font-size:14px;font-family:var(--font)">Try Again</button>
+    </div>`; return;
+  }
+  const q = qShuffled[qIdx];
+  container.innerHTML = `<div style="margin-bottom:.5rem;font-size:12px;color:var(--text2)">Question ${qIdx+1} of ${qShuffled.length}</div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQ(${i})">${o}</button>`).join('')}</div>
+    <div class="quiz-feedback" id="qfb"></div>`;
+}
+function answerQ(i) {
+  if (qAnswered) return;
+  qAnswered = true; qTotal++;
+  const q = qShuffled[qIdx];
+  const btns = document.querySelectorAll('.quiz-opt');
+  btns.forEach(b => b.disabled = true);
+  btns[q.ans].classList.add('correct');
+  const fb = document.getElementById('qfb');
+  if (i === q.ans) {
+    qCorrect++;
+    fb.style.cssText = 'background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border);';
+    fb.innerHTML = '<strong>Correct!</strong> '+q.exp;
+  } else {
+    btns[i].classList.add('wrong');
+    fb.style.cssText = 'background:var(--danger-bg);color:var(--danger-text);border:0.5px solid var(--danger-border);';
+    fb.innerHTML = '<strong>Not quite.</strong> '+q.exp;
+  }
+  fb.classList.add('show');
+  document.getElementById('quiz-score').textContent = `${qCorrect} / ${qTotal}`;
+  document.getElementById('quiz-progress').style.width = ((qIdx+1)/qShuffled.length*100)+'%';
+  setTimeout(() => { qIdx++; qAnswered = false; renderQuestion(); }, 2200);
+}
+
+function renderCompareGrid() {
+  document.getElementById('compare-grid').innerHTML = TESTS.map((t,i)=>`<div class="compare-card ${selectedTests.includes(i)?'selected':''}" onclick="toggleTest(${i})">
+    <div class="compare-name">${t.name}</div>
+    <div class="compare-type">${t.type}</div>
+    <span class="tag">${t.items} items</span><span class="tag">${t.time}</span>
+  </div>`).join('');
+}
+function toggleTest(i) {
+  if (selectedTests.includes(i)) selectedTests = selectedTests.filter(x=>x!==i);
+  else if (selectedTests.length < 3) selectedTests.push(i);
+  renderCompareGrid(); renderCompareTable();
+}
+function renderCompareTable() {
+  const out = document.getElementById('compare-output');
+  if (selectedTests.length < 2) { out.style.display='none'; return; }
+  out.style.display='block';
+  const sel = selectedTests.map(i=>TESTS[i]);
+  document.getElementById('compare-table').innerHTML =
+    `<thead><tr><th style="width:110px">Attribute</th>${sel.map(t=>`<th>${t.name}</th>`).join('')}</tr></thead>
+    <tbody>${ROWS.map(r=>`<tr><td class="row-label">${ROW_LABELS[r]}</td>${sel.map(t=>`<td>${t[r]}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+function clearCompare() { selectedTests=[]; renderCompareGrid(); document.getElementById('compare-output').style.display='none'; }
+
+function shuffle(a) {
+  for (let i=a.length-1;i>0;i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+
+// Init
+renderCard();
+renderCompareGrid();
+qShuffled = shuffle([...QUESTIONS]);
+renderQuestion();
+</script>
+</body>
+</html>
 
