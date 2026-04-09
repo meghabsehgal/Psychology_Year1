@@ -2,46 +2,112 @@
 <html>
 <head>
   <title>Psychology Learning App</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f7fb;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-top: 30px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .card h2 {
+      margin-bottom: 15px;
+      font-size: 18px;
+      color: #222;
+    }
+
+    .btn {
+      display: inline-block;
+      margin: 5px 5px 0 0;
+      padding: 8px 12px;
+      background-color: #4a90e2;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      background-color: #357abd;
+    }
+  </style>
 </head>
+
 <body>
 
 <h1>Psychology Learning App</h1>
 
-<h2>MPC-001 Cognitive Psychology</h2>
-<a href="subjects/mpc-001/block1.html">Block 1</a><br>
-<a href="subjects/mpc-001/block2.html">Block 2</a><br>
-<a href="subjects/mpc-001/block3.html">Block 3</a><br>
-<a href="subjects/mpc-001/block4.html">Block 4</a><br>
+<div class="container">
 
-<h2>MPC-002 Life Span</h2>
-<a href="subjects/mpc-002/block1.html">Block 1</a><br>
-<a href="subjects/mpc-002/block2.html">Block 2</a><br>
-<a href="subjects/mpc-002/block3.html">Block 3</a><br>
-<a href="subjects/mpc-002/block4.html">Block 4</a><br>
+  <div class="card">
+    <h2>MPC-001 Cognitive Psychology</h2>
+    <a class="btn" href="subjects/mpc-001/block1.html">Block 1</a>
+    <a class="btn" href="subjects/mpc-001/block2.html">Block 2</a>
+    <a class="btn" href="subjects/mpc-001/block3.html">Block 3</a>
+    <a class="btn" href="subjects/mpc-001/block4.html">Block 4</a>
+  </div>
 
-<h2>MPC-003 Personality</h2>
-<a href="subjects/mpc-003/block1.html">Block 1</a><br>
-<a href="subjects/mpc-003/block2.html">Block 2</a><br>
-<a href="subjects/mpc-003/block3.html">Block 3</a><br>
-<a href="subjects/mpc-003/block4.html">Block 4</a><br>
+  <div class="card">
+    <h2>MPC-002 Life Span</h2>
+    <a class="btn" href="subjects/mpc-002/block1.html">Block 1</a>
+    <a class="btn" href="subjects/mpc-002/block2.html">Block 2</a>
+    <a class="btn" href="subjects/mpc-002/block3.html">Block 3</a>
+    <a class="btn" href="subjects/mpc-002/block4.html">Block 4</a>
+  </div>
 
-<h2>MPC-004 Advanced Social Psychology</h2>
-<a href="subjects/mpc-004/block1.html">Block 1</a><br>
-<a href="subjects/mpc-004/block2.html">Block 2</a><br>
-<a href="subjects/mpc-004/block3.html">Block 3</a><br>
-<a href="subjects/mpc-004/block4.html">Block 4</a><br>
+  <div class="card">
+    <h2>MPC-003 Personality</h2>
+    <a class="btn" href="subjects/mpc-003/block1.html">Block 1</a>
+    <a class="btn" href="subjects/mpc-003/block2.html">Block 2</a>
+    <a class="btn" href="subjects/mpc-003/block3.html">Block 3</a>
+    <a class="btn" href="subjects/mpc-003/block4.html">Block 4</a>
+  </div>
 
-<h2>MPC-005 Research Methods</h2>
-<a href="subjects/mpc-005/block1.html">Block 1</a><br>
-<a href="subjects/mpc-005/block2.html">Block 2</a><br>
-<a href="subjects/mpc-005/block3.html">Block 3</a><br>
-<a href="subjects/mpc-005/block4.html">Block 4</a><br>
+  <div class="card">
+    <h2>MPC-004 Advanced Social Psychology</h2>
+    <a class="btn" href="subjects/mpc-004/block1.html">Block 1</a>
+    <a class="btn" href="subjects/mpc-004/block2.html">Block 2</a>
+    <a class="btn" href="subjects/mpc-004/block3.html">Block 3</a>
+    <a class="btn" href="subjects/mpc-004/block4.html">Block 4</a>
+  </div>
 
-<h2>MPC-006 Statistics</h2>
-<a href="subjects/mpc-006/block1.html">Block 1</a><br>
-<a href="subjects/mpc-006/block2.html">Block 2</a><br>
-<a href="subjects/mpc-006/block3.html">Block 3</a><br>
-<a href="subjects/mpc-006/block4.html">Block 4</a><br>
+  <div class="card">
+    <h2>MPC-005 Research Methods</h2>
+    <a class="btn" href="subjects/mpc-005/block1.html">Block 1</a>
+    <a class="btn" href="subjects/mpc-005/block2.html">Block 2</a>
+    <a class="btn" href="subjects/mpc-005/block3.html">Block 3</a>
+    <a class="btn" href="subjects/mpc-005/block4.html">Block 4</a>
+  </div>
+
+  <div class="card">
+    <h2>MPC-006 Statistics</h2>
+    <a class="btn" href="subjects/mpc-006/block1.html">Block 1</a>
+    <a class="btn" href="subjects/mpc-006/block2.html">Block 2</a>
+    <a class="btn" href="subjects/mpc-006/block3.html">Block 3</a>
+    <a class="btn" href="subjects/mpc-006/block4.html">Block 4</a>
+  </div>
+
+</div>
 
 </body>
 </html>
