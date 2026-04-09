@@ -1,1 +1,937 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Block 3 – Development During Adolescence | Interactive Quiz Builder</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  :root {
+    --bg: #0e0c1a;
+    --surface: #16132a;
+    --card: #1e1a35;
+    --border: #2e2850;
+    --accent: #c084fc;
+    --accent2: #f472b6;
+    --accent3: #38bdf8;
+    --text: #e8e3f5;
+    --muted: #8b7faa;
+    --correct: #4ade80;
+    --wrong: #f87171;
+    --gold: #fbbf24;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* === BACKGROUND === */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 20% 10%, rgba(192,132,252,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 40% at 80% 80%, rgba(56,189,248,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 30% at 60% 40%, rgba(244,114,182,0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  /* === LAYOUT === */
+  .app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* === HEADER === */
+  .header { text-align: center; margin-bottom: 3rem; }
+  .badge {
+    display: inline-block;
+    background: linear-gradient(135deg, rgba(192,132,252,0.2), rgba(244,114,182,0.15));
+    border: 1px solid rgba(192,132,252,0.3);
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.35rem 1rem;
+    border-radius: 999px;
+    margin-bottom: 1.2rem;
+  }
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    line-height: 1.15;
+    background: linear-gradient(135deg, #e8e3f5 30%, var(--accent) 80%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.7rem;
+  }
+  .subtitle { color: var(--muted); font-size: 1rem; font-weight: 300; }
+
+  /* === TABS === */
+  .tabs {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2rem; padding-bottom: 0;
+  }
+  .tab {
+    background: none; border: none; cursor: pointer;
+    padding: 0.65rem 1.2rem;
+    border-radius: var(--radius) var(--radius) 0 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 500;
+    color: var(--muted);
+    border: 1px solid transparent;
+    border-bottom: none;
+    transition: all 0.2s;
+  }
+  .tab:hover { color: var(--text); }
+  .tab.active {
+    color: var(--accent);
+    background: var(--card);
+    border-color: var(--border);
+    border-bottom: 2px solid var(--card);
+    margin-bottom: -1px;
+  }
+
+  /* === UNIT SELECTOR === */
+  .unit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+  .unit-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .unit-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0; transition: opacity 0.25s;
+  }
+  .unit-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .unit-card:hover::before { opacity: 1; }
+  .unit-card.selected { border-color: var(--accent); background: rgba(192,132,252,0.1); }
+  .unit-card.selected::before { opacity: 1; }
+  .unit-num { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.4rem; }
+  .unit-title { font-family: 'DM Serif Display', serif; font-size: 1rem; line-height: 1.3; color: var(--text); }
+  .unit-count { margin-top: 0.6rem; font-size: 0.8rem; color: var(--muted); }
+
+  /* === CONTROLS === */
+  .controls { display: flex; gap: 1rem; flex-wrap: wrap; align-items: center; margin-bottom: 2rem; }
+  .control-group { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 140px; }
+  .control-group label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  select, input[type=number] {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    appearance: none;
+    cursor: pointer;
+    width: 100%;
+    transition: border-color 0.2s;
+  }
+  select:focus, input:focus { outline: none; border-color: var(--accent); }
+
+  /* === BUTTONS === */
+  .btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    padding: 0.7rem 1.5rem;
+    border-radius: 999px;
+    border: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem; font-weight: 600;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(192,132,252,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(192,132,252,0.45); }
+  .btn-ghost { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+
+  /* === QUIZ SECTION === */
+  .quiz-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.7rem;
+  }
+  .progress-info { font-size: 0.85rem; color: var(--muted); }
+  .progress-bar-wrap { width: 100%; height: 4px; background: var(--border); border-radius: 99px; margin-bottom: 1.5rem; }
+  .progress-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width 0.4s ease; }
+
+  /* === QUESTION CARD === */
+  .q-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-bottom: 1.5rem;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+  .q-meta { display: flex; gap: 0.7rem; margin-bottom: 1rem; align-items: center; flex-wrap: wrap; }
+  .q-unit-badge {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    padding: 0.2rem 0.7rem; border-radius: 999px;
+    background: rgba(192,132,252,0.15); color: var(--accent); border: 1px solid rgba(192,132,252,0.25);
+  }
+  .q-type-badge {
+    font-size: 0.7rem; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase;
+    padding: 0.2rem 0.7rem; border-radius: 999px;
+    background: rgba(56,189,248,0.12); color: var(--accent3); border: 1px solid rgba(56,189,248,0.2);
+  }
+  .q-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.2rem; line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  /* === OPTIONS === */
+  .options { display: flex; flex-direction: column; gap: 0.7rem; }
+  .option {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1.2rem;
+    cursor: pointer;
+    display: flex; align-items: center; gap: 1rem;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+    color: var(--text);
+  }
+  .option:hover:not(.disabled) { border-color: var(--accent); background: rgba(192,132,252,0.08); }
+  .option.selected { border-color: var(--accent); background: rgba(192,132,252,0.12); }
+  .option.correct { border-color: var(--correct); background: rgba(74,222,128,0.1); color: var(--correct); }
+  .option.wrong { border-color: var(--wrong); background: rgba(248,113,113,0.1); color: var(--wrong); }
+  .option.disabled { cursor: default; }
+  .opt-letter {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--border); display: flex; align-items: center; justify-content: center;
+    font-size: 0.78rem; font-weight: 700; flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option.selected .opt-letter { background: var(--accent); color: #fff; }
+  .option.correct .opt-letter { background: var(--correct); color: #000; }
+  .option.wrong .opt-letter { background: var(--wrong); color: #fff; }
+
+  /* === TRUE/FALSE === */
+  .tf-options { display: flex; gap: 1rem; }
+  .tf-btn {
+    flex: 1; padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 1rem; font-weight: 600; color: var(--text);
+    transition: all 0.2s;
+  }
+  .tf-btn:hover:not(.disabled) { border-color: var(--accent); }
+  .tf-btn.selected { border-color: var(--accent); background: rgba(192,132,252,0.12); color: var(--accent); }
+  .tf-btn.correct { border-color: var(--correct); background: rgba(74,222,128,0.12); color: var(--correct); }
+  .tf-btn.wrong { border-color: var(--wrong); background: rgba(248,113,113,0.1); color: var(--wrong); }
+
+  /* === FILL BLANK === */
+  .fill-input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.9rem 1.2rem;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+  .fill-input:focus { outline: none; border-color: var(--accent); }
+  .fill-input.correct { border-color: var(--correct); color: var(--correct); }
+  .fill-input.wrong { border-color: var(--wrong); color: var(--wrong); }
+
+  /* === FEEDBACK === */
+  .feedback {
+    margin-top: 1rem; padding: 1rem 1.2rem;
+    border-radius: 10px; font-size: 0.9rem; line-height: 1.5;
+    display: none;
+    animation: fadeUp 0.2s ease;
+  }
+  .feedback.show { display: block; }
+  .feedback.correct-fb { background: rgba(74,222,128,0.1); border: 1px solid rgba(74,222,128,0.3); color: var(--correct); }
+  .feedback.wrong-fb { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: #fca5a5; }
+  .feedback strong { display: block; margin-bottom: 0.3rem; }
+
+  /* === QUIZ NAV === */
+  .quiz-nav { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+
+  /* === SCORE SCREEN === */
+  .score-screen {
+    text-align: center; padding: 3rem 1.5rem;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius);
+    animation: fadeUp 0.4s ease;
+  }
+  .score-ring {
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    margin: 0 auto 1.5rem;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    position: relative;
+    background: var(--surface);
+    border: 3px solid var(--border);
+  }
+  .score-ring::before {
+    content: '';
+    position: absolute; inset: -3px;
+    border-radius: 50%;
+    background: conic-gradient(var(--accent) var(--pct, 0%), var(--border) var(--pct, 0%));
+    z-index: -1;
+  }
+  .score-num { font-family: 'DM Serif Display', serif; font-size: 2.5rem; line-height: 1; }
+  .score-label { font-size: 0.78rem; color: var(--muted); margin-top: 0.2rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .score-title { font-family: 'DM Serif Display', serif; font-size: 1.8rem; margin-bottom: 0.5rem; }
+  .score-sub { color: var(--muted); margin-bottom: 2rem; }
+  .score-breakdown { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; }
+  .score-stat { text-align: center; }
+  .score-stat .val { font-size: 1.5rem; font-weight: 700; }
+  .score-stat .val.c { color: var(--correct); }
+  .score-stat .val.w { color: var(--wrong); }
+  .score-stat .lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* === FLASHCARDS === */
+  .flashcard-wrap { perspective: 1200px; }
+  .flashcard {
+    width: 100%; min-height: 260px;
+    position: relative; cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.5s cubic-bezier(0.4,0,0.2,1);
+    margin-bottom: 1.5rem;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-face {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2.5rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; text-align: center;
+  }
+  .fc-back { transform: rotateY(180deg); background: var(--surface); border-color: var(--accent); }
+  .fc-hint { font-size: 0.75rem; color: var(--muted); margin-bottom: 1rem; text-transform: uppercase; letter-spacing: 0.1em; }
+  .fc-content { font-family: 'DM Serif Display', serif; font-size: 1.15rem; line-height: 1.55; }
+  .fc-back .fc-content { color: var(--accent); font-size: 1rem; }
+  .fc-nav { display: flex; align-items: center; justify-content: center; gap: 1.5rem; }
+  .fc-counter { font-size: 0.9rem; color: var(--muted); }
+
+  /* === GLOSSARY === */
+  .glossary-grid { display: flex; flex-direction: column; gap: 1rem; }
+  .gloss-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.2rem 1.5rem;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .gloss-item:hover { border-color: var(--accent); }
+  .gloss-term { font-family: 'DM Serif Display', serif; font-size: 1.05rem; display: flex; justify-content: space-between; align-items: center; }
+  .gloss-unit { font-size: 0.72rem; color: var(--accent); font-family: 'DM Sans', sans-serif; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .gloss-def { margin-top: 0.7rem; font-size: 0.9rem; line-height: 1.55; color: #b8afd4; display: none; }
+  .gloss-def.open { display: block; animation: fadeUp 0.2s ease; }
+  .gloss-arrow { transition: transform 0.2s; color: var(--muted); }
+  .gloss-item.open .gloss-arrow { transform: rotate(180deg); }
+
+  /* === STUDY NOTES === */
+  .notes-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.2rem; }
+  .note-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 1.5rem;
+    border-top: 3px solid var(--accent);
+  }
+  .note-card:nth-child(2) { border-top-color: var(--accent2); }
+  .note-card:nth-child(3) { border-top-color: var(--accent3); }
+  .note-card:nth-child(4) { border-top-color: var(--gold); }
+  .note-head { font-family: 'DM Serif Display', serif; font-size: 1.05rem; margin-bottom: 0.7rem; }
+  .note-body { font-size: 0.88rem; line-height: 1.7; color: #b8afd4; }
+  .note-body li { margin-left: 1rem; margin-bottom: 0.4rem; }
+
+  /* === EMPTY STATE === */
+  .empty { text-align: center; padding: 3rem; color: var(--muted); }
+  .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+
+  /* === RESPONSIVE === */
+  @media (max-width: 600px) {
+    .q-card { padding: 1.3rem; }
+    .controls { flex-direction: column; }
+    .btn { width: 100%; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="badge">🎓 BPC 006 · Block 3</div>
+    <h1>Development During Adolescence</h1>
+    <p class="subtitle">Interactive Quiz Builder · Units 1–4</p>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('quiz')">📝 Quiz</button>
+    <button class="tab" onclick="showTab('flashcards')">🃏 Flashcards</button>
+    <button class="tab" onclick="showTab('glossary')">📖 Glossary</button>
+    <button class="tab" onclick="showTab('notes')">🗒️ Study Notes</button>
+  </div>
+
+  <!-- ====== QUIZ TAB ====== -->
+  <div id="tab-quiz">
+    <div id="quiz-setup">
+      <div class="unit-grid" id="unitGrid"></div>
+      <div class="controls">
+        <div class="control-group">
+          <label>Question Type</label>
+          <select id="qtype">
+            <option value="all">All Types</option>
+            <option value="mcq">Multiple Choice</option>
+            <option value="tf">True / False</option>
+            <option value="fill">Fill in the Blank</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label>Number of Questions</label>
+          <input type="number" id="qcount" value="10" min="3" max="30">
+        </div>
+        <div class="control-group" style="justify-content: flex-end;">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary" onclick="startQuiz()">▶ Start Quiz</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="quiz-active" style="display:none;">
+      <div class="quiz-header">
+        <div class="progress-info" id="progressInfo"></div>
+        <div style="display:flex;gap:0.7rem;">
+          <span id="scoreDisplay" style="font-size:0.85rem;color:var(--muted);"></span>
+          <button class="btn btn-ghost" style="padding:0.4rem 0.9rem;font-size:0.8rem;" onclick="endQuiz()">✕ End Quiz</button>
+        </div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+      <div id="questionArea"></div>
+      <div class="quiz-nav">
+        <div></div>
+        <button class="btn btn-primary" id="nextBtn" onclick="nextQuestion()" disabled>Next →</button>
+      </div>
+    </div>
+
+    <div id="quiz-score" style="display:none;"></div>
+  </div>
+
+  <!-- ====== FLASHCARDS TAB ====== -->
+  <div id="tab-flashcards" style="display:none;">
+    <div style="display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:flex-end;">
+      <div class="control-group" style="flex:1;min-width:160px;">
+        <label>Filter by Unit</label>
+        <select id="fcUnit" onchange="loadFlashcards()">
+          <option value="all">All Units</option>
+          <option value="1">Unit 1 – Physical Changes</option>
+          <option value="2">Unit 2 – Cognitive Changes</option>
+          <option value="3">Unit 3 – Identity & Self</option>
+          <option value="4">Unit 4 – Challenges</option>
+        </select>
+      </div>
+      <button class="btn btn-ghost" onclick="shuffleCards()">🔀 Shuffle</button>
+    </div>
+    <div class="flashcard-wrap">
+      <div class="flashcard" id="flashcard" onclick="flipCard()">
+        <div class="fc-face">
+          <div class="fc-hint">Click to reveal answer</div>
+          <div class="fc-content" id="fcFront"></div>
+        </div>
+        <div class="fc-face fc-back">
+          <div class="fc-hint">Answer</div>
+          <div class="fc-content" id="fcBack"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fc-nav">
+      <button class="btn btn-ghost" onclick="fcNav(-1)">← Prev</button>
+      <span class="fc-counter" id="fcCounter"></span>
+      <button class="btn btn-ghost" onclick="fcNav(1)">Next →</button>
+    </div>
+  </div>
+
+  <!-- ====== GLOSSARY TAB ====== -->
+  <div id="tab-glossary" style="display:none;">
+    <div style="margin-bottom:1.2rem;">
+      <input type="text" placeholder="🔍  Search terms..." id="glossSearch" oninput="filterGlossary()"
+        style="width:100%;background:var(--card);border:1px solid var(--border);color:var(--text);padding:0.75rem 1.1rem;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:0.95rem;">
+    </div>
+    <div class="glossary-grid" id="glossaryGrid"></div>
+  </div>
+
+  <!-- ====== NOTES TAB ====== -->
+  <div id="tab-notes" style="display:none;">
+    <div class="notes-grid" id="notesGrid"></div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+//  DATA
+// ============================================================
+
+const UNITS = [
+  { id: 1, title: "Physical Changes", topics: ["Puberty", "Growth Spurt", "Male/Female Changes"] },
+  { id: 2, title: "Cognitive Changes", topics: ["Piaget's Stages", "Information Processing", "School Performance"] },
+  { id: 3, title: "Identity & Self Concept", topics: ["Identity Crisis", "Marcia's Statuses", "Self-Esteem"] },
+  { id: 4, title: "Challenges & Issues", topics: ["High-Risk Behaviour", "Sexuality", "Loss of Normalcy"] },
+];
+
+const ALL_QUESTIONS = [
+  // ---- UNIT 1 ----
+  { unit:1, type:'mcq', q:"Adolescence generally extends from which age range?", opts:["8–14 years","12–19 years","10–18 years","15–21 years"], ans:1, exp:"Adolescence is broadly defined as the period from 12 to 19 years of age, categorised into early, middle, and late stages." },
+  { unit:1, type:'mcq', q:"Which hormone triggers sperm development in boys during puberty?", opts:["Estrogen","Testosterone","FSH","Progesterone"], ans:2, exp:"FSH (follicle-stimulating hormone) secreted by the pituitary gland causes sperm to develop in boys." },
+  { unit:1, type:'mcq', q:"At what age does puberty typically begin in girls?", opts:["12–14 years","14–16 years","8–13 years","10–15 years"], ans:2, exp:"Puberty in girls usually begins between 8 and 13 years of age, typically about a year earlier than boys." },
+  { unit:1, type:'tf', q:"Late adolescents (17–19 years) show greater concern for others compared to earlier stages.", ans:true, exp:"Late adolescents develop greater emotional stability, become more self-reliant, and show increased concern for others." },
+  { unit:1, type:'tf', q:"The growth spurt in boys begins earlier than in girls.", ans:false, exp:"Girls begin their growth spurt earlier (around 10–11 years) than boys (around 13–14 years)." },
+  { unit:1, type:'fill', q:"The pituitary gland secretes ______ which triggers puberty changes.", ans:"FSH", alt:["follicle-stimulating hormone","follicle stimulating hormone"], exp:"FSH (follicle-stimulating hormone) from the pituitary gland triggers puberty by signalling the reproductive organs." },
+  { unit:1, type:'mcq', q:"Which of the following is the FIRST pubertal change in males?", opts:["Growth of pubic hair","Voice change","Enlargement of the testicles","Nocturnal emissions"], ans:2, exp:"The first pubertal change in males is enlargement of the testicles, followed by penis enlargement about a year later." },
+  { unit:1, type:'tf', q:"Middle adolescence (14–17) is when teenagers are most concerned about their appearance and developing unique personalities.", ans:true, exp:"Middle adolescence is characterised by concern about looks, body, appearance, and developing unique personality and opinions." },
+  { unit:1, type:'fill', q:"In girls, the hormone ______ produced by the ovaries is responsible for physical development and making pregnancy possible.", ans:"estrogen", alt:["oestrogen"], exp:"Estrogen is produced by the ovaries and is responsible for a girl's physical development and reproductive capability." },
+
+  // ---- UNIT 2 ----
+  { unit:2, type:'mcq', q:"Which of Piaget's stages corresponds to adolescence (ages 12–19)?", opts:["Sensorimotor","Pre-operational","Concrete operational","Formal operational"], ans:3, exp:"Adolescents are at the 'formal operations' stage, characterised by abstract thinking, hypothetical reasoning, and logical problem-solving." },
+  { unit:2, type:'mcq', q:"What does adolescent egocentrism involve according to Elkind (1967)?", opts:["Selfishness and greed","A belief of being special and unique, with an imaginary audience","Inability to understand others' views","Extreme social withdrawal"], ans:1, exp:"Elkind described adolescent egocentrism as a belief system making teens consider themselves special/unique, accompanied by an imaginary audience concept." },
+  { unit:2, type:'tf', q:"In middle adolescence, cognitive focus expands to include more philosophical and futuristic concerns.", ans:true, exp:"Middle adolescents expand from personal decision-making (early adolescence) to more philosophical, futuristic, and ethical concerns." },
+  { unit:2, type:'tf', q:"Information processing theory is associated with the development of high-speed computers in the 1970s.", ans:false, exp:"The information-processing theory was associated with the development of high-speed computers in the 1950s, not the 1970s." },
+  { unit:2, type:'fill', q:"The four stages of Piaget's cognitive development always occur in the same ______.", ans:"order", alt:["sequence"], exp:"Piaget's four stages (sensorimotor, pre-operational, concrete operational, formal operational) always occur in the same fixed order." },
+  { unit:2, type:'mcq', q:"Which memory system has unlimited storage capacity?", opts:["Sensory register","Short-term memory","Working memory","Long-term memory"], ans:3, exp:"Long-term memory has no restrictive limit on the amount of information it can store, and information may be stored perhaps permanently." },
+  { unit:2, type:'mcq', q:"Late adolescents begin to think about which of the following concepts?", opts:["Personal rules for school","Which friends to choose","Justice, history, politics, and patriotism","How to avoid parents"], ans:2, exp:"During late adolescence, complex thinking focuses on global concepts such as justice, history, politics, and patriotism." },
+  { unit:2, type:'tf', q:"Only 35% of high school graduates in industrialised countries reach formal operational thinking.", ans:true, exp:"Research indicates that only about 35% of high school graduates in industrialised countries actually attain formal operational thinking." },
+  { unit:2, type:'fill', q:"The process of moving information from long-term memory back to working memory is called ______.", ans:"retrieval", exp:"Retrieval is the cognitive process of accessing information stored in long-term memory and bringing it back to working memory." },
+
+  // ---- UNIT 3 ----
+  { unit:3, type:'mcq', q:"Who coined the term 'identity crisis'?", opts:["Jean Piaget","James Marcia","Erik Erikson","David Elkind"], ans:2, exp:"Erik Erikson coined the term 'identity crisis' and believed it was one of the most important conflicts people face in development." },
+  { unit:3, type:'mcq', q:"In Marcia's model, which status involves making commitments WITHOUT exploring alternatives?", opts:["Diffusion","Moratorium","Achievement","Foreclosure"], ans:3, exp:"Foreclosure occurs when a commitment is made without exploring alternatives—e.g., adopting a parent-chosen career without exploring other options." },
+  { unit:3, type:'mcq', q:"Which identity status involves actively exploring alternatives but NOT yet committing?", opts:["Foreclosure","Diffusion","Moratorium","Achievement"], ans:2, exp:"Moratorium involves actively exploring alternative commitments while experiencing an identity crisis but not yet making a decision." },
+  { unit:3, type:'tf', q:"Self-concept and self-esteem are the same thing.", ans:false, exp:"Self-concept refers to domain-specific perceptions of competence; self-esteem is an overall evaluation of oneself including general happiness and satisfaction." },
+  { unit:3, type:'fill', q:"According to Marcia, identity involves: a sexual orientation, a set of values/ideals, and a ______ direction.", ans:"vocational", alt:["career","occupational"], exp:"Marcia's model states that identity involves adopting a sexual orientation, a set of values/ideals, and a vocational (career) direction." },
+  { unit:3, type:'mcq', q:"Low self-esteem in adolescents may be caused by which of the following?", opts:["High academic achievement","Supportive parents","Hereditary factors and poor living conditions","Positive peer interactions"], ans:2, exp:"Causes of low self-esteem include hereditary factors, poor living conditions, lack of education, physiological changes, and societal restrictions." },
+  { unit:3, type:'tf', q:"Adolescent egocentrism includes the concept of an 'imaginary audience' where teens believe peers are always watching them.", ans:true, exp:"Adolescent egocentrism includes an imaginary audience—teens are extremely conscious of what others think about their appearance and activities." },
+  { unit:3, type:'mcq', q:"Which of the following is a sign of NEGATIVE self-concept in adolescents?", opts:["Accepting compliments graciously","Having many friends","Showing excessive amounts of anger","Trying new activities readily"], ans:2, exp:"Signs of negative self-concept include excessive anger, few friends, poor school performance, putting oneself down, and hesitating to try new things." },
+  { unit:3, type:'fill', q:"Erikson described the goal of adolescence as achieving a coherent ______ and avoiding identity confusion.", ans:"identity", exp:"According to Erikson, the primary developmental task of adolescence is achieving a coherent identity while avoiding role confusion." },
+
+  // ---- UNIT 4 ----
+  { unit:4, type:'mcq', q:"Which of the following is NOT listed as a stage when coping with loss of normalcy (autism spectrum)?", opts:["Anger","Denial","Excitement","Depression"], ans:2, exp:"The coping stages listed are: Anger, Denial, Depression, Acceptance, and Adaptation. 'Excitement' is not a stage in this model." },
+  { unit:4, type:'tf', q:"Late adolescents may develop eating disorders due to concerns about their appearance.", ans:true, exp:"Late adolescents are constantly concerned about their looks and fear becoming obese, which can lead to starving and eating disorders." },
+  { unit:4, type:'fill', q:"Adolescents engage in high-risk behaviours such as drugs and alcohol to convince themselves and peers that they are ______.", ans:"grown ups", alt:["adults","mature","grown-ups"], exp:"Through high-risk behaviours like drug/alcohol experimentation, adolescents try to prove to themselves, peers, and parents that they are grown-ups." },
+  { unit:4, type:'mcq', q:"Three key ingredients that affect social development of adolescents with autism are:", opts:["Memory, learning, attention","Interest, avoidance, and insight","Anger, denial, acceptance","Motivation, creativity, empathy"], ans:1, exp:"Youngsters with autism bring their unique experience to adolescence through three key factors: level of interest in others, avoidance due to anxiety, and level of insight into social difficulties." },
+  { unit:4, type:'tf', q:"Adolescents with autism develop sexually at a slower pace than their neurotypical peers.", ans:false, exp:"Despite slower social development, adolescents with autism develop physiologically and sexually at the SAME pace as their peers." },
+  { unit:4, type:'mcq', q:"Which of the following is an appropriate parental response when an adolescent shares problems?", opts:["Immediately change the topic","Trivialise the problem to reduce anxiety","Stay on the problem and listen patiently","Push the idea of professional help directly"], ans:2, exp:"Parents should stay on the topic, listen patiently, not trivialise or minimise problems, and build trust so the youngster feels heard." },
+  { unit:4, type:'fill', q:"In late adolescence, individuals can comprehend abstract concepts such as higher mathematics and develop ______ philosophies.", ans:"moral", exp:"During late adolescence, teenagers develop the ability to comprehend abstract concepts like higher maths and to develop moral philosophies including rights and privileges." },
+  { unit:4, type:'mcq', q:"If five or more depression symptoms persist week after week, this is indicative of:", opts:["Normal adolescent stress","Temporary mood swings","Clinical depression requiring immediate help","Identity crisis"], ans:2, exp:"Five or more persistent symptoms of depression occurring week after week indicates clinical depression and the youngster needs immediate professional help." },
+];
+
+const FLASHCARDS = [
+  { unit:1, front:"What is puberty?", back:"A 1–3 year process of hormonal and physical change that leads to sexual maturity. Begins in the pituitary gland, which sends hormones to reproductive organs." },
+  { unit:1, front:"When does the female growth spurt peak?", back:"Around 10–11 years; girls usually stop growing between 16–18 years." },
+  { unit:1, front:"What are the three stages of adolescence?", back:"Early Adolescence (12–14), Middle Adolescence (14–17), and Late Adolescence (17–19 years)." },
+  { unit:1, front:"What causes acne during adolescence?", back:"Sebaceous glands produce sebum; if sebum blocks skin pores and combines with bacteria, pimples/acne develop. Androgens trigger this process." },
+  { unit:2, front:"What is the 'formal operations' stage?", back:"Piaget's 4th stage (ages 12–19). Characterised by abstract thinking, hypothetical reasoning, and logical use of symbols. Only ~35% of adults fully achieve it." },
+  { unit:2, front:"What is metacognition?", back:"Thinking about the process of thinking itself. Adolescents develop this, leading to increased introspection and self-consciousness." },
+  { unit:2, front:"Describe short-term (working) memory.", back:"Also called working memory; can hold about 7 items at a time. Information must be rehearsed, moved to long-term memory, or forgotten." },
+  { unit:2, front:"What is adolescent egocentrism?", back:"A belief system (Elkind, 1967) where adolescents consider themselves special and unique, with an imaginary audience concept and heightened self-consciousness." },
+  { unit:3, front:"What is Erikson's 'identity crisis'?", back:"A period of intensive analysis and exploration of different ways of looking at oneself; the central developmental conflict of adolescence (identity vs. role confusion)." },
+  { unit:3, front:"List Marcia's four identity statuses.", back:"1. Foreclosure – committed without exploring\n2. Diffusion – no commitment, no exploration\n3. Moratorium – exploring, not yet committed\n4. Achievement – explored and committed" },
+  { unit:3, front:"Difference between self-concept and self-esteem?", back:"Self-concept = domain-specific perceptions of competence (academic, social, physical). Self-esteem = overall evaluation of oneself, including general happiness." },
+  { unit:3, front:"What is the 'lifespan construct'?", back:"An integration of an individual's past, present, and culture, linking the identity formed in adolescence to the adult self." },
+  { unit:4, front:"Name 5 stages of coping with loss of normalcy.", back:"Anger → Denial → Depression → Acceptance → Adaptation (stages rarely occur sequentially; aspects of each may be present at any time)." },
+  { unit:4, front:"What are three high-risk behaviours of late adolescence?", back:"Experimenting with drugs, alcohol, smoking, and adventurous/extreme sports; used to defy norms and signal maturity to peers and parents." },
+  { unit:4, front:"How should parents address sexuality with adolescents?", back:"Set a specific time to discuss it calmly, ask direct questions, provide information, and set firm limits on inappropriate behaviour—modelling comfort around the topic." },
+];
+
+const GLOSSARY = [
+  { unit:1, term:"Puberty", def:"The biological process of hormonal and physical change (1–3 years) that leads to sexual maturity, triggered by FSH from the pituitary gland." },
+  { unit:1, term:"Growth Spurt", def:"A rapid increase in height and weight during adolescence; peaks around 10–11 years in girls and 13–14 years in boys." },
+  { unit:1, term:"Menarche", def:"The onset of the first menstrual period in girls, signalling reproductive capability; typically occurs between 10–16.5 years." },
+  { unit:1, term:"Spermarche", def:"The onset of sperm production in boys, occurring after penile enlargement at approximately age 13." },
+  { unit:1, term:"Secondary Sex Characteristics", def:"Physical features that develop at puberty (e.g., pubic hair, breast development, voice change) as opposed to primary sex organs." },
+  { unit:2, term:"Cognitive Development", def:"Development of the ability to think, reason, perceive, and gain understanding through interaction of genetic and learned factors." },
+  { unit:2, term:"Formal Operations", def:"Piaget's 4th stage (ages 12+): abstract thinking, hypothetical reasoning, deductive logic, and metacognition." },
+  { unit:2, term:"Information Processing Theory", def:"An approach comparing the human mind to a computer; analyses how information is received, encoded, stored, retrieved, and used." },
+  { unit:2, term:"Metacognition", def:"Thinking about one's own thinking process; increases during adolescence, leading to introspection and, sometimes, egocentrism." },
+  { unit:2, term:"Adolescent Egocentrism", def:"Elkind's concept: adolescents believe they are uniquely special and that an imaginary audience is constantly observing them." },
+  { unit:3, term:"Identity", def:"A sense of self-unity, uniqueness, and continuity over time; the outcome of successful exploration and commitment during adolescence." },
+  { unit:3, term:"Identity Crisis", def:"Erikson's term for a period of intensive self-analysis and exploration of different ways of looking at oneself; the central adolescent conflict." },
+  { unit:3, term:"Foreclosure", def:"Marcia's identity status where commitments are made without exploring alternatives, often following parental expectations." },
+  { unit:3, term:"Moratorium", def:"Marcia's identity status: actively exploring alternatives but not yet committed; the adolescent is in an ongoing identity crisis." },
+  { unit:3, term:"Self-Concept", def:"The sum of an individual's beliefs about their own attributes (physical, psychological, social); domain-specific and dynamic." },
+  { unit:3, term:"Self-Esteem", def:"An overall evaluation of oneself, including feelings of general happiness and satisfaction; influenced by self-concept." },
+  { unit:4, term:"High-Risk Behaviour", def:"Behaviours like substance use, smoking, and extreme sports adopted in late adolescence to test norms and assert maturity." },
+  { unit:4, term:"Loss of Normalcy", def:"The process by which adolescents with autism recognise they are different from peers, requiring emotional coping stages." },
+  { unit:4, term:"Eating Disorder", def:"A health problem emerging in late adolescence due to excessive concern about weight and appearance, leading to abnormal eating patterns." },
+];
+
+const STUDY_NOTES = [
+  { unit:1, title:"Unit 1 – Physical Changes", color:"var(--accent)", points:[
+    "Adolescence: 12–19 years; Early (12–14), Middle (14–17), Late (17–19)",
+    "Puberty driven by pituitary gland → FSH → sex hormones",
+    "Boys: testosterone; Girls: estrogen",
+    "Girls' growth spurt: 10–11 yrs; Boys: 13–14 yrs",
+    "First male change: testicular enlargement; First female: breast development",
+    "Late adolescents show greater emotional stability & concern for others",
+  ]},
+  { unit:2, title:"Unit 2 – Cognitive Changes", color:"var(--accent2)", points:[
+    "Piaget's 4th stage: Formal Operations (12–19) – abstract & hypothetical thinking",
+    "Early adolescence: complex thinking, personal decisions",
+    "Middle adolescence: philosophical & futuristic concerns",
+    "Late adolescence: global concepts – justice, politics, morality",
+    "Information Processing: Sensory → Short-term (~7 items) → Long-term (unlimited)",
+    "Retrieval = moving info from long-term back to working memory",
+    "Adolescent egocentrism: imaginary audience (Elkind, 1967)",
+  ]},
+  { unit:3, title:"Unit 3 – Identity & Self Concept", color:"var(--accent3)", points:[
+    "Erikson: Identity vs. Role Confusion is the core adolescent conflict",
+    "Marcia's 4 Statuses: Foreclosure, Diffusion, Moratorium, Achievement",
+    "Identity = sexual orientation + values/ideals + vocational direction",
+    "Self-concept: domain-specific beliefs about competence",
+    "Self-esteem: overall evaluation of self (happiness + satisfaction)",
+    "Signs of low self-concept: poor grades, excessive anger, few friends",
+    "Egocentrism: teens feel uniquely special; imagine others constantly judge them",
+  ]},
+  { unit:4, title:"Unit 4 – Challenges & Issues", color:"var(--gold)", points:[
+    "Challenges: physical, cognitive, social, and institutional changes",
+    "Autism + adolescence: interest, avoidance, and insight are key variables",
+    "Loss of normalcy coping: Anger → Denial → Depression → Acceptance → Adaptation",
+    "Sexuality: parents must address proactively with direct, calm communication",
+    "High-risk behaviours: drugs, alcohol, extreme sports – asserting adulthood",
+    "Clinical depression: 5+ symptoms persisting week after week needs help",
+    "Late adolescence: eating disorders, identity consolidation, moral development",
+  ]},
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+let selectedUnits = [1,2,3,4];
+let quizQuestions = [];
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let fcIndex = 0;
+let fcDeck = [];
+
+// ============================================================
+//  INIT
+// ============================================================
+window.onload = () => {
+  buildUnitGrid();
+  loadFlashcards();
+  renderGlossary();
+  renderNotes();
+};
+
+function buildUnitGrid() {
+  const grid = document.getElementById('unitGrid');
+  grid.innerHTML = UNITS.map(u => {
+    const count = ALL_QUESTIONS.filter(q => q.unit === u.id).length;
+    return `<div class="unit-card selected" id="uc${u.id}" onclick="toggleUnit(${u.id})">
+      <div class="unit-num">Unit ${u.id}</div>
+      <div class="unit-title">${u.title}</div>
+      <div class="unit-count">${count} questions</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleUnit(id) {
+  const idx = selectedUnits.indexOf(id);
+  if (idx > -1) {
+    if (selectedUnits.length === 1) return; // keep at least one
+    selectedUnits.splice(idx, 1);
+  } else {
+    selectedUnits.push(id);
+  }
+  document.getElementById('uc'+id).classList.toggle('selected');
+}
+
+// ============================================================
+//  QUIZ
+// ============================================================
+function startQuiz() {
+  const type = document.getElementById('qtype').value;
+  const count = Math.min(parseInt(document.getElementById('qcount').value)||10, 30);
+
+  let pool = ALL_QUESTIONS.filter(q => selectedUnits.includes(q.unit));
+  if (type !== 'all') pool = pool.filter(q => q.type === type);
+  if (!pool.length) { alert('No questions match your selection. Try different filters.'); return; }
+
+  // shuffle
+  pool = pool.sort(() => Math.random() - 0.5).slice(0, count);
+  quizQuestions = pool;
+  currentQ = 0; score = 0; answered = false;
+
+  document.getElementById('quiz-setup').style.display = 'none';
+  document.getElementById('quiz-active').style.display = 'block';
+  document.getElementById('quiz-score').style.display = 'none';
+  showQuestion();
+}
+
+function showQuestion() {
+  answered = false;
+  document.getElementById('nextBtn').disabled = true;
+  const q = quizQuestions[currentQ];
+  const total = quizQuestions.length;
+  document.getElementById('progressInfo').textContent = `Question ${currentQ+1} of ${total}`;
+  document.getElementById('scoreDisplay').textContent = `✓ ${score} correct`;
+  document.getElementById('progressBar').style.width = `${(currentQ/total)*100}%`;
+
+  const UNIT_NAMES = {1:'Unit 1',2:'Unit 2',3:'Unit 3',4:'Unit 4'};
+  const TYPE_LABEL = {mcq:'Multiple Choice',tf:'True / False',fill:'Fill in Blank'};
+
+  let optHTML = '';
+  if (q.type === 'mcq') {
+    optHTML = `<div class="options">${q.opts.map((o,i)=>`
+      <div class="option" id="opt${i}" onclick="selectMCQ(${i})">
+        <div class="opt-letter">${'ABCD'[i]}</div>${o}
+      </div>`).join('')}</div>`;
+  } else if (q.type === 'tf') {
+    optHTML = `<div class="tf-options">
+      <button class="tf-btn" id="optT" onclick="selectTF(true)">✓ True</button>
+      <button class="tf-btn" id="optF" onclick="selectTF(false)">✗ False</button>
+    </div>`;
+  } else {
+    optHTML = `<input class="fill-input" id="fillInput" placeholder="Type your answer…" onkeydown="if(event.key==='Enter')checkFill()">
+    <button class="btn btn-ghost" style="margin-top:0.7rem;" onclick="checkFill()">Check Answer</button>`;
+  }
+
+  document.getElementById('questionArea').innerHTML = `
+    <div class="q-card">
+      <div class="q-meta">
+        <span class="q-unit-badge">${UNIT_NAMES[q.unit]}</span>
+        <span class="q-type-badge">${TYPE_LABEL[q.type]}</span>
+      </div>
+      <div class="q-text">${q.q}</div>
+      ${optHTML}
+      <div class="feedback" id="feedback"></div>
+    </div>`;
+}
+
+function selectMCQ(i) {
+  if (answered) return;
+  answered = true;
+  const q = quizQuestions[currentQ];
+  document.querySelectorAll('.option').forEach(o => o.classList.add('disabled'));
+  const selected = document.getElementById('opt'+i);
+  selected.classList.add('selected');
+  if (i === q.ans) {
+    selected.classList.add('correct');
+    score++;
+    showFeedback(true, q.exp);
+  } else {
+    selected.classList.add('wrong');
+    document.getElementById('opt'+q.ans).classList.add('correct');
+    showFeedback(false, q.exp);
+  }
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('scoreDisplay').textContent = `✓ ${score} correct`;
+}
+
+function selectTF(val) {
+  if (answered) return;
+  answered = true;
+  const q = quizQuestions[currentQ];
+  const btnT = document.getElementById('optT');
+  const btnF = document.getElementById('optF');
+  btnT.classList.add('disabled'); btnF.classList.add('disabled');
+  const chosen = val ? btnT : btnF;
+  chosen.classList.add('selected');
+  if (val === q.ans) {
+    chosen.classList.add('correct');
+    score++;
+    showFeedback(true, q.exp);
+  } else {
+    chosen.classList.add('wrong');
+    (val ? btnF : btnT).classList.add('correct');
+    showFeedback(false, q.exp);
+  }
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('scoreDisplay').textContent = `✓ ${score} correct`;
+}
+
+function checkFill() {
+  if (answered) return;
+  const q = quizQuestions[currentQ];
+  const input = document.getElementById('fillInput');
+  const userAns = input.value.trim().toLowerCase();
+  const correct = [q.ans, ...(q.alt||[])].map(a => a.toLowerCase());
+  answered = true;
+  input.disabled = true;
+  if (correct.includes(userAns)) {
+    input.classList.add('correct');
+    score++;
+    showFeedback(true, q.exp);
+  } else {
+    input.classList.add('wrong');
+    showFeedback(false, `Correct answer: <strong>${q.ans}</strong><br>${q.exp}`);
+  }
+  document.getElementById('nextBtn').disabled = false;
+  document.getElementById('scoreDisplay').textContent = `✓ ${score} correct`;
+}
+
+function showFeedback(correct, txt) {
+  const fb = document.getElementById('feedback');
+  fb.innerHTML = `<strong>${correct ? '✓ Correct!' : '✗ Incorrect'}</strong>${txt}`;
+  fb.className = `feedback show ${correct ? 'correct-fb' : 'wrong-fb'}`;
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= quizQuestions.length) { showScore(); return; }
+  showQuestion();
+}
+
+function showScore() {
+  document.getElementById('quiz-active').style.display = 'none';
+  const pct = Math.round((score/quizQuestions.length)*100);
+  const deg = `${pct}%`;
+  let msg = pct >= 80 ? "Outstanding! 🎉" : pct >= 60 ? "Good Work! 👍" : "Keep Studying! 📚";
+  let sub = pct >= 80 ? "Excellent grasp of adolescent development." : pct >= 60 ? "Solid understanding with room to improve." : "Review the study notes and try again.";
+  const scoreEl = document.getElementById('quiz-score');
+  scoreEl.style.display = 'block';
+  scoreEl.innerHTML = `
+    <div class="score-screen">
+      <div class="score-ring" style="--pct:${deg}">
+        <div class="score-num">${pct}%</div>
+        <div class="score-label">Score</div>
+      </div>
+      <div class="score-title">${msg}</div>
+      <p class="score-sub">${sub}</p>
+      <div class="score-breakdown">
+        <div class="score-stat"><div class="val c">${score}</div><div class="lbl">Correct</div></div>
+        <div class="score-stat"><div class="val w">${quizQuestions.length-score}</div><div class="lbl">Incorrect</div></div>
+        <div class="score-stat"><div class="val">${quizQuestions.length}</div><div class="lbl">Total</div></div>
+      </div>
+      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="restartQuiz()">↺ Try Again</button>
+        <button class="btn btn-ghost" onclick="showTab('notes')">🗒️ Study Notes</button>
+      </div>
+    </div>`;
+}
+
+function restartQuiz() {
+  document.getElementById('quiz-score').style.display = 'none';
+  document.getElementById('quiz-setup').style.display = 'block';
+}
+
+function endQuiz() {
+  if (!confirm('End the quiz early?')) return;
+  document.getElementById('quiz-active').style.display = 'none';
+  document.getElementById('quiz-setup').style.display = 'block';
+}
+
+// ============================================================
+//  FLASHCARDS
+// ============================================================
+function loadFlashcards() {
+  const unit = document.getElementById('fcUnit').value;
+  fcDeck = unit === 'all' ? [...FLASHCARDS] : FLASHCARDS.filter(c => c.unit == unit);
+  fcIndex = 0;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+}
+
+function shuffleCards() {
+  fcDeck = fcDeck.sort(() => Math.random() - 0.5);
+  fcIndex = 0;
+  document.getElementById('flashcard').classList.remove('flipped');
+  renderCard();
+}
+
+function renderCard() {
+  if (!fcDeck.length) return;
+  const c = fcDeck[fcIndex];
+  document.getElementById('fcFront').textContent = c.front;
+  document.getElementById('fcBack').textContent = c.back;
+  document.getElementById('fcCounter').textContent = `${fcIndex+1} / ${fcDeck.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function fcNav(dir) {
+  fcIndex = (fcIndex + dir + fcDeck.length) % fcDeck.length;
+  renderCard();
+}
+
+// ============================================================
+//  GLOSSARY
+// ============================================================
+function renderGlossary(filter='') {
+  const grid = document.getElementById('glossaryGrid');
+  const items = GLOSSARY.filter(g => !filter || g.term.toLowerCase().includes(filter) || g.def.toLowerCase().includes(filter));
+  grid.innerHTML = items.map((g,i) => `
+    <div class="gloss-item" id="gi${i}" onclick="toggleGloss(${i})">
+      <div class="gloss-term">
+        <span>${g.term} <span class="gloss-unit">U${g.unit}</span></span>
+        <span class="gloss-arrow">▾</span>
+      </div>
+      <div class="gloss-def" id="gd${i}">${g.def}</div>
+    </div>`).join('');
+}
+
+function toggleGloss(i) {
+  const item = document.getElementById('gi'+i);
+  const def = document.getElementById('gd'+i);
+  item.classList.toggle('open');
+  def.classList.toggle('open');
+}
+
+function filterGlossary() {
+  renderGlossary(document.getElementById('glossSearch').value.toLowerCase());
+}
+
+// ============================================================
+//  NOTES
+// ============================================================
+function renderNotes() {
+  document.getElementById('notesGrid').innerHTML = STUDY_NOTES.map(n => `
+    <div class="note-card" style="border-top-color:${n.color}">
+      <div class="note-head">${n.title}</div>
+      <div class="note-body"><ul>${n.points.map(p=>`<li>${p}</li>`).join('')}</ul></div>
+    </div>`).join('');
+}
+
+// ============================================================
+//  TABS
+// ============================================================
+function showTab(name) {
+  ['quiz','flashcards','glossary','notes'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab').forEach((btn,i) => {
+    btn.classList.toggle('active', ['quiz','flashcards','glossary','notes'][i] === name);
+  });
+}
+</script>
+</body>
+</html>
