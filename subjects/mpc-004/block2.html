@@ -1,1 +1,1052 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Psychology — Interactive Study Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0e10;
+    --bg2: #16161a;
+    --bg3: #1e1e24;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.14);
+    --text: #f0ede8;
+    --text2: #9a9892;
+    --text3: #5e5c58;
+    --accent: #d4a853;
+    --accent2: #c17a3a;
+    --teal: #4ecdc4;
+    --coral: #ff6b5b;
+    --lavender: #a78bfa;
+    --green: #6bcb77;
+    --blue: #60a5fa;
+    --pink: #f9a8d4;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Outfit', sans-serif;
+  }
 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* HEADER */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 3rem 1.5rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .header-left h1 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+
+  .header-left h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-left p {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .unit-badges {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .unit-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--text2);
+    font-family: var(--mono);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .unit-badge:hover, .unit-badge.active {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(212,168,83,0.06);
+  }
+
+  /* NAV */
+  nav {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    padding: 0 3rem;
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    padding: 1rem 1.5rem;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--text3);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: none;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    font-family: var(--sans);
+  }
+
+  .nav-tab:hover { color: var(--text2); }
+  .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* MAIN */
+  main { padding: 2rem 3rem; max-width: 1400px; }
+
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* CARDS */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .section-header h2 {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 400;
+  }
+
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .concept-card {
+    background: var(--bg2);
+    padding: 1.4rem;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+  }
+
+  .concept-card:hover { background: var(--bg3); }
+
+  .concept-card::after {
+    content: "→";
+    position: absolute;
+    top: 1.4rem;
+    right: 1.4rem;
+    color: var(--text3);
+    font-size: 16px;
+    transition: all 0.2s;
+  }
+
+  .concept-card:hover::after {
+    color: var(--accent);
+    transform: translateX(3px);
+  }
+
+  .card-unit {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .card-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    font-family: var(--mono);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .tag-conformity { background: rgba(78,205,196,0.12); color: var(--teal); }
+  .tag-compliance { background: rgba(212,168,83,0.12); color: var(--accent); }
+  .tag-obedience { background: rgba(255,107,91,0.12); color: var(--coral); }
+  .tag-helping { background: rgba(96,165,250,0.12); color: var(--blue); }
+  .tag-attraction { background: rgba(167,139,250,0.12); color: var(--lavender); }
+  .tag-aggression { background: rgba(249,168,212,0.12); color: var(--pink); }
+
+  .concept-card h3 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 6px;
+    padding-right: 24px;
+  }
+
+  .concept-card p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.5;
+  }
+
+  /* DETAIL VIEW */
+  .detail-view {
+    display: none;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .detail-view.open { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  .back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+    transition: color 0.15s;
+  }
+
+  .back-btn:hover { color: var(--text2); }
+
+  .detail-inner {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2rem;
+    max-width: 900px;
+  }
+
+  @media (max-width: 768px) {
+    .detail-inner { grid-template-columns: 1fr; }
+    header, nav, main { padding-left: 1.5rem; padding-right: 1.5rem; }
+  }
+
+  .detail-main h2 {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    font-weight: 400;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  .detail-main .desc {
+    font-size: 15px;
+    color: var(--text2);
+    line-height: 1.8;
+    margin-bottom: 1.5rem;
+    border-left: 2px solid var(--border2);
+    padding-left: 1rem;
+  }
+
+  .detail-sidebar {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1.25rem;
+  }
+
+  .detail-sidebar h4 {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    margin-bottom: 1rem;
+  }
+
+  .detail-sidebar ul { list-style: none; }
+
+  .detail-sidebar li {
+    font-size: 13px;
+    color: var(--text2);
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    line-height: 1.5;
+    position: relative;
+    padding-left: 16px;
+  }
+
+  .detail-sidebar li:last-child { border-bottom: none; }
+
+  .detail-sidebar li::before {
+    content: "◆";
+    position: absolute;
+    left: 0;
+    font-size: 6px;
+    top: 11px;
+    color: var(--accent);
+  }
+
+  .ask-btn {
+    margin-top: 1.5rem;
+    padding: 10px 20px;
+    background: rgba(212,168,83,0.1);
+    border: 1px solid rgba(212,168,83,0.3);
+    border-radius: 6px;
+    color: var(--accent);
+    font-family: var(--mono);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: left;
+  }
+
+  .ask-btn:hover { background: rgba(212,168,83,0.18); }
+
+  /* FLASHCARDS */
+  .flash-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+  }
+
+  .flashcard-wrap {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 560px;
+    height: 220px;
+    cursor: pointer;
+    margin-bottom: 1.5rem;
+  }
+
+  .flashcard-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .flashcard-wrap.flipped .flashcard-inner { transform: rotateY(180deg); }
+
+  .fc-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+  }
+
+  .fc-face.front { background: var(--bg2); }
+
+  .fc-face.back {
+    background: var(--bg3);
+    transform: rotateY(180deg);
+    border-color: var(--border2);
+  }
+
+  .fc-face .fc-hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    margin-bottom: 12px;
+  }
+
+  .fc-face h3 {
+    font-family: var(--serif);
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .fc-face p {
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  .fc-tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    margin-bottom: 10px;
+  }
+
+  .flash-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .fc-btn {
+    padding: 8px 20px;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    background: var(--bg2);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .fc-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .fc-progress {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text3);
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .flash-progress-track {
+    width: 100%;
+    max-width: 560px;
+    height: 2px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .flash-progress-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  /* QUIZ */
+  .quiz-container { max-width: 640px; }
+
+  .quiz-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .quiz-score {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--text3);
+  }
+
+  .quiz-pbar {
+    flex: 1;
+    height: 3px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+    min-width: 100px;
+  }
+
+  .quiz-pfill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--accent));
+    border-radius: 2px;
+    transition: width 0.4s;
+  }
+
+  .quiz-question {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text);
+    margin-bottom: 1.5rem;
+  }
+
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+
+  .quiz-opt {
+    padding: 12px 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg2);
+    color: var(--text2);
+    font-size: 14px;
+    font-family: var(--sans);
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .quiz-opt:hover:not(:disabled) { border-color: var(--border2); color: var(--text); background: var(--bg3); }
+
+  .opt-letter {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text3);
+    min-width: 20px;
+  }
+
+  .quiz-opt.correct {
+    border-color: var(--teal);
+    background: rgba(78,205,196,0.08);
+    color: var(--teal);
+  }
+
+  .quiz-opt.correct .opt-letter { color: var(--teal); }
+
+  .quiz-opt.wrong {
+    border-color: var(--coral);
+    background: rgba(255,107,91,0.08);
+    color: var(--coral);
+  }
+
+  .quiz-opt.wrong .opt-letter { color: var(--coral); }
+
+  .quiz-feedback {
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  .quiz-feedback.show { display: block; animation: fadeIn 0.2s ease; }
+  .quiz-feedback.correct { background: rgba(78,205,196,0.08); border: 1px solid rgba(78,205,196,0.2); color: var(--teal); }
+  .quiz-feedback.wrong { background: rgba(255,107,91,0.08); border: 1px solid rgba(255,107,91,0.2); color: #ff9e94; }
+
+  .quiz-next {
+    padding: 10px 24px;
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    background: var(--bg2);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: none;
+  }
+
+  .quiz-next.show { display: inline-block; }
+  .quiz-next:hover { border-color: var(--accent); color: var(--accent); }
+
+  .quiz-result {
+    text-align: center;
+    padding: 3rem 1rem;
+  }
+
+  .quiz-result .big-score {
+    font-family: var(--serif);
+    font-size: 5rem;
+    color: var(--accent);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .quiz-result p {
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 2rem; max-width: 700px; }
+
+  .timeline::before {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+  }
+
+  .tl-item {
+    position: relative;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.3s ease both;
+  }
+
+  .tl-dot {
+    position: absolute;
+    left: -28px;
+    top: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--accent);
+  }
+
+  .tl-year {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+  }
+
+  .tl-item h4 {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 5px;
+  }
+
+  .tl-item p {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+  }
+
+  /* STATS BAR */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+  }
+
+  .stat-item {
+    background: var(--bg2);
+    padding: 1rem 1.25rem;
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: var(--mono);
+    font-size: 1.6rem;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  /* UNIT FILTER ROW */
+  .filter-row {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 1.25rem;
+  }
+
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: var(--bg2);
+    color: var(--text3);
+    font-size: 12px;
+    font-family: var(--mono);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-btn:hover { border-color: var(--border2); color: var(--text2); }
+  .filter-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(212,168,83,0.06); }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--border2); }
+
+  nav::-webkit-scrollbar { height: 3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>Social <em>Psychology</em></h1>
+    <p>Interactive Study Hub · 4 Units · MAPC / BA Psychology</p>
+  </div>
+  <div class="unit-badges">
+    <span class="unit-badge active" onclick="filterGlobal(0,this)">All units</span>
+    <span class="unit-badge" onclick="filterGlobal(1,this)">Unit 1 — Social influence</span>
+    <span class="unit-badge" onclick="filterGlobal(2,this)">Unit 2 — Pro-social</span>
+    <span class="unit-badge" onclick="filterGlobal(3,this)">Unit 3 — Attraction</span>
+    <span class="unit-badge" onclick="filterGlobal(4,this)">Unit 4 — Aggression</span>
+  </div>
+</header>
+
+<nav>
+  <button class="nav-tab active" onclick="showTab('concepts',this)">Concept cards</button>
+  <button class="nav-tab" onclick="showTab('flashcards',this)">Flashcards</button>
+  <button class="nav-tab" onclick="showTab('quiz',this)">Quiz</button>
+  <button class="nav-tab" onclick="showTab('timeline',this)">Key experiments</button>
+</nav>
+
+<main>
+
+  <!-- CONCEPTS -->
+  <div id="s-concepts" class="section active">
+    <div id="concept-detail" class="detail-view"></div>
+    <div id="concept-list">
+      <div class="stats-bar">
+        <div class="stat-item"><div class="stat-num">18</div><div class="stat-label">Concepts</div></div>
+        <div class="stat-item"><div class="stat-num">20</div><div class="stat-label">Flashcards</div></div>
+        <div class="stat-item"><div class="stat-num">13</div><div class="stat-label">Quiz questions</div></div>
+        <div class="stat-item"><div class="stat-num">9</div><div class="stat-label">Key experiments</div></div>
+      </div>
+      <div class="section-header">
+        <h2>Concepts</h2>
+      </div>
+      <div id="cards-grid" class="cards-grid"></div>
+    </div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div id="s-flashcards" class="section">
+    <div class="section-header"><h2>Flashcards</h2></div>
+    <div class="filter-row" id="flash-filters">
+      <button class="filter-btn active" onclick="setFlashUnit(0,this)">All</button>
+      <button class="filter-btn" onclick="setFlashUnit(1,this)">Unit 1</button>
+      <button class="filter-btn" onclick="setFlashUnit(2,this)">Unit 2</button>
+      <button class="filter-btn" onclick="setFlashUnit(3,this)">Unit 3</button>
+      <button class="filter-btn" onclick="setFlashUnit(4,this)">Unit 4</button>
+    </div>
+    <div class="flash-area">
+      <div class="flash-progress-track"><div class="flash-progress-fill" id="fp-fill"></div></div>
+      <div class="flashcard-wrap" id="fc" onclick="flipCard()">
+        <div class="flashcard-inner" id="fc-inner">
+          <div class="fc-face front">
+            <div class="fc-hint">Click to reveal definition</div>
+            <div class="fc-tag" id="fc-tag"></div>
+            <h3 id="fc-term"></h3>
+          </div>
+          <div class="fc-face back">
+            <div class="fc-hint">Definition</div>
+            <p id="fc-def"></p>
+          </div>
+        </div>
+      </div>
+      <div class="flash-controls">
+        <button class="fc-btn" onclick="prevFlash()">← Prev</button>
+        <div class="fc-progress" id="fc-counter">1 / 20</div>
+        <button class="fc-btn" onclick="nextFlash()">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="s-quiz" class="section">
+    <div class="section-header"><h2>Quiz yourself</h2></div>
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="setQuizUnit(0,this)">All units</button>
+      <button class="filter-btn" onclick="setQuizUnit(1,this)">Unit 1</button>
+      <button class="filter-btn" onclick="setQuizUnit(2,this)">Unit 2</button>
+      <button class="filter-btn" onclick="setQuizUnit(3,this)">Unit 3</button>
+      <button class="filter-btn" onclick="setQuizUnit(4,this)">Unit 4</button>
+    </div>
+    <div class="quiz-container">
+      <div class="quiz-meta">
+        <div class="quiz-score" id="q-score">0 / 0 correct</div>
+        <div class="quiz-pbar"><div class="quiz-pfill" id="q-pfill"></div></div>
+      </div>
+      <div id="q-body"></div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div id="s-timeline" class="section">
+    <div class="section-header"><h2>Key experiments timeline</h2></div>
+    <div class="timeline" id="timeline"></div>
+  </div>
+
+</main>
+
+<script>
+const CONCEPTS = [
+  {unit:1,tag:"conformity",title:"Asch's conformity experiment",short:"75% conformed to group pressure on an obvious line-matching task",desc:"Solomon Asch (1951) gave groups of 7–9 students a line-matching task. 8 confederates gave deliberately wrong answers unanimously. The pressure was powerful: 76% of real participants conformed at least once, even though the correct answer was visually obvious.",keys:["8 confederates influenced 1 real subject","75% conformed on ≥1 trial; on average 1 in 3 times","Having just 1 dissenter broke the conformity effect","Private written responses destroyed the conformity effect"]},
+  {unit:1,tag:"conformity",title:"Informational social influence",short:"Conforming to gain accurate information, not just to fit in",desc:"People conform when they are uncertain and look to others as a source of correct information. First documented in Sherif's autokinetic experiment (1936), where participants converged on a shared estimate of light movement in a dark room.",keys:["Three key situations: ambiguity, crisis, expert presence","Sherif (1936): participants in dark room converged on shared estimates","Baron (1996): 51% conformity when accuracy was most important","Can lead to genuine internalisation of the belief"]},
+  {unit:1,tag:"conformity",title:"Normative social influence",short:"Conforming to be liked or accepted, not because you believe it",desc:"People conform to avoid rejection and social disapproval, even when they privately disagree. Results in public compliance without private acceptance. Three factors of impact: group size, strength (importance), and immediacy.",keys:["33% conformity rate in low-motivation conditions","Normative pressure is lower among close friends","Explains eating disorder behaviours via body-image norms","High motivation group conformed only 16% (Baron 1996)"]},
+  {unit:1,tag:"compliance",title:"Foot-in-the-door (FITD)",short:"Small request first → much more likely to agree to larger request later",desc:"Getting someone to agree to a modest request makes them significantly more likely to agree to a larger follow-up request, as they want to stay consistent with their earlier 'yes'. Works in-person and via email.",keys:["Housewives 2× more likely to allow a 2-hr survey after initial small question","Works best for pro-social requests","Effective over email as well as face-to-face","Examples: petition → donation; borrow car 1 day → borrow all weekend"]},
+  {unit:1,tag:"compliance",title:"Door-in-the-face (DITF)",short:"Huge request first → smaller request feels like a concession",desc:"An extreme opening request gets refused, then a more reasonable follow-up request is made. The requester has 'given ground', triggering reciprocity — the target feels obligated to meet them halfway.",keys:["Cialdini: 50% agreed to zoo trip after refusing 2-year volunteer commitment vs 17% control","Explained by reciprocity norm and reference-point shift","Used widely in fundraising, negotiation and sales","The initial request must be clearly extreme to work"]},
+  {unit:1,tag:"compliance",title:"Low-ball technique",short:"Attract someone with a good deal, then reveal the real terms",desc:"An attractive offer gains commitment. Then the terms are changed — but because people already committed (verbally, publicly, or financially), they tend to follow through. The key is maximising buy-in before the reveal.",keys:["56% agreed to experiment; 95% still showed up when told it was 7am","Control group (told 7am upfront): only 24% agreed","Requires verbal/public commitment before changing terms","Used in car sales, app trials, contractor pricing"]},
+  {unit:1,tag:"obedience",title:"Milgram's obedience study",short:"65% of ordinary people gave maximum electric shocks under authority",desc:"Stanley Milgram (1961–1963) ran studies to understand how the Holocaust was possible. Participants were ordered to administer electric shocks (15–450V) to a 'learner'. Despite visible distress, 65% went to maximum voltage.",keys:["Designed to study authority after the Holocaust","Obedience highest when authority was present in the room","Yale's prestige increased obedience levels","Hundreds of replications confirmed the core finding"]},
+  {unit:1,tag:"obedience",title:"Stanford prison experiment",short:"Role-play rapidly became real — guards abused, prisoners submitted",desc:"Philip Zimbardo (1971) divided volunteers into 'guards' and 'prisoners' in a mock prison. Guards quickly became abusive; prisoners became submissive — demonstrating that roles, authority, and context powerfully shape behaviour.",keys:["Experiment stopped early due to psychological harm","Both obedience and conformity were visible","Guards far exceeded original instructions in cruelty","Situational forces overwhelmed individual personality"]},
+  {unit:1,tag:"obedience",title:"Hofling hospital experiment",short:"21 of 22 nurses would have given a dangerous overdose when ordered to",desc:"Charles Hofling (1966) conducted a field experiment in real hospitals. Nurses were ordered by an unknown doctor to administer double the maximum dose of a fictional drug. Despite multiple rule violations, almost all complied.",keys:["First field study of obedience in natural setting","Nurses did not question the unknown doctor's authority","Multiple hospital rules were broken in compliance","Stark real-world contrast to Milgram lab conditions"]},
+  {unit:2,tag:"helping",title:"Bystander effect",short:"More witnesses = less likelihood that any single person helps",desc:"When more people witness an emergency, each individual feels less personal responsibility to act. Diffusion of responsibility means everyone assumes someone else will help. Plural ignorance makes them look to each other and misjudge the situation as non-urgent.",keys:["Inspired by Kitty Genovese murder (1964): 38 witnesses, no intervention","75% reported smoke alone vs 10% with passive confederates (Latané & Darley 1969)","Two causes: diffusion of responsibility + pluralistic ignorance","Specific address by name removes the diffusion effect (Markey 2000)"]},
+  {unit:2,tag:"helping",title:"Empathy-altruism hypothesis",short:"Genuine empathy motivates truly selfless helping, regardless of cost",desc:"Batson (1987) proposed that feeling empathy creates authentic altruistic motivation — the desire to help purely to improve the other person's welfare, not to reduce your own distress.",keys:["High-empathy people helped regardless of personal cost (Toi & Batson 1982)","Low-empathy: only helped when cost of NOT helping was high","Distinguished from egoistic negative-state relief","More empathy = stronger altruistic motivation (linear relationship)"]},
+  {unit:2,tag:"helping",title:"Negative-state relief model",short:"People help to escape their own guilt, sadness or distress",desc:"Cialdini (1987) proposed that helpers are motivated by reducing their own negative emotional states (guilt, sadness). Once their mood improves another way — praise, winning — the motivation to help disappears.",keys:["Participants who were praised were LESS likely to help","Churchgoers more likely to donate after confession (Harris 1975)","Participants who 'shocked' others made 39 charity calls vs 6.5","Key difference from Batson: helper's welfare, not recipient's, is the goal"]},
+  {unit:3,tag:"attraction",title:"Propinquity effect",short:"Physical proximity is one of the strongest predictors of friendship",desc:"The more we encounter someone, the more likely we are to become friends. Familiarity allows information exchange; anticipated contact increases liking even before meeting. Architectural features can determine social life.",keys:["Festinger et al. (1950): friendships in housing fell sharply with distance","Staircase position predicted friendship counts","Darley & Berscheid (1967): anticipated interaction increased liking","Proximity allows accumulation of reward-punishment experience"]},
+  {unit:3,tag:"attraction",title:"Similarity and attraction",short:"'Birds of a feather flock together' — attitude similarity is the key",desc:"People are drawn to those similar in attitudes, personality, interests, background, and appearance. Attitude similarity is especially powerful: it signals mutual reinforcement and cognitive consistency.",keys:["Byrne's law of attraction (1971): attraction ∝ proportion of shared attitudes","Newcomb (1963): shared values predicted dorm friendship formation","Matching hypothesis: couples tend to be matched in physical attractiveness","Similarity promotes relationship commitment and stability"]},
+  {unit:3,tag:"attraction",title:"Physical attractiveness stereotype",short:"'What is beautiful is good' — we assume attractive people have great personalities",desc:"People systematically assume physically attractive individuals are more sociable, intelligent, successful and mentally healthy — even though these traits are not actually correlated with looks. This bias affects jobs, salaries, legal judgments and social life.",keys:["Meta-analyses: attractive people judged more socially skilled and happier","Attractive defendants rated less guilty in jury simulations","Salary difference: ~$5,200/yr more for attractive men (Feingold 1992)","Physical attractiveness → popularity stronger than attitude similarity in adolescents"]},
+  {unit:4,tag:"aggression",title:"Frustration-aggression theory",short:"Frustration always produces aggression; aggression is always caused by frustration",desc:"Dollard et al. (1939) proposed that being blocked from a goal creates a drive to aggress. Aggression can be displaced onto a substitute target if the original is unavailable or too threatening. Later theorists softened 'always' to 'usually'.",keys:["Frustration is cumulative — builds until discharged in aggression","Dollard et al: 'Frustration always leads to aggression'","Berkowitz revised it: frustration → negative affect → aggression","Scapegoating is a classic example of displaced aggression"]},
+  {unit:4,tag:"aggression",title:"Social learning theory of aggression",short:"Aggression is learned by observing and imitating models",desc:"Bandura (1977) showed that people learn aggressive responses by direct experience or by observing others — especially when those others are rewarded. Huesmann's script theory extends this: media violence teaches children cognitive 'scripts' for when and how to aggress.",keys:["Bobo doll experiments: children imitated adult aggressive behaviour","Aggression acquired same way as all social behaviour: modelling + reinforcement","Script theory: repeated exposure to media violence builds automatic response patterns","Patterson: family interaction patterns directly shape aggressive development"]},
+  {unit:4,tag:"aggression",title:"General Aggression Model (GAM)",short:"Unified framework combining person, situation, and internal state",desc:"Anderson & Bushman (2002) integrated all major mini-theories. Personal inputs (traits, attitudes, past experience) and situational inputs (provocation, temperature, weapons) feed into affect, arousal, and cognition — leading to either impulsive or thoughtful aggressive action.",keys:["Combines frustration-aggression, social learning, script, and excitation transfer theories","Knowledge structures (beliefs, scripts) shape interpretation of situations","Appraisal and decision processes mediate inputs → behaviour","Heat, crowding, and noise all feed into arousal → aggression pathway"]},
+];
+
+const FLASH = [
+  {unit:1,tag:"conformity",term:"Social influence",def:"Change in an individual's thoughts, feelings, attitudes or behaviours resulting from interaction with another person or group — intentional or unintentional."},
+  {unit:1,tag:"conformity",term:"Conformity",def:"The process by which an individual's attitudes and behaviours come to match what they perceive others expect, even without direct pressure to change."},
+  {unit:1,tag:"compliance",term:"Compliance",def:"Responding favourably to an explicit or implicit request, while the target recognises they are being urged to respond in a desired way."},
+  {unit:1,tag:"obedience",term:"Obedience",def:"Following a direct order from an authority figure — assumed to be behaviour the person would not have shown without that order."},
+  {unit:1,tag:"conformity",term:"Minority influence",def:"When a smaller subgroup successfully changes majority beliefs — most effective when the minority is consistent, clear and non-confrontational."},
+  {unit:1,tag:"compliance",term:"Reciprocation",def:"Cialdini's principle: when someone does us a favour, we feel socially obligated to return it. Guilt arousal also increases compliance."},
+  {unit:1,tag:"compliance",term:"Scarcity principle",def:"People assign higher value to objects perceived as rare or limited. 'Limited edition' framing exploits this to increase compliance and desire."},
+  {unit:2,tag:"helping",term:"Pro-social behaviour",def:"Voluntary behaviour performed with the goal of benefiting another person — including helping, sharing, comforting, giving and cooperating."},
+  {unit:2,tag:"helping",term:"Altruism",def:"A selfless form of prosocial behaviour motivated purely by desire to benefit another, with no expectation of personal reward or gain."},
+  {unit:2,tag:"helping",term:"Diffusion of responsibility",def:"As the number of bystanders increases, each individual's felt responsibility to act decreases — a core mechanism of the bystander effect."},
+  {unit:2,tag:"helping",term:"Pluralistic ignorance",def:"Bystanders assume there is no emergency because others appear calm. Everyone looks to each other, misreading the collective calmness as a signal there is nothing to worry about."},
+  {unit:3,tag:"attraction",term:"Interpersonal attraction",def:"A force between two people that draws them together and resists their separation. Influenced by proximity, similarity, physical attractiveness, and reciprocal liking."},
+  {unit:3,tag:"attraction",term:"Mere exposure effect",def:"The more we are exposed to a stimulus (or person), the more we tend to like it. Familiarity breeds attraction — even without interaction."},
+  {unit:3,tag:"attraction",term:"Reciprocity of liking",def:"We tend to like people who like us. Their liking is rewarding; and we are attracted to those who reward us (reinforcement principle)."},
+  {unit:3,tag:"attraction",term:"Complementarity",def:"Attraction to someone with different but complementary traits, especially as relationships deepen over time — in contrast to similarity effects at first meeting."},
+  {unit:4,tag:"aggression",term:"Aggression",def:"Any behaviour directed at another individual with the proximate intent to cause harm, where the perpetrator expects harm and the target is motivated to avoid it."},
+  {unit:4,tag:"aggression",term:"Instrumental aggression",def:"Aggression used as a deliberate tool to achieve a goal or reward — planned, emotionless (cold-blooded), with little emotional charge toward the victim."},
+  {unit:4,tag:"aggression",term:"Reactive (hostile) aggression",def:"An emotionally charged, angry response to a perceived provocation — relatively uncontrolled, hot-blooded, and defensive in nature."},
+  {unit:4,tag:"aggression",term:"Cognitive neo-association theory",def:"Berkowitz (1993): aversive events produce negative affect, which automatically activates fight/flight thoughts, memories and physiological responses linked in semantic memory networks."},
+  {unit:4,tag:"aggression",term:"Excitation transfer theory",def:"Zillmann (1983): physiological arousal from one event can be misattributed to a second event. If the second event involves anger, leftover arousal amplifies the anger response."},
+];
+
+const QUIZ = [
+  {unit:1,q:"In Asch's (1951) line experiment, what percentage of participants conformed to the group's wrong answer on at least one trial?",opts:["25%","50%","76%","90%"],ans:2,exp:"Asch found that 76% conformed at least once. On average, participants gave the wrong answer about 1/3 of the time — even though the correct answer was visually obvious."},
+  {unit:1,q:"Which compliance technique starts with an extreme, unreasonable request before making a smaller follow-up request?",opts:["Foot-in-the-door","Low-ball","Door-in-the-face","Reciprocation"],ans:2,exp:"The door-in-the-face technique uses a deliberately extreme opening request (which is refused) to make the follow-up smaller request seem like a fair concession — triggering the reciprocity norm."},
+  {unit:1,q:"Milgram found obedience was HIGHEST when:",opts:["The learner was visible in the same room","The authority figure was absent or remote","Commands were given by another volunteer","The authority figure was present in the room with the participant"],ans:3,exp:"Physical presence of the authority figure dramatically increased obedience. Conversely, obedience dropped sharply when the experimenter left the room or gave orders by telephone."},
+  {unit:1,q:"What does 'informational social influence' refer to?",opts:["Conforming to avoid social rejection","Conforming to gain accurate information from others","Obeying an authority figure's direct orders","Adjusting behaviour after seeing a reward given to a model"],ans:1,exp:"Informational social influence occurs when we look to others as a source of correct information — especially in ambiguous, novel or crisis situations where we are genuinely unsure what to do."},
+  {unit:2,q:"Which event in 1964 directly sparked Latané and Darley's research into the bystander effect?",opts:["A subway collapse in New York","The murder of Kitty Genovese","The Stanford prison experiment","A hospital medication error study"],ans:1,exp:"38 neighbours witnessed the repeated stabbing of Kitty Genovese but none intervened. Darley and Latané used this to investigate how the presence of other witnesses reduces individual helping."},
+  {unit:2,q:"According to Batson's empathy-altruism hypothesis, high empathy leads to:",opts:["Helping only when personal costs are low","Egoistic mood repair through helping","Altruistic motivation to help regardless of personal cost","Greater likelihood of social approval-seeking"],ans:2,exp:"Batson's research showed high-empathy participants helped regardless of how inconvenient it was. This distinguishes altruistic motivation (focused on the other) from egoistic negative-state relief (focused on self)."},
+  {unit:2,q:"Which factor is most likely to REDUCE prosocial behaviour?",opts:["Being in a good mood","High physical attractiveness of the victim","Many other bystanders being present","Feeling similar to the victim"],ans:2,exp:"More bystanders creates diffusion of responsibility — each individual feels less obligated to act, assuming someone else will help. All the other options are factors that increase prosocial behaviour."},
+  {unit:3,q:"Festinger, Schachter and Back (1950) found that friendship formation in student housing was most strongly determined by:",opts:["Attitude similarity","Physical attractiveness of residents","Physical distance between houses and which direction they faced","Whether residents had been introduced formally"],ans:2,exp:"Even within a small housing project, sheer distance and architectural features (which direction a house faced, staircase position, mailbox location) were the strongest predictors of friendship."},
+  {unit:3,q:"The 'physical attractiveness stereotype' refers to the assumption that:",opts:["Attractive people are more likely to commit crimes","Attractive people also possess a host of desirable personality traits","Unattractive people are more intelligent","Physical appearance determines athletic ability"],ans:1,exp:"Research shows people assume attractive individuals are more sociable, successful, happy and mentally healthy. However, Feingold's (1992) meta-analysis found no actual correlation between attractiveness and most personality traits."},
+  {unit:3,q:"Heider's balance theory predicts that proximity leads to liking because:",opts:["Proximity always means more shared interests","Proximity creates a unit relationship, inducing a harmonious (liking) sentiment","Close people are always physically attractive","Proximity forces reciprocal disclosure"],ans:1,exp:"Heider's balance theory states we strive for harmony between unit relationships (who we are grouped with) and sentiment relationships (how we feel about them). Proximity creates a unit, so liking tends to follow to restore balance."},
+  {unit:4,q:"Which theory states that frustration ALWAYS produces aggression and aggression is ALWAYS caused by frustration?",opts:["Social learning theory","Excitation transfer theory","The frustration-aggression hypothesis (Dollard et al. 1939)","Psychodynamic theory"],ans:2,exp:"Dollard et al.'s frustration-aggression hypothesis made the strong claim that the two are invariably linked. Later theorists (especially Berkowitz) revised this to 'usually' rather than 'always', adding the mediating role of negative affect."},
+  {unit:4,q:"According to Bandura's social learning theory, children primarily learn aggression through:",opts:["Hormonal surges during development","Observing and imitating aggressive models, especially when those models are rewarded","Environmental stressors like heat and crowding","Brain dysfunction in the prefrontal region"],ans:1,exp:"Bandura's Bobo doll experiments showed children readily imitate observed aggression. Aggression is acquired through the same observational learning and reinforcement processes as all other social behaviour."},
+  {unit:4,q:"In the General Aggression Model, what three internal states mediate the effect of person and situation inputs on behaviour?",opts:["Mood, memory, and motivation","Affect, arousal, and cognition","Fear, anger, and impulsive drive","Schemas, learning history, and habits"],ans:1,exp:"Anderson & Bushman's GAM proposes that personal traits and situational factors feed into three internal states — affect (emotion), arousal (physiological activation), and cognition (thoughts and scripts) — which then guide appraisal and action."},
+];
+
+const TIMELINE = [
+  {year:"1936",name:"Sherif's autokinetic experiment",unit:1,desc:"Muzafer Sherif showed that people converge on a shared estimate of ambiguous stimuli (apparent light movement). The birth of informational social influence research and the study of norm formation."},
+  {year:"1950",name:"Festinger, Schachter & Back housing study",unit:3,desc:"Mapped friendships in a student housing project — showing that physical distance and architectural features were stronger predictors of friendship than almost any personal characteristic."},
+  {year:"1951",name:"Asch's conformity experiment",unit:1,desc:"Solomon Asch demonstrated that 76% of people conformed to an obviously wrong group judgment about line lengths at least once — the landmark study of normative social influence."},
+  {year:"1961",name:"Milgram's obedience study",unit:1,desc:"Stanley Milgram found that 65% of ordinary volunteers would administer what they believed were potentially lethal electric shocks when ordered to by an authority figure in a lab coat."},
+  {year:"1964",name:"Kitty Genovese murder",unit:2,desc:"38 witnesses to the murder failed to intervene. This shocking case sparked Latané and Darley's systematic research into the bystander effect and diffusion of responsibility."},
+  {year:"1966",name:"Hofling hospital experiment",unit:1,desc:"21 of 22 nurses would have given a dangerous drug overdose when instructed by an unknown doctor — powerful field evidence for obedience to authority outside the laboratory."},
+  {year:"1969",name:"Latané & Darley bystander studies",unit:2,desc:"Systematic experimental series confirming the bystander effect: 75% of people alone reported a smoke emergency; only 10% did so with two passive confederates present."},
+  {year:"1971",name:"Stanford prison experiment",unit:1,desc:"Philip Zimbardo's study showed how dramatically roles and authority shape behaviour — ordinary people became abusive guards or submissive prisoners within days."},
+  {year:"1982",name:"Toi & Batson empathy study",unit:2,desc:"High-empathy participants helped a classmate with broken legs regardless of personal cost, while low-empathy participants only helped when the cost of not helping was high — supporting the empathy-altruism hypothesis."},
+];
+
+const tagClass = {conformity:"tag-conformity",compliance:"tag-compliance",obedience:"tag-obedience",helping:"tag-helping",attraction:"tag-attraction",aggression:"tag-aggression"};
+const tagLabel = {conformity:"Conformity",compliance:"Compliance",obedience:"Obedience",helping:"Helping",attraction:"Attraction",aggression:"Aggression"};
+
+let globalUnit = 0;
+let flashUnit = 0, flashIdx = 0, flashFiltered = [...FLASH];
+let quizUnit = 0, quizQ = [], quizIdx = 0, quizScore = 0, quizAnswered = false;
+
+function showTab(id, el) {
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+function filterGlobal(u, el) {
+  globalUnit = u;
+  document.querySelectorAll('.unit-badge').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  renderCards();
+}
+
+function renderCards() {
+  const filtered = globalUnit === 0 ? CONCEPTS : CONCEPTS.filter(c=>c.unit===globalUnit);
+  document.getElementById('cards-grid').innerHTML = filtered.map((c,i)=>{
+    const idx = CONCEPTS.indexOf(c);
+    return `<div class="concept-card" onclick="openConcept(${idx})">
+      <div class="card-unit">Unit ${c.unit}</div>
+      <div class="card-tag ${tagClass[c.tag]}">${tagLabel[c.tag]}</div>
+      <h3>${c.title}</h3>
+      <p>${c.short}</p>
+    </div>`;
+  }).join('');
+  document.getElementById('concept-detail').classList.remove('open');
+  document.getElementById('concept-list').style.display = '';
+}
+
+function openConcept(i) {
+  const c = CONCEPTS[i];
+  const det = document.getElementById('concept-detail');
+  det.innerHTML = `
+    <button class="back-btn" onclick="closeConcept()">← Back to concepts</button>
+    <div class="detail-inner">
+      <div class="detail-main">
+        <div class="card-tag ${tagClass[c.tag]}" style="margin-bottom:12px">${tagLabel[c.tag]} · Unit ${c.unit}</div>
+        <h2>${c.title}</h2>
+        <p class="desc">${c.desc}</p>
+      </div>
+      <div class="detail-sidebar">
+        <h4>Key points</h4>
+        <ul>${c.keys.map(k=>`<li>${k}</li>`).join('')}</ul>
+        <button class="ask-btn" onclick="askClaude('${c.title.replace(/'/g,"\\'")}')">Ask Claude to go deeper ↗</button>
+      </div>
+    </div>`;
+  det.classList.add('open');
+  document.getElementById('concept-list').style.display = 'none';
+  window.scrollTo(0,0);
+}
+
+function closeConcept() {
+  document.getElementById('concept-detail').classList.remove('open');
+  document.getElementById('concept-list').style.display = '';
+}
+
+function askClaude(title) {
+  window.open(`https://claude.ai/new?q=${encodeURIComponent('Tell me more about '+title+' in social psychology, with real-world examples and implications.')}`, '_blank');
+}
+
+function setFlashUnit(u, el) {
+  flashUnit = u;
+  document.querySelectorAll('#s-flashcards .filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  flashFiltered = u === 0 ? [...FLASH] : FLASH.filter(f=>f.unit===u);
+  flashIdx = 0;
+  document.getElementById('fc').classList.remove('flipped');
+  renderFlash();
+}
+
+function renderFlash() {
+  const f = flashFiltered[flashIdx];
+  document.getElementById('fc-tag').textContent = tagLabel[f.tag];
+  document.getElementById('fc-tag').className = 'fc-tag ' + tagClass[f.tag];
+  document.getElementById('fc-term').textContent = f.term;
+  document.getElementById('fc-def').textContent = f.def;
+  document.getElementById('fc-counter').textContent = `${flashIdx+1} / ${flashFiltered.length}`;
+  document.getElementById('fp-fill').style.width = ((flashIdx+1)/flashFiltered.length*100)+'%';
+  document.getElementById('fc').classList.remove('flipped');
+}
+
+function flipCard() { document.getElementById('fc').classList.toggle('flipped'); }
+function nextFlash() { flashIdx = (flashIdx+1)%flashFiltered.length; renderFlash(); }
+function prevFlash() { flashIdx = (flashIdx-1+flashFiltered.length)%flashFiltered.length; renderFlash(); }
+
+function setQuizUnit(u, el) {
+  quizUnit = u;
+  document.querySelectorAll('#s-quiz .filter-btn').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  startQuiz();
+}
+
+function startQuiz() {
+  quizQ = quizUnit === 0 ? [...QUIZ] : QUIZ.filter(q=>q.unit===quizUnit);
+  quizQ = quizQ.sort(()=>Math.random()-0.5);
+  quizIdx = 0; quizScore = 0;
+  renderQuiz();
+}
+
+function renderQuiz() {
+  const pct = quizQ.length ? Math.round(quizIdx/quizQ.length*100) : 0;
+  document.getElementById('q-pfill').style.width = pct+'%';
+  document.getElementById('q-score').textContent = `${quizScore} / ${quizIdx} correct`;
+  if(quizIdx >= quizQ.length && quizQ.length > 0) {
+    const pct2 = Math.round(quizScore/quizQ.length*100);
+    const grade = pct2 >= 80 ? 'Excellent!' : pct2 >= 60 ? 'Good work' : 'Keep studying';
+    document.getElementById('q-body').innerHTML = `<div class="quiz-result">
+      <div class="big-score">${pct2}%</div>
+      <p>${grade} — ${quizScore} of ${quizQ.length} correct</p>
+      <button class="quiz-next show" onclick="startQuiz()">Try again</button>
+    </div>`;
+    return;
+  }
+  const q = quizQ[quizIdx];
+  quizAnswered = false;
+  const letters = ['A','B','C','D'];
+  document.getElementById('q-body').innerHTML = `
+    <div class="quiz-question">Q${quizIdx+1}. ${q.q}</div>
+    <div class="quiz-opts">${q.opts.map((o,i)=>`
+      <button class="quiz-opt" onclick="answerQuiz(${i})">
+        <span class="opt-letter">${letters[i]}</span>${o}
+      </button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="q-fb"></div>
+    <button class="quiz-next" id="q-next" onclick="renderQuiz()">${quizIdx+1<quizQ.length?'Next question →':'See results'}</button>`;
+}
+
+function answerQuiz(i) {
+  if(quizAnswered) return;
+  quizAnswered = true;
+  const q = quizQ[quizIdx];
+  const btns = document.querySelectorAll('.quiz-opt');
+  btns.forEach(b=>b.disabled=true);
+  btns[q.ans].classList.add('correct');
+  const correct = i===q.ans;
+  if(!correct) btns[i].classList.add('wrong'); else quizScore++;
+  quizIdx++;
+  const fb = document.getElementById('q-fb');
+  fb.textContent = (correct ? '✓ Correct. ' : '✗ Not quite. ') + q.exp;
+  fb.className = 'quiz-feedback show ' + (correct?'correct':'wrong');
+  document.getElementById('q-next').classList.add('show');
+  document.getElementById('q-score').textContent = `${quizScore} / ${quizIdx} correct`;
+}
+
+function renderTimeline() {
+  const filtered = globalUnit === 0 ? TIMELINE : TIMELINE.filter(t=>t.unit===globalUnit);
+  document.getElementById('timeline').innerHTML = filtered.map((e,i)=>`
+    <div class="tl-item" style="animation-delay:${i*0.06}s">
+      <div class="tl-dot"></div>
+      <div class="tl-year">${e.year}</div>
+      <h4>${e.name}</h4>
+      <p>${e.desc}</p>
+    </div>`).join('');
+}
+
+renderCards();
+renderFlash();
+startQuiz();
+renderTimeline();
+</script>
+</body>
+</html>
