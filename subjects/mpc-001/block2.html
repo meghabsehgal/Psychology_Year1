@@ -1,2 +1,718 @@
-<h1>MPC-001 Block 2</h1>
-<a href="../../index.html">Back</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intelligence & Creativity — Study App</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--p:#1a1a1a;--s:#555;--bg:#fff;--bg2:#f5f5f3;--border:#e0ddd6;--blue:#2563eb;--blue-bg:#eff6ff;--blue-border:#bfdbfe;--green:#16a34a;--green-bg:#f0fdf4;--green-border:#bbf7d0;--amber:#d97706;--amber-bg:#fffbeb;--amber-border:#fde68a;--red:#dc2626;--red-bg:#fef2f2;--red-border:#fecaca;--purple:#7c3aed;--purple-bg:#f5f3ff;--purple-border:#ddd6fe;--teal:#0f766e;--teal-bg:#f0fdfa;--teal-border:#99f6e4;--r:8px;--rl:12px}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0ede6;color:var(--p);min-height:100vh;padding:1.5rem 1rem}
+  .app{max-width:860px;margin:0 auto}
+  h1{font-size:24px;font-weight:600;margin-bottom:.3rem}
+  .subtitle{font-size:14px;color:var(--s);margin-bottom:1.5rem}
+  /* Tabs */
+  .tab-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1.25rem;background:var(--bg);padding:.5rem;border-radius:var(--rl);border:1px solid var(--border)}
+  .tab{padding:7px 16px;border-radius:var(--r);border:none;background:transparent;color:var(--s);font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s;font-weight:500}
+  .tab.active{background:var(--blue);color:#fff}
+  .tab:hover:not(.active){background:var(--bg2)}
+  .section{display:none}.section.show{display:block}
+  /* Cards */
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-bottom:1.5rem}
+  .card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:1.1rem;cursor:pointer;transition:all .2s;text-align:left}
+  .card:hover{border-color:#93c5fd;box-shadow:0 2px 12px rgba(37,99,235,.1);transform:translateY(-1px)}
+  .card-icon{font-size:24px;margin-bottom:.5rem}
+  .card-title{font-size:14px;font-weight:600;color:var(--p);margin-bottom:.3rem}
+  .card-sub{font-size:12px;color:var(--s);line-height:1.5;margin-bottom:.6rem}
+  .badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-border);font-weight:500}
+  /* Modal */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:999;opacity:0;pointer-events:none;transition:opacity .2s;padding:1rem}
+  .overlay.open{opacity:1;pointer-events:all}
+  .modal{background:var(--bg);border-radius:var(--rl);padding:1.75rem;max-width:580px;width:100%;max-height:85vh;overflow-y:auto;border:1px solid var(--border);position:relative}
+  .modal-close{position:absolute;top:1rem;right:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:50%;width:28px;height:28px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--s)}
+  .modal h2{font-size:18px;font-weight:600;margin-bottom:1rem;padding-right:2rem}
+  .modal p{font-size:13.5px;color:var(--s);line-height:1.75;margin-bottom:.8rem}
+  .modal p strong{color:var(--p);font-weight:600}
+  .example-box{background:var(--amber-bg);border-left:3px solid var(--amber);padding:.75rem 1rem;border-radius:0 var(--r) var(--r) 0;font-size:13px;color:#92400e;margin:1rem 0;line-height:1.6}
+  /* Flashcards */
+  .fc-wrap{perspective:900px;cursor:pointer;margin-bottom:.75rem;min-height:180px}
+  .fc{width:100%;min-height:180px;position:relative;transform-style:preserve-3d;transition:transform .5s cubic-bezier(.4,0,.2,1)}
+  .fc.flipped{transform:rotateY(180deg)}
+  .fc-front,.fc-back{position:absolute;width:100%;min-height:180px;backface-visibility:hidden;border-radius:var(--rl);border:1px solid var(--border);padding:1.5rem;display:flex;flex-direction:column;justify-content:center}
+  .fc-front{background:var(--bg)}
+  .fc-back{background:var(--blue-bg);border-color:var(--blue-border);transform:rotateY(180deg)}
+  .fc-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--s);margin-bottom:.5rem;font-weight:600}
+  .fc-back .fc-label{color:var(--blue)}
+  .fc-term{font-size:20px;font-weight:600;color:var(--p)}
+  .fc-def{font-size:15px;font-weight:600;color:var(--blue);margin-bottom:.4rem}
+  .fc-body{font-size:13px;color:#1e40af;line-height:1.65}
+  .fc-nav{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--s)}
+  .fc-progress{height:3px;background:var(--border);border-radius:2px;margin-bottom:.5rem;overflow:hidden}
+  .fc-bar{height:100%;background:var(--blue);border-radius:2px;transition:width .3s}
+  /* Quiz */
+  .quiz-box{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:1.4rem;margin-bottom:1rem}
+  .q-meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+  .q-num{font-size:12px;font-weight:600;color:var(--blue);background:var(--blue-bg);padding:3px 10px;border-radius:10px}
+  .q-text{font-size:15px;font-weight:500;color:var(--p);margin-bottom:1rem;line-height:1.55}
+  .opts{display:flex;flex-direction:column;gap:8px}
+  .opt{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:.7rem 1rem;font-size:13.5px;color:var(--p);cursor:pointer;text-align:left;transition:all .2s;font-family:inherit}
+  .opt:hover:not(:disabled){border-color:#93c5fd;background:var(--blue-bg)}
+  .opt.correct{background:var(--green-bg)!important;border-color:var(--green)!important;color:var(--green)!important;font-weight:500}
+  .opt.wrong{background:var(--red-bg)!important;border-color:var(--red)!important;color:var(--red)!important}
+  .feedback{font-size:13px;margin-top:.75rem;padding:.65rem 1rem;border-radius:var(--r);line-height:1.6;border:1px solid}
+  .feedback.ok{background:var(--green-bg);border-color:var(--green-border);color:#14532d}
+  .feedback.bad{background:var(--red-bg);border-color:var(--red-border);color:#7f1d1d}
+  .score-header{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:1rem 1.25rem;margin-bottom:1rem;display:flex;align-items:center;gap:1rem}
+  .score-track{flex:1;height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+  .score-fill{height:100%;background:var(--green);border-radius:4px;transition:width .4s}
+  .score-text{font-size:13px;font-weight:600;color:var(--p);white-space:nowrap}
+  /* Buttons */
+  .btn{padding:8px 18px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--p);font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s}
+  .btn:hover{border-color:#93c5fd;background:var(--blue-bg)}
+  .btn.primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .btn.primary:hover{background:#1d4ed8}
+  .btn-row{display:flex;gap:8px;margin-top:.75rem;flex-wrap:wrap}
+  /* Diagrams */
+  .diagram-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:1rem}
+  .dtab{padding:6px 14px;border-radius:16px;border:1px solid var(--border);font-size:12px;background:var(--bg);color:var(--s);cursor:pointer;font-family:inherit;font-weight:500;transition:all .2s}
+  .dtab.active{background:var(--blue);color:#fff;border-color:var(--blue)}
+  .diagram-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:1.25rem;overflow-x:auto;margin-bottom:1rem}
+  .diagram-desc{font-size:13px;color:var(--s);line-height:1.6;background:var(--bg2);border-radius:var(--r);padding:.75rem 1rem;border:1px solid var(--border)}
+  /* Timeline */
+  .timeline{position:relative;padding-left:32px}
+  .timeline::before{content:'';position:absolute;left:12px;top:8px;bottom:8px;width:2px;background:var(--blue-border)}
+  .tl-item{position:relative;margin-bottom:1.4rem}
+  .tl-dot{position:absolute;left:-24px;top:3px;width:14px;height:14px;border-radius:50%;background:var(--blue);border:2px solid #fff;box-shadow:0 0 0 2px var(--blue)}
+  .tl-year{font-size:11px;color:var(--blue);font-weight:700;margin-bottom:2px;text-transform:uppercase;letter-spacing:.05em}
+  .tl-title{font-size:14px;font-weight:600;color:var(--p);margin-bottom:3px}
+  .tl-desc{font-size:13px;color:var(--s);line-height:1.55}
+  /* Quick ref */
+  .ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:1rem}
+  .ref-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--rl);padding:1rem}
+  .ref-unit{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--blue);margin-bottom:.4rem}
+  .ref-title{font-size:13px;font-weight:600;color:var(--p);margin-bottom:.4rem}
+  .ref-body{font-size:12px;color:var(--s);line-height:1.6}
+  /* Section header */
+  .sec-title{font-size:17px;font-weight:600;margin-bottom:.3rem}
+  .sec-sub{font-size:13px;color:var(--s);margin-bottom:1.1rem}
+  /* Hint */
+  .hint{font-size:12px;color:var(--s);text-align:center;margin:.3rem 0 .9rem;font-style:italic}
+  svg text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+</style>
+</head>
+<body>
+<div class="app">
+  <h1>🧠 Intelligence & Creativity — Study App</h1>
+  <p class="subtitle">All 4 Units · Theories, Measurement, Creativity & Problem Solving · Interactive learning offline</p>
+
+  <div class="tab-row">
+    <button class="tab active" onclick="show('explore',this)">📖 Explore</button>
+    <button class="tab" onclick="show('flashcards',this)">🃏 Flashcards</button>
+    <button class="tab" onclick="show('quiz',this)">✏️ Quiz</button>
+    <button class="tab" onclick="show('diagrams',this)">📊 Diagrams</button>
+    <button class="tab" onclick="show('quickref',this)">📋 Quick Ref</button>
+    <button class="tab" onclick="show('timeline',this)">📅 History</button>
+  </div>
+
+  <!-- EXPLORE -->
+  <div id="explore" class="section show">
+    <p class="sec-sub">Click any card to read the full explanation with examples.</p>
+    <div class="cards" id="theory-cards"></div>
+  </div>
+
+  <!-- FLASHCARDS -->
+  <div id="flashcards" class="section">
+    <p class="sec-sub">Flip the card to reveal the definition. Use arrows to navigate.</p>
+    <div class="fc-progress"><div class="fc-bar" id="fc-bar"></div></div>
+    <div class="fc-wrap" onclick="flipCard()">
+      <div class="fc" id="fc">
+        <div class="fc-front">
+          <div class="fc-label">Term — click to flip</div>
+          <div class="fc-term" id="fc-term"></div>
+        </div>
+        <div class="fc-back">
+          <div class="fc-label">Definition</div>
+          <div class="fc-def" id="fc-def"></div>
+          <div class="fc-body" id="fc-body"></div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">Click the card to flip · Use buttons to navigate</p>
+    <div class="fc-nav">
+      <button class="btn" onclick="fcNav(-1)">← Previous</button>
+      <span id="fc-count">1 / 18</span>
+      <button class="btn" onclick="fcNav(1)">Next →</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div id="quiz" class="section">
+    <div class="score-header">
+      <div class="score-track"><div class="score-fill" id="score-fill" style="width:0%"></div></div>
+      <div class="score-text" id="score-text">0 / 10</div>
+    </div>
+    <div id="quiz-area"></div>
+    <div class="btn-row">
+      <button class="btn" onclick="qNav(-1)">← Previous</button>
+      <button class="btn primary" onclick="qNav(1)">Next Question →</button>
+      <button class="btn" onclick="resetQuiz()" style="margin-left:auto">↺ Reset Quiz</button>
+    </div>
+  </div>
+
+  <!-- DIAGRAMS -->
+  <div id="diagrams" class="section">
+    <p class="sec-sub">Visual representations of key theories. Click on nodes for more info.</p>
+    <div class="diagram-tabs">
+      <button class="dtab active" onclick="showDiag('spearman',this)">Spearman G & S</button>
+      <button class="dtab" onclick="showDiag('pass',this)">PASS Model</button>
+      <button class="dtab" onclick="showDiag('guilford',this)">Guilford SOI</button>
+      <button class="dtab" onclick="showDiag('gardner',this)">Gardner MI</button>
+      <button class="dtab" onclick="showDiag('sternberg',this)">Sternberg</button>
+      <button class="dtab" onclick="showDiag('creativity',this)">Creativity</button>
+      <button class="dtab" onclick="showDiag('problemsolving',this)">Problem Solving</button>
+    </div>
+    <div class="diagram-card" id="diag-area"></div>
+    <div class="diagram-desc" id="diag-desc"></div>
+  </div>
+
+  <!-- QUICK REF -->
+  <div id="quickref" class="section">
+    <p class="sec-sub">All key formulas, definitions, and facts at a glance.</p>
+    <div class="ref-grid" id="ref-grid"></div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div id="timeline" class="section">
+    <p class="sec-sub">The history of intelligence research from 1882 to today.</p>
+    <div class="timeline" id="tl-content"></div>
+  </div>
+</div>
+
+<!-- MODAL -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h2 id="m-title"></h2>
+    <div id="m-body"></div>
+  </div>
+</div>
+
+<script>
+// ─── DATA ───────────────────────────────────────────────
+const theories = [
+  {icon:'🔬',unit:'Unit 1',badge:'G & S Factors',title:"Spearman's Two-Factor Theory",sub:"All intelligence shares one general factor (g) plus specific factors (s)",
+   body:`<p>Charles Spearman (1904) used <strong>factor analysis</strong> and the <strong>tetrad difference method</strong> to show that intercorrelations between intelligence tests are explained by one common general factor — <strong>g</strong> — which he called "mental energy."</p>
+   <p>Each test also has a <strong>specific factor (s)</strong> unique to that task. Tests with high g-loading (abstract reasoning, comprehension, problem solving) correlate most strongly.</p>
+   <div class="example-box">📐 Tetrad formula: F = r₁₃r₂₄ − r₁₄r₂₃ ≈ 0 when g fully explains all intercorrelations.</div>
+   <p><strong>Key insight:</strong> The more two tests share g, the higher their correlation. Group factors (verbal, numerical) exist between g and specific s factors.</p>
+   <p><strong>Critics:</strong> Thorndike (no general intelligence, only specific acts), Thomson (sampling theory), Thurstone (7 primary abilities). Jensen (1998) and Carroll (1993) both confirmed g via confirmatory factor analysis.</p>`},
+  {icon:'🔄',unit:'Unit 1',badge:'Neuropsychological',title:"PASS Theory — Das, Naglieri & Kirby",sub:"Planning, Attention-Arousal, Simultaneous & Successive processing",
+   body:`<p>Based on <strong>Luria's three functional units</strong>, the PASS theory (1994) defines intelligence through four cognitive processes measured by the Cognitive Assessment System (CAS).</p>
+   <p><strong>1. Planning</strong> (Frontal lobes / prefrontal cortex): Programming, regulation, self-monitoring, strategy selection. E.g., writing an essay, solving novel problems.</p>
+   <p><strong>2. Attention-Arousal</strong> (Brain stem + reticular system): Selective attention and cortical alertness. Must function for Units 2 and 3 to operate.</p>
+   <p><strong>3. Simultaneous Processing</strong> (Occipital-parietal): All elements related to each other at once — surveyability. E.g., understanding spatial relationships, matrices.</p>
+   <p><strong>4. Successive Processing</strong> (Fronto-temporal): Serial order — each link evokes the next. E.g., decoding syntax, articulating speech, following steps.</p>
+   <div class="example-box">💡 Knowledge Base is embedded in all four processes — it represents cultural and social background that shapes mental activity.</div>`},
+  {icon:'🏗️',unit:'Unit 2',badge:'150 Abilities',title:"Guilford's Structure of Intellect",sub:"3D model: 5 Contents × 5 Operations × 6 Products = 150 factors",
+   body:`<p>Guilford (1956, revised 1977) rejected g entirely. He built a three-dimensional cube model of intelligence:</p>
+   <p><strong>Operations (5):</strong> Cognition, Memory, Divergent Production, Convergent Production, Evaluation</p>
+   <p><strong>Contents (5):</strong> Visual, Auditory, Symbolic, Semantic, Behavioural</p>
+   <p><strong>Products (6):</strong> Units, Classes, Relations, Systems, Transformations, Implications</p>
+   <div class="example-box">📊 Example: Recalling a word list = Semantic content + Memory operation + Units product. Divergent production underlies creativity.</div>
+   <p><strong>Criticism (Eysenck):</strong> Worked with restricted intelligence range; used orthogonal rotation ignoring factor correlations; factors too narrow for practical prediction.</p>`},
+  {icon:'🎵',unit:'Unit 2',badge:'9 Intelligences',title:"Gardner's Multiple Intelligences",sub:"Intelligence is bio-psychological potential — 9 distinct capacities",
+   body:`<p>Gardner (1983, 1999) argued IQ is too narrow. He defined intelligence as <em>"a bio-psychological potential to process information that can be activated in a cultural setting."</em></p>
+   <p>He used <strong>8 criteria</strong>: brain isolation by damage, evolutionary history, core operations, susceptibility to encoding, distinct developmental progression, savants/prodigies, experimental psychology support, psychometric support.</p>
+   <p><strong>The 9 intelligences:</strong><br>
+   1. Linguistic | 2. Logical-Mathematical | 3. Musical | 4. Bodily-Kinesthetic<br>
+   5. Spatial | 6. Interpersonal | 7. Intrapersonal | 8. Naturalistic | 9. Existential</p>
+   <div class="example-box">🎓 Schools over-value linguistic and logical-mathematical. Gardner argues all nine should receive equal attention.</div>
+   <p><strong>Criticism:</strong> Each "intelligence" may be a cognitive style not a stand-alone construct (Morgan, 1996). Incompatible with g, heritability, and broadens intelligence too widely.</p>`},
+  {icon:'⚙️',unit:'Unit 2',badge:'3 Subtheories',title:"Sternberg's Triarchic Theory",sub:"Analytical + Creative + Practical = Successful Intelligence",
+   body:`<p>Sternberg (1985) felt prior theories were incomplete. His theory has three interacting facets:</p>
+   <p><strong>1. Componential (Analytical):</strong> Academic problem solving. Metacomponents (plan & monitor) → Performance components (execute) → Knowledge acquisition (learn). What traditional IQ tests measure.</p>
+   <p><strong>2. Experiential (Creative):</strong> Handling novelty and automating the familiar. High creative intelligence = giving 'wrong' answers that reveal a different valid perspective.</p>
+   <p><strong>3. Contextual (Practical):</strong> "Street smarts." Three processes: Adaptation (change yourself), Shaping (change the environment), Selection (choose a new environment).</p>
+   <div class="example-box">💼 Successful intelligence = balance of all three, adapted to your socio-cultural context.</div>
+   <p><strong>Criticism (Gottfredson):</strong> Practical intelligence may be task-specific knowledge, not a broad cognitive ability. Hard to translate into psychometric tests (Das, 2004).</p>`},
+  {icon:'✨',unit:'Unit 4',badge:'Investment Theory',title:"Creativity — Sternberg's Investment Theory",sub:"6 confluent resources produce novel, appropriate, compelling ideas",
+   body:`<p>Creativity = producing work that is <strong>novel AND appropriate</strong> (Sternberg & Lubart, 1999). It requires a confluence of six resources:</p>
+   <p><strong>1. Intellectual skills</strong> — Synthetic (new angles), Analytic (evaluate ideas), Practical-contextual (sell ideas)<br>
+   <strong>2. Knowledge</strong> — Must know the field; but too much can entrench thinking<br>
+   <strong>3. Thinking styles</strong> — Legislative preference (like to think in new ways)<br>
+   <strong>4. Personality</strong> — Risk-taking, ambiguity tolerance, self-efficacy<br>
+   <strong>5. Motivation</strong> — Intrinsic, task-focused (Amabile, 1983)<br>
+   <strong>6. Environment</strong> — Supportive and rewarding of creative ideas</p>
+   <div class="example-box">🎨 Stages of creativity (Wallas, 1926): Preparation → Incubation → Illumination → Verification</div>
+   <p><strong>Aspects (Guilford/Torrance):</strong> Fluency, Flexibility, Originality, Elaboration, Abstractness of titles, Resistance to premature closure</p>`},
+  {icon:'🧩',unit:'Unit 4',badge:'Strategies & Stages',title:"Problem Solving",sub:"Removing obstacles between initial state and goal state",
+   body:`<p><strong>Key concepts:</strong> Initial state → Operator (person) applies rules → Goal state. The problem space = all elements combined.</p>
+   <p><strong>Types of problems:</strong><br>
+   • Well-defined: clear rules (Tower of Hanoi)<br>
+   • Ill-defined: unclear elements (writing a novel)<br>
+   • Inducing structure: find relationship (analogies)<br>
+   • Transformation: find sequence (Tower of Hanoi)<br>
+   • Arrangement: rearrange elements (anagrams)</p>
+   <p><strong>Strategies:</strong><br>
+   • <em>Algorithms</em> — guaranteed solution if rules followed. Exact, must terminate, effective, general.<br>
+   • <em>Heuristics</em> — rules of thumb, not guaranteed. Means-end analysis, working backward, analogies.</p>
+   <div class="example-box">🐒 Köhler's chimp: Stacked boxes to reach bananas — sudden insight (Gestalt). Classic well-defined problem with insight solution.</div>
+   <p><strong>Barriers:</strong> Mental set (stereotypical response pattern), Functional fixedness (seeing objects only by customary use), problem size, distance between initial and goal states.</p>`},
+  {icon:'📊',unit:'Unit 3',badge:'IQ Tests',title:"Measurement of Intelligence",sub:"From Binet-Simon 1905 to WAIS-IV, SB5 and KABC-II",
+   body:`<p><strong>IQ formula (Stern, 1914):</strong> IQ = (Mental Age ÷ Chronological Age) × 100</p>
+   <p><strong>Deviation IQ (Wechsler):</strong> Standard scores — Mean = 100, SD = 15. More meaningful than ratio IQ.</p>
+   <p><strong>Stanford-Binet 5 (SB5):</strong> 5 CHC factors × verbal + nonverbal = 10 subtests. Measures Fluid Reasoning, Knowledge, Quantitative, Visual-Spatial, Working Memory. Ages 2–89.</p>
+   <p><strong>WAIS-IV (2008):</strong> 4 indices: VCI (Verbal Comprehension), PRI (Perceptual Reasoning), WMI (Working Memory), PSI (Processing Speed). 10 core subtests → Full Scale IQ.</p>
+   <p><strong>KABC-II (2004):</strong> Dual model — Luria's neuropsychological model (MPI) AND CHC theory (FCI). Ages 3–18.</p>
+   <div class="example-box">🏛️ WWI: Army Alpha (verbal group test) + Army Beta (non-verbal) — first mass intelligence testing in history.</div>`},
+];
+
+const flashcards = [
+  {term:"G Factor",def:"General intelligence (Spearman)",body:"Universal mental energy common to all cognitive tasks. Identified via factor analysis. Tests high in g: abstract reasoning, comprehension. Tetrad difference ≈ 0 when g fully explains intercorrelations."},
+  {term:"S Factor",def:"Specific intelligence (Spearman)",body:"Task-specific factors unique to each test. Every act requires some g + its own s. High correlation between tests = high shared g. Group factors (verbal, numerical) sit between g and s."},
+  {term:"Tetrad Difference",def:"F = r₁₃r₂₄ − r₁₄r₂₃",body:"Spearman's statistical test. Equals zero when a single common factor explains all intercorrelations. Non-zero tetrads indicate additional group factors beyond g."},
+  {term:"Planning (PASS)",def:"3rd Functional Unit — Frontal lobes",body:"Programming, regulation, and verification of behaviour. Self-monitoring, strategy selection. Associated with prefrontal cortex. E.g., writing a composition, solving novel problems."},
+  {term:"Simultaneous Processing",def:"PASS — Occipital-parietal areas",body:"All elements perceived at once in relation to each other. 'Surveyability' is the key property. E.g., spatial relationships, Raven's matrices, reading a map."},
+  {term:"Successive Processing",def:"PASS — Fronto-temporal areas",body:"Information integrated in strict serial order. Each link evokes the next in the chain. E.g., decoding syntax, articulating speech, following a numbered recipe."},
+  {term:"Metacomponents",def:"Sternberg — Executive functions",body:"Higher-order processes that plan, monitor and evaluate cognitive activity. They decide WHAT to do; performance components carry it out. Part of the componential (analytical) subtheory."},
+  {term:"Contextual Subtheory",def:"Sternberg — Practical 'street smarts'",body:"Fit to real-world context via three processes: Adaptation (change yourself), Shaping (change the environment), Selection (choose a new environment entirely)."},
+  {term:"Divergent Production",def:"Guilford — Multiple solution generation",body:"Generating multiple valid solutions to an open-ended problem. Central to creativity research. Measured by TTCT. Contrasts with Convergent Production (single correct answer)."},
+  {term:"Threshold Hypothesis",def:"IQ ≥ 120 needed for creativity",body:"Guilford's claim that a minimum IQ of ~120 is necessary but NOT sufficient for creativity. Below this threshold, creative achievement is unlikely. Above it, IQ and creativity weakly correlate."},
+  {term:"Incubation Stage",def:"Stage 2 of Wallas's creativity model",body:"Problem sinks into the unconscious. Thinker must NOT consciously work on it. Solution exists but is not yet clear. Relaxation, reflection, and time allow the breakthrough to form."},
+  {term:"Means-End Analysis",def:"Most common problem-solving heuristic",body:"Break the problem into sub-goals, each reducing the gap to the final goal. Requires meta-cognition — awareness of current state, goal, strategy, and progress. General and context-free."},
+  {term:"Functional Fixedness",def:"Perceiving objects by customary use only",body:"A form of mental set that blocks creative problem solutions. E.g., seeing a box only as a container, not as a step. Can be overcome by time delay, explicit instruction, or introducing exceptions."},
+  {term:"Deviation IQ",def:"Standard score — Mean 100, SD 15",body:"Wechsler's innovation. Based on same distributional characteristics at all ages, making peer comparison meaningful. Replaced ratio IQ (MA/CA × 100). Used in WAIS-IV, SB5, KABC-II."},
+  {term:"CHC Theory",def:"Cattell-Horn-Carroll cognitive model",body:"Hierarchical model: g at top, broad abilities (Fluid, Crystallised, Spatial, Processing Speed, etc.) in middle, narrow abilities at base. Underpins SB5 and KABC-II (FCI score)."},
+  {term:"Linguistic Intelligence",def:"Gardner MI — Words and language",body:"Ability to use language rhetorically or poetically. Strong verbal memory, syntax manipulation. Typical careers: writers, lawyers, poets, teachers. Highly valued in traditional school environments."},
+  {term:"Algorithm",def:"Guaranteed problem-solving procedure",body:"A strategy that ensures the correct solution if the well-defined rule is properly followed. Must be: exact, terminate in finite steps, effective, and general. Rarely used by humans — too time-consuming."},
+  {term:"Mental Set",def:"Stereotypical perception and response pattern",body:"Tendency to perceive and respond to stimuli in a fixed, habitual way. Can facilitate (familiar problems) or hinder (novel problems requiring new approaches) problem solving."},
+];
+
+const quizzes = [
+  {q:"What does Spearman's 'g' factor represent?",opts:["A specific skill like mathematics","General mental energy common to all cognitive tasks","Neural processing speed","The ability to learn new languages"],ans:1,explain:"Spearman's g (general factor) = a universal mental energy or capacity common to all cognitive tasks. Identified through factor analysis of test intercorrelations in 1904."},
+  {q:"In the PASS theory, which brain region is primarily associated with Planning?",opts:["Occipital-parietal lobes","Fronto-temporal lobes","Prefrontal cortex (frontal lobes)","Brain stem and reticular system"],ans:2,explain:"Planning is the third functional unit, associated with the prefrontal cortex. It handles programming, regulation, and verification of behaviour — the most complex cognitive functions."},
+  {q:"Gardner defined intelligence as:",opts:["What intelligence tests measure","A bio-psychological potential to process information activated in a cultural setting","The aggregate global capacity to act purposefully","The ability to solve novel problems creatively"],ans:1,explain:"Gardner (1983/1999): 'Intelligence is a bio-psychological potential to process information that can be activated in a cultural setting to solve problems or create products that are of value in a culture.'"},
+  {q:"Sternberg's contextual subtheory involves three processes. Which is NOT one of them?",opts:["Adaptation","Automation","Shaping","Selection"],ans:1,explain:"Automation belongs to the Experiential subtheory (handling novelty and automating familiar tasks). The contextual subtheory involves Adaptation (change self), Shaping (change environment), and Selection (choose new environment)."},
+  {q:"The tetrad difference in Spearman's method equals zero when:",opts:["All tests measure different abilities","A single common factor fully explains all intercorrelations","Multiple group factors are present","Tests are administered to different age groups"],ans:1,explain:"F = r₁₃r₂₄ − r₁₄r₂₃ ≈ 0 when a single common factor g explains all correlations between tests. Non-zero tetrads indicate additional group factors beyond g."},
+  {q:"Which stage of Wallas's creativity model involves sudden insight?",opts:["Preparation","Incubation","Illumination","Verification"],ans:2,explain:"Illumination (Stage 3) is when the thinker suddenly experiences insight — a new solution or relationship emerges. It follows the unconscious processing during Incubation."},
+  {q:"The KABC-II is grounded in two theoretical models. Which are they?",opts:["Spearman's two-factor theory and Guilford's SOI","Luria's neuropsychological model and CHC theory","Gardner's MI and Sternberg's triarchic theory","Vernon's hierarchical theory and PASS theory"],ans:1,explain:"The KABC-II uses Luria's three-block neuropsychological model (yielding the Mental Processing Index) AND the Cattell-Horn-Carroll (CHC) theory (yielding the Fluid-Crystallised Index)."},
+  {q:"Guilford's revised SOI model (1977) has how many possible ability cells?",opts:["120","100","150","180"],ans:2,explain:"In the revised 1977 model, Guilford split figural content into Visual and Auditory, making 5 contents × 5 operations × 6 products = 150 cells. The original 1956 model had 4×5×6 = 120 cells."},
+  {q:"What is 'functional fixedness' in problem solving?",opts:["Inability to switch between problem types","Perceiving objects only through their customary use","Applying the same algorithm to every problem","Becoming fixed on the initial state"],ans:1,explain:"Functional fixedness is the tendency to see objects only in terms of their standard function, blocking creative solutions. It is a form of mental set — a barrier to effective problem solving."},
+  {q:"According to Sternberg's Investment Theory, creativity requires:",opts:["High IQ and strong memory","A confluence of six resources: intellectual skills, knowledge, thinking styles, personality, motivation, and environment","Primarily divergent thinking","Independence from environmental influence"],ans:1,explain:"Sternberg's Investment Theory: creativity requires all six interrelated resources. Partial compensation can occur (strength in motivation counteracts weak environment), and interactions between components (IQ × motivation) can multiplicatively enhance creativity."},
+];
+
+const quickRefs = [
+  {unit:"Unit 1",title:"IQ Formula",body:"IQ = (Mental Age ÷ Chronological Age) × 100 — Stern (1914). Adopted by Terman in Stanford-Binet 1916."},
+  {unit:"Unit 1",title:"Tetrad Difference",body:"F = r₁₃r₂₄ − r₁₄r₂₃ ≈ 0. Spearman's test for a single common g factor in a correlation matrix."},
+  {unit:"Unit 1",title:"PASS Acronym",body:"P = Planning (frontal), A = Attention-Arousal (brain stem), S = Simultaneous (parietal), S = Successive (temporal)"},
+  {unit:"Unit 2",title:"Guilford's SOI",body:"5 Contents × 5 Operations × 6 Products = 150 cells. Original (1956): 4×5×6 = 120 cells."},
+  {unit:"Unit 2",title:"Gardner's 9 MI",body:"Linguistic, Logical-Math, Musical, Bodily-Kinesthetic, Spatial, Interpersonal, Intrapersonal, Naturalistic, Existential"},
+  {unit:"Unit 2",title:"Sternberg's 3 Subtheories",body:"Componential (Analytical), Experiential (Creative), Contextual (Practical) → Successful Intelligence"},
+  {unit:"Unit 3",title:"Deviation IQ",body:"Mean = 100, SD = 15. 68% of adults score between 85–115. Used in WAIS-IV, SB5, KABC-II."},
+  {unit:"Unit 3",title:"WAIS-IV Indices",body:"VCI (Verbal Comprehension), PRI (Perceptual Reasoning), WMI (Working Memory), PSI (Processing Speed)"},
+  {unit:"Unit 3",title:"SB5 CHC Factors",body:"Fluid Reasoning, Knowledge, Quantitative Reasoning, Visual-Spatial Processing, Working Memory (each: verbal + nonverbal)"},
+  {unit:"Unit 3",title:"KABC-II Dual Model",body:"MPI (Luria — excludes acquired knowledge) vs FCI (CHC — includes acquired knowledge). Choose before testing."},
+  {unit:"Unit 4",title:"Wallas Stages",body:"1. Preparation → 2. Incubation → 3. Illumination → 4. Verification (Wallas, 1926)"},
+  {unit:"Unit 4",title:"Threshold Hypothesis",body:"Guilford: IQ ≥ 120 necessary but not sufficient for creativity. Below threshold: creativity unlikely. Above: weak correlation."},
+  {unit:"Unit 4",title:"Creativity Aspects (TTCT)",body:"Fluency, Flexibility, Originality, Elaboration, Abstractness of Titles, Resistance to Premature Closure"},
+  {unit:"Unit 4",title:"Problem Space",body:"Initial State + Goal State + Operator + Rules. Requires coherence, correspondence, and background knowledge."},
+  {unit:"Unit 4",title:"Algorithms vs Heuristics",body:"Algorithm: exact, terminates, effective, general — guaranteed. Heuristic: rule of thumb, not guaranteed — faster."},
+  {unit:"Unit 4",title:"Mental Set vs Functional Fixedness",body:"Set = fixed response pattern to stimuli. Fixedness = seeing objects only by customary use. Both hinder novel solutions."},
+];
+
+const tlData = [
+  {y:"1882",t:"Galton's test laboratory",d:"First psychological test lab in London. Measured sensory discrimination. Coined 'mental test'. Father of psychological testing."},
+  {y:"1890",t:"James McKeen Cattell",d:"First use of 'mental test' in psychological literature. Tests of muscular strength, reaction time, memory."},
+  {y:"1904",t:"Spearman's Two-Factor Theory",d:"Epoch-making factor analysis study identifying g and s. Invented the tetrad difference method. Foundation of all factor analytic work."},
+  {y:"1905",t:"Binet-Simon Scale",d:"First practical intelligence test — 30 items for the French government to identify children needing educational support."},
+  {y:"1908",t:"Mental Age concept",d:"Binet revised his scale, arranging items by age levels. Highest level a child passes = their mental age."},
+  {y:"1912",t:"IQ formula — Stern",body:"William Stern proposed Mental Age ÷ Chronological Age. Terman incorporated it as a multiplied-by-100 ratio in 1916."},
+  {y:"1916",t:"Stanford-Binet Scale",d:"Terman's revision at Stanford. Most comprehensive revision at the time. Introduced strict standardisation and the IQ concept."},
+  {y:"1917",t:"Army Alpha & Beta (WWI)",d:"First group intelligence tests. Alpha = verbal (literate), Beta = non-verbal performance (illiterate). Mass classification of 1.75 million soldiers."},
+  {y:"1927",t:"Spearman — The Abilities of Man",d:"Revised and elaborated two-factor theory. Recognised group factors (verbal, numerical ability) alongside g and s."},
+  {y:"1935",t:"Thurstone's 7 Primary Abilities",d:"Challenged g with 7 primary mental abilities: Number, Verbal, Space, Memory, Word Fluency, Reasoning, Perceptual Speed."},
+  {y:"1939",t:"Wechsler-Bellevue Scale",d:"David Wechsler's first scale. Combined verbal and performance subtests. Later evolved into WAIS, WISC, and WPPSI."},
+  {y:"1944",t:"Deviation IQ introduced",d:"Wechsler introduced standard scores (mean 100, SD 15) replacing ratio IQ. Made cross-age comparison meaningful."},
+  {y:"1956",t:"Guilford's SOI Model",d:"Structure of Intellect: 3D model of 120 (later 150) independent intellectual abilities. Divergent production linked to creativity."},
+  {y:"1966",t:"Torrance Tests (TTCT)",d:"Torrance Tests of Creative Thinking published. Measures fluency, originality, elaboration, flexibility. Most widely used creativity test worldwide."},
+  {y:"1983",t:"Gardner's Frames of Mind",d:"Proposed 7 (later 9) Multiple Intelligences. Challenged IQ monopoly. Profound impact on educational practice worldwide."},
+  {y:"1985",t:"Sternberg's Triarchic Theory",d:"Three subtheories: componential (analytical), experiential (creative), contextual (practical). 'Successful intelligence' concept."},
+  {y:"1994",t:"Das, Naglieri & Kirby — PASS",d:"Theory-based model using Luria's neuropsychology: Planning, Attention, Simultaneous, Successive. CAS test developed."},
+  {y:"2004",t:"KABC-II published",d:"Kaufman Assessment Battery integrating both Luria's model (MPI) AND CHC theory (FCI) into one assessment battery."},
+  {y:"2008",t:"WAIS-IV released",d:"4 index scores (VCI, PRI, WMI, PSI) replaced verbal/performance split. Standardised on 2,200 Americans aged 16–90."},
+];
+
+// SVG Diagrams
+const diagrams = {
+  spearman:{svg:`<svg width="100%" viewBox="0 0 680 340" style="max-height:340px">
+  <circle cx="340" cy="130" r="65" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text font-size="28" font-weight="700" fill="#1D4ED8" text-anchor="middle" x="340" y="120">g</text>
+  <text font-size="12" fill="#2563EB" text-anchor="middle" x="340" y="143">General Factor</text>
+  <text font-size="11" fill="#60A5FA" text-anchor="middle" x="340" y="160">"Mental Energy"</text>
+  <circle cx="130" cy="65" r="42" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="15" font-weight="600" fill="#166534" text-anchor="middle" x="130" y="60">s₁</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="130" y="76">Verbal</text>
+  <circle cx="80" cy="200" r="42" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="15" font-weight="600" fill="#166534" text-anchor="middle" x="80" y="196">s₂</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="80" y="212">Numerical</text>
+  <circle cx="550" cy="65" r="42" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="15" font-weight="600" fill="#166534" text-anchor="middle" x="550" y="60">s₃</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="550" y="76">Spatial</text>
+  <circle cx="600" cy="200" r="42" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="15" font-weight="600" fill="#166534" text-anchor="middle" x="600" y="196">s₄</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="600" y="212">Reasoning</text>
+  <line x1="279" y1="105" x2="168" y2="77" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="278" y1="145" x2="120" y2="158" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="401" y1="105" x2="512" y2="77" stroke="#94A3B8" stroke-width="1.5"/>
+  <line x1="402" y1="145" x2="560" y2="158" stroke="#94A3B8" stroke-width="1.5"/>
+  <rect x="50" y="258" width="130" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text font-size="13" font-weight="600" fill="#1E293B" text-anchor="middle" x="115" y="279">Test A</text>
+  <text font-size="11" fill="#64748B" text-anchor="middle" x="115" y="297">High g-loading</text>
+  <rect x="200" y="258" width="130" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text font-size="13" font-weight="600" fill="#1E293B" text-anchor="middle" x="265" y="279">Test B</text>
+  <text font-size="11" fill="#64748B" text-anchor="middle" x="265" y="297">High g-loading</text>
+  <rect x="350" y="258" width="130" height="52" rx="8" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1"/>
+  <text font-size="13" font-weight="600" fill="#1E293B" text-anchor="middle" x="415" y="279">Test C</text>
+  <text font-size="11" fill="#64748B" text-anchor="middle" x="415" y="297">Low g-loading</text>
+  <line x1="180" y1="284" x2="200" y2="284" stroke="#7C3AED" stroke-width="2"/>
+  <text font-size="10" fill="#6D28D9" x="137" y="326">r = .72 (both share high g)</text>
+  <line x1="330" y1="284" x2="350" y2="284" stroke="#94A3B8" stroke-width="1.5"/>
+  <text font-size="10" fill="#64748B" x="300" y="326">r = .18 (little shared g)</text>
+</svg>`,
+  desc:"Spearman proposed that all intellectual performance shares one general factor g (general mental energy) plus specific factors (s) unique to each test. Tests that share more g correlate more highly with each other. The tetrad difference formula tests whether g alone explains all correlations."},
+  pass:{svg:`<svg width="100%" viewBox="0 0 680 370" style="max-height:370px">
+  <rect x="40" y="155" width="80" height="48" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1"/>
+  <text font-size="13" font-weight="600" fill="#334155" text-anchor="middle" x="80" y="175">Input</text>
+  <text font-size="11" fill="#64748B" text-anchor="middle" x="80" y="193">Stimulus</text>
+  <rect x="558" y="155" width="80" height="48" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1"/>
+  <text font-size="13" font-weight="600" fill="#334155" text-anchor="middle" x="598" y="175">Output</text>
+  <text font-size="11" fill="#64748B" text-anchor="middle" x="598" y="193">Response</text>
+  <rect x="148" y="40" width="156" height="80" rx="10" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text font-size="13" font-weight="600" fill="#1E40AF" text-anchor="middle" x="226" y="68">Attention-Arousal</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="226" y="86">Unit 1 — Brain stem</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="226" y="103">Alertness &amp; focus</text>
+  <rect x="148" y="168" width="156" height="80" rx="10" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="13" font-weight="600" fill="#166534" text-anchor="middle" x="226" y="196">Simultaneous</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="226" y="214">Unit 2 — Parietal</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="226" y="231">All-at-once perception</text>
+  <rect x="148" y="295" width="156" height="68" rx="10" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
+  <text font-size="13" font-weight="600" fill="#92400E" text-anchor="middle" x="226" y="322">Successive</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="226" y="340">Unit 2 — Temporal</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="226" y="355">Serial order processing</text>
+  <rect x="370" y="112" width="158" height="130" rx="10" fill="#FFF5F5" stroke="#DC2626" stroke-width="2"/>
+  <text font-size="14" font-weight="700" fill="#7F1D1D" text-anchor="middle" x="449" y="146">Planning</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="449" y="165">Unit 3 — Frontal lobe</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="449" y="183">Strategy selection</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="449" y="200">Self-monitoring</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="449" y="217">Executive control</text>
+  <rect x="165" y="155" width="340" height="24" rx="6" fill="#F5F3FF" stroke="#7C3AED" stroke-width="0.5" opacity="0.6"/>
+  <text font-size="10" fill="#5B21B6" text-anchor="middle" x="335" y="170">Knowledge Base (embedded in all processes)</text>
+  <line x1="120" y1="175" x2="148" y2="80" stroke="#2563EB" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="120" y1="180" x2="148" y2="210" stroke="#16A34A" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="120" y1="185" x2="148" y2="329" stroke="#D97706" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <line x1="304" y1="80" x2="370" y2="148" stroke="#94A3B8" stroke-width="1"/>
+  <line x1="304" y1="210" x2="370" y2="170" stroke="#94A3B8" stroke-width="1"/>
+  <line x1="304" y1="329" x2="370" y2="222" stroke="#94A3B8" stroke-width="1"/>
+  <line x1="528" y1="177" x2="558" y2="179" stroke="#DC2626" stroke-width="2"/>
+</svg>`,
+  desc:"The PASS theory (Das, Naglieri & Kirby, 1994) is grounded in Luria's neuropsychology. Input passes through the Attention-Arousal system (Unit 1), then through Simultaneous and Successive processing (Unit 2), all coordinated by Planning (Unit 3). The Knowledge Base underpins every process."},
+  guilford:{svg:`<svg width="100%" viewBox="0 0 680 310" style="max-height:310px">
+  <rect x="40" y="20" width="600" height="270" rx="12" fill="#F8FAFC" stroke="#CBD5E1" stroke-width="1" stroke-dasharray="6,3"/>
+  <text font-size="14" font-weight="600" fill="#475569" text-anchor="middle" x="340" y="48">Structure of Intellect — 5 × 5 × 6 = 150 abilities</text>
+  <rect x="70" y="68" width="170" height="42" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#1E40AF" text-anchor="middle" x="155" y="85">Operations (5)</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="155" y="101">Cognition · Memory · Div. Prod.</text>
+  <rect x="70" y="124" width="170" height="58" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1"/>
+  <text font-size="11" fill="#1E40AF" text-anchor="middle" x="155" y="142">Conv. Prod. · Evaluation</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="155" y="162">↑ Divergent = creativity</text>
+  <rect x="255" y="68" width="170" height="42" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#166534" text-anchor="middle" x="340" y="85">Contents (5)</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="340" y="101">Visual · Auditory · Symbolic</text>
+  <rect x="255" y="124" width="170" height="42" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1"/>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="340" y="148">Semantic · Behavioural</text>
+  <rect x="440" y="68" width="170" height="42" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#92400E" text-anchor="middle" x="525" y="85">Products (6)</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="525" y="101">Units · Classes · Relations</text>
+  <rect x="440" y="124" width="170" height="42" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1"/>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="525" y="148">Systems · Transformations</text>
+  <rect x="440" y="178" width="170" height="30" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1"/>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="525" y="198">Implications</text>
+  <rect x="70" y="205" width="340" height="60" rx="8" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.5"/>
+  <text font-size="12" font-weight="600" fill="#5B21B6" text-anchor="middle" x="240" y="227">Example: Word-list recall</text>
+  <text font-size="11" fill="#7C3AED" text-anchor="middle" x="240" y="245">Semantic content + Memory operation + Units product</text>
+  <text font-size="11" fill="#7C3AED" text-anchor="middle" x="240" y="260">= one specific ability cell in the model</text>
+</svg>`,
+  desc:"Guilford rejected g entirely. Every intellectual task is classified by its Content (what kind of information), Operation (what mental process is applied), and Product (what form the result takes). 5×5×6 = 150 possible ability cells, over 100 verified empirically. Divergent Production is the operation most linked to creativity."},
+  gardner:{svg:`<svg width="100%" viewBox="0 0 680 370" style="max-height:370px">
+  <circle cx="340" cy="185" r="44" fill="#EFF6FF" stroke="#2563EB" stroke-width="2"/>
+  <text font-size="13" font-weight="600" fill="#1E40AF" text-anchor="middle" x="340" y="181">Person</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="340" y="197">9 intelligences</text>
+  <rect x="272" y="22" width="136" height="50" rx="8" fill="#FFF5F5" stroke="#DC2626" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#7F1D1D" text-anchor="middle" x="340" y="44">Linguistic</text>
+  <text font-size="10" fill="#DC2626" text-anchor="middle" x="340" y="60">Words, stories, syntax</text>
+  <rect x="488" y="48" width="160" height="50" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#166534" text-anchor="middle" x="568" y="70">Logical-Math</text>
+  <text font-size="10" fill="#16A34A" text-anchor="middle" x="568" y="86">Patterns, reasoning</text>
+  <rect x="536" y="152" width="136" height="50" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#92400E" text-anchor="middle" x="604" y="174">Spatial</text>
+  <text font-size="10" fill="#D97706" text-anchor="middle" x="604" y="190">Visualise, navigate</text>
+  <rect x="490" y="272" width="148" height="50" rx="8" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#5B21B6" text-anchor="middle" x="564" y="294">Musical</text>
+  <text font-size="10" fill="#7C3AED" text-anchor="middle" x="564" y="310">Rhythm, melody, tone</text>
+  <rect x="272" y="300" width="136" height="50" rx="8" fill="#FFF0F0" stroke="#F97316" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#7C2D12" text-anchor="middle" x="340" y="322">Bodily-Kinesthetic</text>
+  <text font-size="10" fill="#EA580C" text-anchor="middle" x="340" y="338">Movement, body</text>
+  <rect x="42" y="272" width="148" height="50" rx="8" fill="#F0FDFA" stroke="#0F766E" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#134E4A" text-anchor="middle" x="116" y="294">Interpersonal</text>
+  <text font-size="10" fill="#0F766E" text-anchor="middle" x="116" y="310">Understand others</text>
+  <rect x="10" y="152" width="136" height="50" rx="8" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#5B21B6" text-anchor="middle" x="78" y="174">Intrapersonal</text>
+  <text font-size="10" fill="#7C3AED" text-anchor="middle" x="78" y="190">Understand self</text>
+  <rect x="30" y="48" width="136" height="50" rx="8" fill="#F8FAFC" stroke="#475569" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#1E293B" text-anchor="middle" x="98" y="70">Naturalistic</text>
+  <text font-size="10" fill="#475569" text-anchor="middle" x="98" y="86">Nature, species</text>
+  <line x1="340" y1="141" x2="340" y2="72" stroke="#CBD5E1" stroke-width="1"/>
+  <line x1="370" y1="152" x2="490" y2="95" stroke="#CBD5E1" stroke-width="1"/>
+  <line x1="382" y1="183" x2="536" y2="178" stroke="#CBD5E1" stroke-width="1"/>
+  <line x1="370" y1="215" x2="496" y2="280" stroke="#CBD5E1" stroke-width="1"/>
+  <line x1="340" y1="229" x2="340" y2="300" stroke="#CBD5E1" stroke-width="1"/>
+  <line x1="310" y1="215" x2="192" y2="280" stroke="#CBD5E1" stroke-width="1"/>
+  <line x1="296" y1="183" x2="146" y2="183" stroke="#CBD5E1" stroke-width="1"/>
+  <line x1="310" y1="153" x2="166" y2="95" stroke="#CBD5E1" stroke-width="1"/>
+</svg>`,
+  desc:"Gardner (1983) argued intelligence is not one thing but nine relatively autonomous bio-psychological potentials. Each must meet 8 criteria (brain isolation, evolutionary history, core operations, distinct development, savants/prodigies, experimental & psychometric support). The first two (Linguistic, Logical-Math) dominate schools. Gardner says all nine deserve equal attention."},
+  sternberg:{svg:`<svg width="100%" viewBox="0 0 680 310" style="max-height:310px">
+  <rect x="30" y="40" width="186" height="210" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text font-size="14" font-weight="600" fill="#1E40AF" text-anchor="middle" x="123" y="70">Componential</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="123" y="86">(Analytical)</text>
+  <rect x="48" y="100" width="150" height="36" rx="6" fill="#BFDBFE" stroke="none"/>
+  <text font-size="11" font-weight="600" fill="#1E3A8A" text-anchor="middle" x="123" y="116">Metacomponents</text>
+  <text font-size="10" fill="#1E40AF" text-anchor="middle" x="123" y="130">Plan &amp; monitor</text>
+  <rect x="48" y="146" width="150" height="36" rx="6" fill="#BFDBFE" stroke="none"/>
+  <text font-size="11" font-weight="600" fill="#1E3A8A" text-anchor="middle" x="123" y="162">Performance</text>
+  <text font-size="10" fill="#1E40AF" text-anchor="middle" x="123" y="176">Execute tasks</text>
+  <rect x="48" y="192" width="150" height="36" rx="6" fill="#BFDBFE" stroke="none"/>
+  <text font-size="11" font-weight="600" fill="#1E3A8A" text-anchor="middle" x="123" y="208">Knowledge Acq.</text>
+  <text font-size="10" fill="#1E40AF" text-anchor="middle" x="123" y="222">Learn new info</text>
+  <rect x="247" y="40" width="186" height="210" rx="12" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="14" font-weight="600" fill="#166534" text-anchor="middle" x="340" y="70">Experiential</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="340" y="86">(Creative)</text>
+  <rect x="265" y="100" width="150" height="52" rx="6" fill="#BBF7D0" stroke="none"/>
+  <text font-size="11" font-weight="600" fill="#14532D" text-anchor="middle" x="340" y="120">Novelty</text>
+  <text font-size="10" fill="#166534" text-anchor="middle" x="340" y="136">Handle new situations</text>
+  <text font-size="10" fill="#166534" text-anchor="middle" x="340" y="148">creatively</text>
+  <rect x="265" y="162" width="150" height="52" rx="6" fill="#BBF7D0" stroke="none"/>
+  <text font-size="11" font-weight="600" fill="#14532D" text-anchor="middle" x="340" y="182">Automation</text>
+  <text font-size="10" fill="#166534" text-anchor="middle" x="340" y="198">Familiar tasks run</text>
+  <text font-size="10" fill="#166534" text-anchor="middle" x="340" y="210">automatically</text>
+  <rect x="464" y="40" width="186" height="210" rx="12" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
+  <text font-size="14" font-weight="600" fill="#92400E" text-anchor="middle" x="557" y="70">Contextual</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="557" y="86">(Practical)</text>
+  <rect x="482" y="100" width="150" height="36" rx="6" fill="#FDE68A" stroke="none"/>
+  <text font-size="11" font-weight="600" fill="#78350F" text-anchor="middle" x="557" y="116">Adaptation</text>
+  <text font-size="10" fill="#92400E" text-anchor="middle" x="557" y="130">Change yourself</text>
+  <rect x="482" y="146" width="150" height="36" rx="6" fill="#FDE68A" stroke="none"/>
+  <text font-size="11" font-weight="600" fill="#78350F" text-anchor="middle" x="557" y="162">Shaping</text>
+  <text font-size="10" fill="#92400E" text-anchor="middle" x="557" y="176">Change environment</text>
+  <rect x="482" y="192" width="150" height="36" rx="6" fill="#FDE68A" stroke="none"/>
+  <text font-size="11" font-weight="600" fill="#78350F" text-anchor="middle" x="557" y="208">Selection</text>
+  <text font-size="10" fill="#92400E" text-anchor="middle" x="557" y="222">Choose new context</text>
+  <rect x="170" y="272" width="340" height="28" rx="8" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#5B21B6" text-anchor="middle" x="340" y="291">Successful Intelligence = Balance of all three</text>
+  <line x1="123" y1="250" x2="240" y2="276" stroke="#94A3B8" stroke-width="1"/>
+  <line x1="340" y1="250" x2="340" y2="272" stroke="#94A3B8" stroke-width="1"/>
+  <line x1="557" y1="250" x2="440" y2="276" stroke="#94A3B8" stroke-width="1"/>
+</svg>`,
+  desc:"Sternberg (1985) felt prior theories were incomplete. His triarchic theory describes three interacting facets: Componential (analytical — what IQ tests measure), Experiential (creative — handling novelty and automation), and Contextual (practical — adapting to real-world environments). Successful intelligence = using all three effectively in your socio-cultural context."},
+  creativity:{svg:`<svg width="100%" viewBox="0 0 680 280" style="max-height:280px">
+  <rect x="26" y="70" width="142" height="120" rx="12" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text font-size="24" text-anchor="middle" x="97" y="48">📚</text>
+  <text font-size="14" font-weight="600" fill="#1E40AF" text-anchor="middle" x="97" y="102">Preparation</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="97" y="120">Gather information</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="97" y="136">Trial-and-error</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="97" y="152">exploring directions</text>
+  <line x1="168" y1="130" x2="186" y2="130" stroke="#94A3B8" stroke-width="2"/>
+  <polygon points="186,124 196,130 186,136" fill="#94A3B8"/>
+  <rect x="196" y="70" width="142" height="120" rx="12" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="24" text-anchor="middle" x="267" y="48">💭</text>
+  <text font-size="14" font-weight="600" fill="#166534" text-anchor="middle" x="267" y="102">Incubation</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="267" y="120">Sink into the</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="267" y="136">unconscious mind</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="267" y="152">Relax, don't force</text>
+  <line x1="338" y1="130" x2="356" y2="130" stroke="#94A3B8" stroke-width="2"/>
+  <polygon points="356,124 366,130 356,136" fill="#94A3B8"/>
+  <rect x="366" y="70" width="142" height="120" rx="12" fill="#FFFBEB" stroke="#D97706" stroke-width="1.5"/>
+  <text font-size="24" text-anchor="middle" x="437" y="48">💡</text>
+  <text font-size="14" font-weight="600" fill="#92400E" text-anchor="middle" x="437" y="102">Illumination</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="437" y="120">Sudden insight!</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="437" y="136">New solution or</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="437" y="152">idea emerges</text>
+  <line x1="508" y1="130" x2="526" y2="130" stroke="#94A3B8" stroke-width="2"/>
+  <polygon points="526,124 536,130 526,136" fill="#94A3B8"/>
+  <rect x="536" y="70" width="120" height="120" rx="12" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1.5"/>
+  <text font-size="24" text-anchor="middle" x="596" y="48">✅</text>
+  <text font-size="14" font-weight="600" fill="#5B21B6" text-anchor="middle" x="596" y="102">Verification</text>
+  <text font-size="11" fill="#7C3AED" text-anchor="middle" x="596" y="120">Test and check</text>
+  <text font-size="11" fill="#7C3AED" text-anchor="middle" x="596" y="136">the solution</text>
+  <text font-size="11" fill="#7C3AED" text-anchor="middle" x="596" y="152">Refine as needed</text>
+  <rect x="180" y="218" width="320" height="42" rx="8" fill="#FFF5F5" stroke="#DC2626" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#7F1D1D" text-anchor="middle" x="340" y="236">Threshold Hypothesis (Guilford)</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="340" y="252">IQ ≥ 120 necessary but NOT sufficient for creativity</text>
+</svg>`,
+  desc:"Wallas (1926) described four stages of creative thinking. Preparation: actively gather information. Incubation: let it rest in the unconscious — don't force it. Illumination: sudden insight appears. Verification: test and refine the solution. Guilford's Threshold Hypothesis adds that IQ ≥ 120 is required, but above that threshold, intelligence and creativity correlate only weakly."},
+  problemsolving:{svg:`<svg width="100%" viewBox="0 0 680 310" style="max-height:310px">
+  <rect x="30" y="20" width="130" height="60" rx="8" fill="#F1F5F9" stroke="#94A3B8" stroke-width="1.5"/>
+  <text font-size="13" font-weight="600" fill="#334155" text-anchor="middle" x="95" y="45">Initial State</text>
+  <text font-size="11" fill="#64748B" text-anchor="middle" x="95" y="63">Where you start</text>
+  <line x1="160" y1="50" x2="195" y2="50" stroke="#94A3B8" stroke-width="1.5"/>
+  <polygon points="195,44 205,50 195,56" fill="#94A3B8"/>
+  <rect x="205" y="20" width="270" height="60" rx="8" fill="#EFF6FF" stroke="#2563EB" stroke-width="1.5"/>
+  <text font-size="13" font-weight="600" fill="#1E40AF" text-anchor="middle" x="340" y="42">Operator (Problem Solver)</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="340" y="58">Applies rules &amp; strategies to reach goal</text>
+  <text font-size="11" fill="#2563EB" text-anchor="middle" x="340" y="72">Uses mental symbols &amp; visual images</text>
+  <line x1="475" y1="50" x2="510" y2="50" stroke="#94A3B8" stroke-width="1.5"/>
+  <polygon points="510,44 520,50 510,56" fill="#94A3B8"/>
+  <rect x="520" y="20" width="130" height="60" rx="8" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="13" font-weight="600" fill="#166534" text-anchor="middle" x="585" y="45">Goal State</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="585" y="63">Desired outcome</text>
+  <rect x="30" y="116" width="290" height="90" rx="10" fill="#FFF5F5" stroke="#DC2626" stroke-width="1.5"/>
+  <text font-size="13" font-weight="600" fill="#7F1D1D" text-anchor="middle" x="175" y="140">Algorithms</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="175" y="158">Guaranteed solution if rules followed</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="175" y="174">Exact · Terminates · Effective · General</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="175" y="190">Time-consuming — humans rarely use</text>
+  <rect x="360" y="116" width="290" height="90" rx="10" fill="#F0FDF4" stroke="#16A34A" stroke-width="1.5"/>
+  <text font-size="13" font-weight="600" fill="#166534" text-anchor="middle" x="505" y="140">Heuristics</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="505" y="158">Rules of thumb — not guaranteed</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="505" y="174">Means-end analysis · Working backward</text>
+  <text font-size="11" fill="#16A34A" text-anchor="middle" x="505" y="190">Analogies · Fast and flexible</text>
+  <rect x="30" y="228" width="188" height="64" rx="8" fill="#FFFBEB" stroke="#D97706" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#92400E" text-anchor="middle" x="124" y="250">Mental Set</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="124" y="266">Fixed response patterns</text>
+  <text font-size="11" fill="#D97706" text-anchor="middle" x="124" y="282">Facilitates OR hinders</text>
+  <rect x="246" y="228" width="188" height="64" rx="8" fill="#FFF5F5" stroke="#DC2626" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#7F1D1D" text-anchor="middle" x="340" y="250">Functional Fixedness</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="340" y="266">See objects by customary</text>
+  <text font-size="11" fill="#DC2626" text-anchor="middle" x="340" y="282">use only — blocks solutions</text>
+  <rect x="462" y="228" width="188" height="64" rx="8" fill="#F5F3FF" stroke="#7C3AED" stroke-width="1"/>
+  <text font-size="12" font-weight="600" fill="#5B21B6" text-anchor="middle" x="556" y="250">Meta-cognition</text>
+  <text font-size="11" fill="#7C3AED" text-anchor="middle" x="556" y="266">Awareness of strategies</text>
+  <text font-size="11" fill="#7C3AED" text-anchor="middle" x="556" y="282">and progress toward goal</text>
+</svg>`,
+  desc:"Problem solving begins with an obstacle between the initial state and the goal state. The operator (problem solver) applies rules and strategies. Algorithms guarantee a solution but are slow. Heuristics (means-end analysis, working backward, analogies) are faster but not guaranteed. Common barriers: mental set (fixed response patterns) and functional fixedness (seeing objects only by customary use)."}
+};
+
+// ─── STATE ────────────────────────────────────────────
+let qIdx=0, fcIdx=0, fcFlipped=false, answers={};
+
+// ─── SECTIONS ────────────────────────────────────────
+function show(id,btn){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('show'));
+  document.getElementById(id).classList.add('show');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  if(id==='flashcards') renderFC();
+  if(id==='quiz') renderQ();
+  if(id==='diagrams') showDiag('spearman',document.querySelector('.dtab'));
+  if(id==='quickref') renderRef();
+  if(id==='timeline') renderTL();
+}
+
+// ─── THEORY CARDS ────────────────────────────────────
+(function renderCards(){
+  document.getElementById('theory-cards').innerHTML=theories.map((t,i)=>`
+    <button class="card" onclick="openModal(${i})">
+      <div class="card-icon">${t.icon}</div>
+      <div class="card-title">${t.title}</div>
+      <div class="card-sub">${t.sub}</div>
+      <span class="badge">${t.badge} · ${t.unit}</span>
+    </button>`).join('');
+})();
+
+function openModal(i){
+  const t=theories[i];
+  document.getElementById('m-title').textContent=t.title;
+  document.getElementById('m-body').innerHTML=t.body;
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(e){
+  if(!e||e.target===document.getElementById('overlay'))
+    document.getElementById('overlay').classList.remove('open');
+}
+
+// ─── FLASHCARDS ───────────────────────────────────────
+function renderFC(){
+  const f=flashcards[fcIdx];
+  document.getElementById('fc-term').textContent=f.term;
+  document.getElementById('fc-def').textContent=f.def;
+  document.getElementById('fc-body').textContent=f.body;
+  document.getElementById('fc-count').textContent=`${fcIdx+1} / ${flashcards.length}`;
+  document.getElementById('fc-bar').style.width=((fcIdx+1)/flashcards.length*100)+'%';
+  document.getElementById('fc').classList.remove('flipped');
+  fcFlipped=false;
+}
+function flipCard(){fcFlipped=!fcFlipped;document.getElementById('fc').classList.toggle('flipped',fcFlipped);}
+function fcNav(d){fcIdx=(fcIdx+d+flashcards.length)%flashcards.length;renderFC();}
+
+// ─── QUIZ ─────────────────────────────────────────────
+function renderQ(){
+  const q=quizzes[qIdx];
+  const scored=Object.keys(answers).length;
+  const correct=Object.values(answers).filter(a=>a.c).length;
+  const pct=scored?Math.round(correct/scored*100):0;
+  document.getElementById('score-fill').style.width=pct+'%';
+  document.getElementById('score-text').textContent=`${correct} / ${quizzes.length} correct`;
+  const prev=answers[qIdx];
+  document.getElementById('quiz-area').innerHTML=`
+    <div class="quiz-box">
+      <div class="q-meta"><span class="q-num">Question ${qIdx+1} of ${quizzes.length}</span></div>
+      <div class="q-text">${q.q}</div>
+      <div class="opts">${q.opts.map((o,i)=>`
+        <button class="opt ${prev?(i===q.ans?'correct':(i===prev.ch?'wrong':'')):''}
+          " onclick="answer(${i})" ${prev?'disabled':''}>
+          <strong>${String.fromCharCode(65+i)}.</strong> ${o}
+        </button>`).join('')}
+      </div>
+      ${prev?`<div class="feedback ${prev.c?'ok':'bad'}">${prev.c?'✓ Correct!':'✗ Not quite — '} ${q.explain}</div>`:''}
+    </div>`;
+}
+function answer(i){
+  if(answers[qIdx])return;
+  answers[qIdx]={ch:i,c:i===quizzes[qIdx].ans};
+  renderQ();
+}
+function qNav(d){qIdx=Math.max(0,Math.min(qIdx+d,quizzes.length-1));renderQ();}
+function resetQuiz(){answers={};qIdx=0;renderQ();}
+
+// ─── DIAGRAMS ─────────────────────────────────────────
+function showDiag(id,btn){
+  document.querySelectorAll('.dtab').forEach(d=>d.classList.remove('active'));
+  if(btn)btn.classList.add('active');
+  const d=diagrams[id];
+  document.getElementById('diag-area').innerHTML=d.svg;
+  document.getElementById('diag-desc').textContent=d.desc;
+}
+
+// ─── QUICK REF ────────────────────────────────────────
+function renderRef(){
+  document.getElementById('ref-grid').innerHTML=quickRefs.map(r=>`
+    <div class="ref-card">
+      <div class="ref-unit">${r.unit}</div>
+      <div class="ref-title">${r.title}</div>
+      <div class="ref-body">${r.body}</div>
+    </div>`).join('');
+}
+
+// ─── TIMELINE ─────────────────────────────────────────
+function renderTL(){
+  document.getElementById('tl-content').innerHTML=tlData.map(t=>`
+    <div class="tl-item">
+      <div class="tl-dot"></div>
+      <div class="tl-year">${t.y}</div>
+      <div class="tl-title">${t.t}</div>
+      <div class="tl-desc">${t.d||t.body}</div>
+    </div>`).join('');
+}
+renderRef();renderTL();
+</script>
+</body>
+</html>
