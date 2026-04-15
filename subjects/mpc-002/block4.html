@@ -1,1 +1,1151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adulthood & Ageing — Interactive Learning Explorer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Fira+Mono:wght@400;500&display=swap');
 
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f0e8;
+    --cream: #ede8da;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --rust: #c0533a;
+    --sage: #5a7a6a;
+    --muted: #7a7060;
+    --b1: #2d4a6e; --b1l: #e8f0f8; --b1a: #4a7aaa;
+    --b2: #6e2d4a; --b2l: #f8e8f0; --b2a: #aa4a7a;
+    --b3: #2d6e4a; --b3l: #e8f8f0; --b3a: #4aaa7a;
+    --b4: #6e4a2d; --b4l: #f8f0e8; --b4a: #aa7a4a;
+    --shadow: rgba(26,26,46,0.12);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .site-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 28px 40px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+  .site-header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent, transparent 20px,
+      rgba(201,168,76,0.06) 20px, rgba(201,168,76,0.06) 40px
+    );
+  }
+  .header-inner { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+  .header-eyebrow {
+    font-family: 'Fira Mono', monospace;
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 8px;
+  }
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    line-height: 1.1;
+    color: var(--paper);
+  }
+  .header-title em { color: var(--gold); font-style: italic; }
+  .header-sub {
+    margin-top: 8px;
+    font-size: 14px; color: rgba(245,240,232,0.6);
+    font-weight: 300;
+  }
+  .header-nav {
+    margin-top: 20px;
+    display: flex; gap: 8px; flex-wrap: wrap;
+  }
+  .nav-btn {
+    padding: 6px 14px; border-radius: 20px; border: 1.5px solid;
+    font-size: 12px; font-weight: 500; cursor: pointer;
+    transition: all .2s; font-family: 'DM Sans', sans-serif;
+    background: transparent;
+  }
+  .nav-btn:hover { transform: translateY(-1px); }
+
+  /* BLOCKS GRID */
+  .blocks-section { max-width: 1100px; margin: 0 auto; padding: 36px 24px; }
+  .section-label {
+    font-family: 'Fira Mono', monospace;
+    font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 16px;
+  }
+  .blocks-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+  }
+
+  .block-card {
+    border-radius: var(--radius);
+    padding: 22px;
+    cursor: pointer;
+    transition: all .25s cubic-bezier(.34,1.56,.64,1);
+    position: relative;
+    overflow: hidden;
+    border: 2px solid transparent;
+    user-select: none;
+  }
+  .block-card::before {
+    content: '';
+    position: absolute; top: 0; right: 0;
+    width: 80px; height: 80px;
+    border-radius: 0 0 0 80px;
+    opacity: .12;
+  }
+  .block-card:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 12px 40px var(--shadow); }
+  .block-card.active { border-color: currentColor; box-shadow: 0 8px 32px var(--shadow); transform: translateY(-2px); }
+
+  .b1-card { background: var(--b1l); color: var(--b1); }
+  .b1-card::before { background: var(--b1); }
+  .b2-card { background: var(--b2l); color: var(--b2); }
+  .b2-card::before { background: var(--b2); }
+  .b3-card { background: var(--b3l); color: var(--b3); }
+  .b3-card::before { background: var(--b3); }
+  .b4-card { background: var(--b4l); color: var(--b4); }
+  .b4-card::before { background: var(--b4); }
+
+  .block-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 40px; line-height: 1; opacity: .18; margin-bottom: 8px;
+  }
+  .block-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px; line-height: 1.3; margin-bottom: 6px;
+  }
+  .block-desc { font-size: 12px; opacity: .7; font-weight: 300; line-height: 1.5; }
+  .block-pill {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: rgba(255,255,255,.5); border-radius: 20px;
+    padding: 3px 10px; font-size: 11px; font-weight: 500;
+    margin-top: 12px;
+  }
+  .block-pill::before { content: '▶'; font-size: 8px; }
+
+  /* UNIT PANEL */
+  .unit-panel {
+    max-width: 1100px; margin: 0 auto; padding: 0 24px 36px;
+    display: none;
+    animation: slideIn .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  .unit-panel.visible { display: block; }
+  @keyframes slideIn { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+
+  .units-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .units-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+  }
+  .close-btn {
+    background: var(--cream); border: none; cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: all .2s; color: var(--ink);
+  }
+  .close-btn:hover { background: var(--ink); color: var(--paper); }
+
+  .units-tabs {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .unit-tab {
+    padding: 8px 18px; border-radius: 20px; border: 1.5px solid var(--cream);
+    background: white; cursor: pointer; font-size: 13px; font-weight: 500;
+    transition: all .2s; color: var(--ink);
+  }
+  .unit-tab:hover { border-color: currentColor; }
+  .unit-tab.active { color: white; border-color: transparent; }
+
+  /* CONTENT AREA */
+  .content-area {
+    background: white; border-radius: var(--radius);
+    padding: 28px; box-shadow: 0 4px 24px var(--shadow);
+    display: none;
+  }
+  .content-area.visible { display: block; animation: fadeIn .3s ease; }
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .content-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--cream);
+    margin-bottom: 20px;
+    gap: 12px;
+  }
+  .content-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; line-height: 1.3;
+    flex: 1;
+  }
+  .content-badge {
+    font-family: 'Fira Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    padding: 4px 10px; border-radius: 4px;
+    white-space: nowrap; font-weight: 500;
+  }
+
+  /* TOPICS LIST */
+  .topics-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 10px; margin-bottom: 20px;
+  }
+  .topic-item {
+    border-radius: 8px; padding: 12px 14px;
+    cursor: pointer; transition: all .2s;
+    border: 1.5px solid var(--cream);
+    display: flex; align-items: flex-start; gap: 10px;
+    background: #fafafa;
+  }
+  .topic-item:hover { border-color: currentColor; background: white; transform: translateX(2px); }
+  .topic-item.active { background: white; border-color: currentColor; box-shadow: 0 2px 12px var(--shadow); }
+  .topic-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .topic-name { font-size: 13px; font-weight: 500; line-height: 1.4; }
+  .topic-sub { font-size: 11px; opacity: .6; margin-top: 2px; }
+
+  /* DEEP DIVE */
+  .deep-dive {
+    border-top: 1px solid var(--cream); margin-top: 16px; padding-top: 20px;
+    display: none;
+  }
+  .deep-dive.visible { display: block; animation: fadeIn .3s ease; }
+
+  .deep-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px; margin-bottom: 4px;
+  }
+  .deep-breadcrumb {
+    font-size: 11px; color: var(--muted); margin-bottom: 16px;
+    font-family: 'Fira Mono', monospace;
+  }
+  .deep-content {
+    font-size: 14px; line-height: 1.75; color: #333;
+    background: var(--paper); border-radius: 8px; padding: 16px;
+    margin-bottom: 16px;
+  }
+  .deep-content p { margin-bottom: 10px; }
+  .deep-content p:last-child { margin-bottom: 0; }
+  .deep-content strong { color: var(--ink); font-weight: 600; }
+
+  /* STUDY TOOLS */
+  .study-tools {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px;
+  }
+  .tool-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--cream);
+    background: white; cursor: pointer; font-size: 12px; font-weight: 500;
+    transition: all .2s; color: var(--ink); font-family: 'DM Sans', sans-serif;
+  }
+  .tool-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px var(--shadow); }
+  .tool-btn .icon { font-size: 14px; }
+
+  /* MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(26,26,46,.6); backdrop-filter: blur(4px);
+    z-index: 1000; display: none; align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white; border-radius: 16px;
+    max-width: 600px; width: 100%;
+    max-height: 80vh; overflow-y: auto;
+    box-shadow: 0 24px 64px rgba(0,0,0,.25);
+    animation: modalIn .35s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes modalIn { from { opacity:0; transform:scale(.9); } to { opacity:1; transform:scale(1); } }
+  .modal-header {
+    padding: 24px 24px 16px;
+    border-bottom: 1px solid var(--cream);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; background: white; z-index: 1;
+    border-radius: 16px 16px 0 0;
+  }
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+  }
+  .modal-body { padding: 24px; }
+  .modal-close {
+    background: var(--cream); border: none; cursor: pointer;
+    width: 30px; height: 30px; border-radius: 50%;
+    font-size: 16px; display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+  }
+  .modal-close:hover { background: var(--ink); color: white; }
+
+  /* FLASHCARD */
+  .flashcard-scene { perspective: 1000px; height: 200px; cursor: pointer; margin-bottom: 16px; }
+  .flashcard { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform .6s; }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .card-face {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    border-radius: 12px; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    padding: 24px; text-align: center;
+  }
+  .card-front { background: var(--ink); color: var(--paper); }
+  .card-back { background: var(--gold-light); color: var(--ink); transform: rotateY(180deg); }
+  .card-face .label { font-size: 10px; letter-spacing: 2px; opacity: .5; margin-bottom: 10px; font-family:'Fira Mono',monospace; }
+  .card-face .question { font-size: 16px; font-weight: 600; line-height: 1.4; font-family:'DM Serif Display',serif; }
+  .card-face .answer { font-size: 13px; line-height: 1.6; }
+  .card-nav { display: flex; align-items: center; justify-content: center; gap: 16px; }
+  .card-nav button {
+    padding: 8px 20px; border-radius: 20px; border: 1.5px solid var(--cream);
+    background: white; cursor: pointer; font-size: 13px; font-weight: 500;
+    transition: all .2s; font-family:'DM Sans',sans-serif;
+  }
+  .card-nav button:hover { background: var(--ink); color: white; border-color: var(--ink); }
+  .card-counter { font-size: 12px; color: var(--muted); font-family:'Fira Mono',monospace; }
+
+  /* QUIZ */
+  .quiz-q { font-family:'DM Serif Display',serif; font-size: 17px; line-height: 1.4; margin-bottom: 16px; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-opt {
+    padding: 12px 16px; border-radius: 8px; border: 1.5px solid var(--cream);
+    cursor: pointer; font-size: 13px; transition: all .2s;
+    background: white;
+  }
+  .quiz-opt:hover:not(.locked) { border-color: var(--gold); background: var(--gold-light); }
+  .quiz-opt.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+  .quiz-opt.wrong { background: #f8d7da; border-color: #dc3545; color: #721c24; }
+  .quiz-feedback {
+    margin-top: 14px; padding: 12px; border-radius: 8px;
+    font-size: 13px; line-height: 1.5; display: none;
+    background: var(--cream);
+  }
+  .quiz-feedback.visible { display: block; }
+  .quiz-nav { margin-top: 16px; display: flex; gap: 8px; justify-content: flex-end; }
+  .quiz-nav button {
+    padding: 8px 20px; border-radius: 8px; border: none;
+    background: var(--ink); color: white; cursor: pointer;
+    font-size: 13px; font-weight: 500; font-family:'DM Sans',sans-serif;
+    transition: all .2s;
+  }
+  .quiz-nav button:hover { opacity: .85; }
+
+  /* MIND MAP */
+  .mindmap-wrap { overflow-x: auto; }
+  .mindmap-wrap svg { max-width: 100%; }
+
+  /* SUMMARY */
+  .summary-list { list-style: none; }
+  .summary-list li {
+    padding: 10px 0; border-bottom: 1px solid var(--cream);
+    font-size: 13px; line-height: 1.6;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .summary-list li::before { content: '→'; color: var(--gold); flex-shrink: 0; margin-top: 1px; }
+
+  /* PROGRESS */
+  .progress-bar-wrap { background: var(--cream); border-radius: 4px; height: 6px; margin-bottom: 6px; }
+  .progress-bar-fill { height: 6px; border-radius: 4px; transition: width .6s ease; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .site-header { padding: 20px 18px; }
+    .blocks-section, .unit-panel { padding-left: 14px; padding-right: 14px; }
+    .topics-grid { grid-template-columns: 1fr; }
+    .content-area { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Interactive Learning Explorer</div>
+    <h1 class="header-title">Adulthood &amp; <em>Ageing</em></h1>
+    <p class="header-sub">4 Blocks · 4 Units each · Click any block to explore concepts, flashcards, quizzes &amp; mind maps</p>
+    <div class="header-nav" id="headerNav"></div>
+  </div>
+</header>
+
+<!-- BLOCKS -->
+<section class="blocks-section">
+  <div class="section-label">Select a block to begin</div>
+  <div class="blocks-grid" id="blocksGrid"></div>
+</section>
+
+<!-- UNIT PANEL -->
+<section class="unit-panel" id="unitPanel">
+  <div class="units-header">
+    <h2 class="units-title" id="panelTitle"></h2>
+    <button class="close-btn" onclick="closePanel()">✕</button>
+  </div>
+  <div class="units-tabs" id="unitsTabs"></div>
+  <div class="content-area" id="contentArea">
+    <div class="content-header">
+      <h3 class="content-title" id="contentTitle"></h3>
+      <span class="content-badge" id="contentBadge"></span>
+    </div>
+    <div id="topicsGrid" class="topics-grid"></div>
+    <div class="deep-dive" id="deepDive">
+      <div class="deep-breadcrumb" id="deepBreadcrumb"></div>
+      <h4 class="deep-title" id="deepTitle"></h4>
+      <div class="deep-content" id="deepContent"></div>
+      <div class="study-tools" id="studyTools"></div>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle"></span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const BLOCKS = [
+  {
+    id: 1, cls: 'b1', label: 'Block 1',
+    title: 'Physical Changes',
+    desc: 'Body transformations across the lifespan — early adulthood through old age',
+    units: [
+      {
+        id: 'u1', num: 'Unit 1', label: 'Physical Changes',
+        sub: 'Early Adulthood · Middle Age · Old Age',
+        topics: [
+          {
+            icon: '🌱', name: 'Early Adulthood (20–40)', sub: 'Growth, peak performance',
+            content: `<p><strong>Early adulthood</strong> spans ages 20–40, a time of vibrant health and peak physical performance. The body continues to undergo hormonal changes — beards thicken, voices deepen, and women complete breast development.</p>
+            <p><strong>Height:</strong> Females reach adult height by 18; most males by 21. However, muscles continue gaining mass, especially in males. Both genders add about <strong>15 pounds</strong> of body fat during this transition.</p>
+            <p><strong>Key milestone:</strong> Emerging adulthood (18–25) — individuals leave childhood dependency but have not yet assumed full adult responsibilities. Financial and emotional independence are core developmental tasks.</p>
+            <p><strong>Erikson's lens:</strong> This stage is characterised by the crisis of <em>Intimacy vs. Isolation</em> — the capacity to form deep intimate relationships. Failure leads to social and emotional isolation.</p>`,
+            flashcards: [
+              { q: 'At what age do females typically reach adult height?', a: 'By age 18. Most males reach adult height by age 21, though some continue growing into early 20s.' },
+              { q: 'What is "emerging adulthood"?', a: 'The age period from 18–25 years; individuals have left childhood dependency but not yet assumed full adult responsibilities.' },
+              { q: 'What is Erikson\'s crisis in early adulthood?', a: 'Intimacy vs. Isolation — developing the ability to form deep, intimate relationships with others.' },
+              { q: 'Average weight gain during early adulthood?', a: 'About 15 pounds for both men and women.' },
+            ],
+            quiz: [
+              { q: 'Which physical change is typical of early adulthood?', opts: ['Hair turns grey', 'Muscles continue to gain mass', 'Bone density decreases sharply', 'Skin elasticity is lost'], ans: 1, exp: 'Muscles continue gaining mass — especially in males — during early adulthood, even after height is achieved.' },
+              { q: 'What are the two typical crisis conditions in early adulthood?', opts: ['Retirement and widowhood', 'Unemployment and marital discord', 'Osteoporosis and arthritis', 'Depression and dementia'], ans: 1, exp: 'Unemployment and marital discord are two typical crisis conditions cited in early adulthood.' },
+            ]
+          },
+          {
+            icon: '⚖️', name: 'Middle Adulthood (40–60)', sub: 'Visible ageing, functional changes',
+            content: `<p><strong>Middle adulthood</strong> spans ages 40–60 and is characterised by competence, maturity, responsibility and stability. It is also a period of creativity — the best works of scientists, writers and artists are often produced in the late forties and early fifties.</p>
+            <p><strong>Most noticeable physical change:</strong> Loss of elasticity in the skin, especially the face, resulting in lines and wrinkles. Most individuals also get slightly shorter over time.</p>
+            <p><strong>Vision:</strong> Around the 40s, near vision declines — a condition called <strong>presbyopia</strong>. Reading glasses or bifocals may be required. Sensitivity to glare also increases.</p>
+            <p><strong>Menopause</strong> occurs in women between ages 45–50, involving hormonal changes and loss of reproductive ability. Both genders may experience grey/thinning hair. Men gain weight abdominally; women in hips and thighs. Strength and flexibility wane in both.</p>`,
+            flashcards: [
+              { q: 'What is presbyopia?', a: 'A decline in near vision occurring in the 40s, where the lens becomes less elastic. Reading glasses or bifocals are often needed.' },
+              { q: 'At what ages does menopause typically occur?', a: 'Between ages 45 and 50, involving hormonal changes and loss of reproductive ability.' },
+              { q: 'Where do men vs. women typically gain weight in middle adulthood?', a: 'Men gain weight in the abdominal region; women gain in the hips and thighs.' },
+              { q: 'What is Erikson\'s crisis in middle adulthood?', a: 'Generativity vs. Self-Absorption — making meaningful contributions to future generations vs. becoming preoccupied with selfish needs.' },
+            ],
+            quiz: [
+              { q: 'What is the most noticeable skin change in middle adulthood?', opts: ['Acne', 'Loss of elasticity causing wrinkles', 'Increased oil production', 'Darkening of skin tone'], ans: 1, exp: 'Loss of skin elasticity, especially in the face, causing lines and wrinkles, is one of the first visible signs of ageing.' },
+              { q: 'Presbyopia refers to...', opts: ['Hearing loss', 'Memory decline', 'Decline in near vision', 'Bone density loss'], ans: 2, exp: 'Presbyopia is a decline in near vision as the lens of the eye becomes less elastic, common in the 40s.' },
+            ]
+          },
+          {
+            icon: '🌿', name: 'Old Age (65+)', sub: 'Sensory, skeletal & systemic changes',
+            content: `<p><strong>Old age</strong> begins at approximately 65 and is marked by cumulative biological changes. The key insight: <em>chronological age has little bearing on biological age</em> — lifestyle habits profoundly shape individual variation.</p>
+            <p><strong>External changes:</strong> Hair turns distinctly grey/white and may thin; skin becomes less elastic, more wrinkled, dry and thin (partly from loss of fatty tissue underneath).</p>
+            <p><strong>Sensory changes:</strong> About 30% of people over 60 have hearing impairment; ~50% over 85 have hearing loss. Vision changes include reduced peripheral vision, slower adaptation to light changes, and increased risk of cataracts and macular degeneration.</p>
+            <p><strong>Cardiovascular:</strong> Heart muscle becomes more rigid; arteries stiffen. Less oxygen is delivered during activity. <strong>Immune system</strong> declines as T-cells become less effective.</p>
+            <p><strong>Falls risk:</strong> 30% of those over 65 and 40% of those over 80 have fallen within the past year. Hip fractures carry a 12–20% increase in mortality.</p>`,
+            flashcards: [
+              { q: 'What percentage of people over 85 have hearing loss?', a: 'About 50% of people over 85 have hearing loss.' },
+              { q: 'What is functional age?', a: 'The actual competence and performance a person displays, regardless of chronological age.' },
+              { q: 'What causes macular degeneration?', a: 'Breakdown of light-sensitive cells in the macula (central retina), causing blurry central vision. A diet high in anti-oxidants can delay it.' },
+              { q: 'What percentage of those over 65 have fallen in the past year?', a: 'About 30%, rising to 40% for those over 80. Serious injury occurs about 10% of the time.' },
+            ],
+            quiz: [
+              { q: 'What is the primary fall-related fracture in elderly people?', opts: ['Wrist fracture', 'Spinal fracture', 'Hip fracture', 'Shoulder fracture'], ans: 2, exp: 'Hip fractures are the most common serious injury from falls in the elderly, associated with a 12–20% increase in mortality.' },
+              { q: 'Which immune cells become less effective with ageing?', opts: ['B cells', 'T cells', 'Stem cells', 'Red blood cells'], ans: 1, exp: 'The immune system declines as T cells become less effective, making elders more susceptible to infections and autoimmune conditions.' },
+            ]
+          },
+          {
+            icon: '🦴', name: 'Arthritis, Diabetes & Injuries', sub: 'Common physical disabilities',
+            content: `<p><strong>Arthritis</strong> is a condition of inflamed, painful, stiff or swollen joints. Two forms:</p>
+            <p><strong>Osteoarthritis</strong> (most common): Deteriorating cartilage on the ends of bones. Obesity places abnormal pressure on joints and damages cartilage further.</p>
+            <p><strong>Rheumatoid arthritis:</strong> An autoimmune disease involving whole-body inflammation of connective tissue, causing stiffness, inflammation, and eventually deformed joints.</p>
+            <p><strong>Adult-onset diabetes</strong> occurs when insulin output cannot control blood sugar. High blood sugar damages blood vessels, increasing risk of stroke, heart attack, and circulatory problems. Can result in amputations and blindness in severe cases.</p>
+            <p><strong>Unintentional injuries:</strong> Death rate from injuries increases after 65, mostly due to car collisions and falls. Older adults have higher rates of traffic accidents per mile driven than any group except teenagers.</p>`,
+            flashcards: [
+              { q: 'What is the difference between osteoarthritis and rheumatoid arthritis?', a: 'Osteoarthritis is cartilage deterioration (degenerative); rheumatoid arthritis is an autoimmune disease causing systemic inflammation.' },
+              { q: 'How does adult-onset diabetes cause complications?', a: 'High blood sugar damages blood vessels, increasing stroke, heart attack, and circulatory risk. Can lead to amputations and blindness.' },
+              { q: 'What are primary vs secondary ageing?', a: 'Primary ageing = biological ageing even in good health. Secondary ageing = decline due to hereditary defects, poor diet, disease, or substance abuse.' },
+            ],
+            quiz: [
+              { q: 'Which type of arthritis is considered an autoimmune disease?', opts: ['Osteoarthritis', 'Rheumatoid arthritis', 'Gout', 'Septic arthritis'], ans: 1, exp: 'Rheumatoid arthritis involves the whole body; the immune system turns against connective tissue, causing inflammation and deformed joints.' },
+              { q: 'What is secondary ageing?', opts: ['Normal biological ageing', 'Decline due to lifestyle and environmental factors', 'Ageing in secondary organs only', 'Ageing after 80'], ans: 1, exp: 'Secondary ageing refers to declines due to hereditary defects, poor diet, lack of exercise, disease, substance abuse, and stress.' },
+            ]
+          },
+        ]
+      }
+    ]
+  },
+  {
+    id: 2, cls: 'b2', label: 'Block 2',
+    title: 'Cognitive Changes',
+    desc: 'Intelligence, memory, reasoning and wisdom across adulthood',
+    units: [
+      {
+        id: 'u2', num: 'Unit 2', label: 'Cognitive Changes',
+        sub: 'Early Adulthood · Middle Age · Old Age',
+        topics: [
+          {
+            icon: '🧠', name: 'Cognition in Early Adulthood', sub: 'Pragmatic & relativistic thinking',
+            content: `<p>Young adulthood is the time when cognitive skills are becoming finalised. Physically at peak performance, young adults are making major life decisions about career, relationships and identity.</p>
+            <p><strong>Piaget's view:</strong> Young adults are <em>quantitatively</em> advanced (more knowledge) but <em>qualitatively similar</em> to adolescents in formal operational thinking. Adults increase knowledge in a specific area.</p>
+            <p><strong>Schaie's stages:</strong><br>
+            • <em>Achieving Stage</em> — applying intelligence to achieve long-term goals; mastering cognitive skills to monitor one's own behaviour.<br>
+            • <em>Responsibility Stage</em> — begins in early adulthood, extends to middle; attending to needs of spouse, children and community.</p>
+            <p><strong>William Perry:</strong> Adolescents engage in dualistic, absolute thinking (right/wrong). Young adults shift to <em>reflective, relativistic thinking</em> — understanding truth is relative, contextual and constructed.</p>
+            <p><strong>Post-formal thought:</strong> Qualitatively different from formal operational thought. Involves understanding that correct answers may vary by situation, emotion influences thinking, and solutions must be realistic.</p>`,
+            flashcards: [
+              { q: 'What is Schaie\'s "Achieving Stage"?', a: 'Applying intelligence to situations with profound consequences for long-term goals, like careers. Individuals gain independence and self-monitoring skills.' },
+              { q: 'What is the difference between dualistic and relativistic thinking?', a: 'Dualistic thinking sees things in polar opposites (right/wrong). Relativistic thinking understands that truth is contextual, constructed, and varies by situation.' },
+              { q: 'What is post-formal thought?', a: 'Thinking that recognises correct answers may vary by situation, emotion influences thinking, and ongoing search for truth is normal.' },
+            ],
+            quiz: [
+              { q: 'According to K. Warner Schaie, adults primarily switch from...', opts: ['Acquiring knowledge to applying it', 'Applying knowledge to acquiring it', 'Emotional to rational thinking', 'Abstract to concrete thinking'], ans: 0, exp: 'Schaie argues adults switch from actually acquiring knowledge to applying that knowledge in everyday life.' },
+              { q: 'William Perry\'s relativistic thinking in adults is characterised by...', opts: ['Black-and-white thinking', 'Understanding truth is contextual and constructed', 'Avoidance of complex ideas', 'Dependence on authority'], ans: 1, exp: 'Perry found young adults develop full relativism — understanding truth is relative and knowledge is constructed, not absolute.' },
+            ]
+          },
+          {
+            icon: '💎', name: 'Fluid vs Crystallized Intelligence', sub: 'Two types of adult intelligence',
+            content: `<p><strong>Two major types of intelligence</strong> respond differently to ageing:</p>
+            <p><strong>Fluid Intelligence:</strong> Flexible reasoning — abstract thinking, inductive reasoning, speed of thinking, novel logic. Peaks in the 20s and 30s. Best suited for mathematicians, scientists, poets. <em>Declines with age</em>, likely due to brain changes.</p>
+            <p><strong>Crystallized Intelligence:</strong> Verbal reasoning using accumulated knowledge, vocabulary, and experience. Reflects education and culture. Best works at age 40s, 50s and older — historians, philosophers, prose writers. <em>Continues to grow through middle age and beyond.</em></p>
+            <p><strong>Key insight:</strong> Many psychologists believed fluid intelligence was primarily genetic and crystallized was primarily learned — but this nature-nurture distinction is likely invalid, because the quality of fluid intelligence affects acquisition of crystallized intelligence.</p>
+            <p><strong>Sternberg's triarchic intelligence:</strong> Analytic (efficient learning/thinking), Creative (flexible and innovative), Practical (adapting abilities to context).</p>`,
+            flashcards: [
+              { q: 'What is fluid intelligence?', a: 'Flexible reasoning — abstract thinking, inductive reasoning, speed of thinking. Peaks in the 20s–30s and declines with age.' },
+              { q: 'What is crystallized intelligence?', a: 'Accumulated knowledge, vocabulary, and experience-based reasoning. Continues to grow through middle age and beyond.' },
+              { q: 'What are Sternberg\'s three types of intelligence?', a: 'Analytic (efficient learning), Creative (flexible/innovative), and Practical (adapting to context).' },
+            ],
+            quiz: [
+              { q: 'Which type of intelligence peaks in the early 20s?', opts: ['Crystallized intelligence', 'Fluid intelligence', 'Emotional intelligence', 'Practical intelligence'], ans: 1, exp: 'Fluid intelligence peaks in early adulthood (20s–30s) and then declines, whereas crystallized intelligence continues to grow.' },
+              { q: 'Crystallized intelligence is best described as...', opts: ['Speed of abstract reasoning', 'Accumulated knowledge from education and experience', 'Genetic potential for learning', 'Response time on cognitive tasks'], ans: 1, exp: 'Crystallized intelligence reflects accumulated knowledge, vocabulary, and experience — it grows with age and education.' },
+            ]
+          },
+          {
+            icon: '🔮', name: 'Cognitive Changes in Old Age', sub: 'Memory, wisdom & language',
+            content: `<p>Cognitive development in old age is complex — there are losses in some areas but wisdom increases. Response speeds (neural and motor) decline, and working memory decreases are key factors in poorer cognitive performance.</p>
+            <p><strong>Types of memory affected:</strong><br>
+            • <em>Implicit (automatic) memory</em> — largely preserved<br>
+            • <em>Explicit (deliberate) memory</em> — more affected<br>
+            • <em>Associative memory</em> — difficulty creating/retrieving links between pieces of information<br>
+            • <em>Remote memory</em> — not clearer than recent recall (the myth that seniors remember the distant past better is largely false)<br>
+            • <em>Autobiographical memory</em> — seniors best recall adolescent and early adulthood experiences (emotionally charged, novel events)<br>
+            • <em>Prospective memory</em> — remembering to do planned future activities; event-based tasks are easier than time-based tasks</p>
+            <p><strong>Wisdom:</strong> Practical knowledge, emotional maturity, creativity used to help others. <em>Increases with age.</em> People with wisdom tend to have better education and physical health.</p>`,
+            flashcards: [
+              { q: 'What is associative memory deficit?', a: 'A problem creating and retrieving links between pieces of information — common in older adults.' },
+              { q: 'What is prospective memory?', a: 'Remembering to do planned activities in the future. Elders do better on event-based than time-based prospective tasks.' },
+              { q: 'What is "terminal decline"?', a: 'A steady, marked decrease in cognitive functioning that occurs prior to death.' },
+            ],
+            quiz: [
+              { q: 'Which type of memory is MOST preserved in older adults?', opts: ['Explicit/deliberate memory', 'Implicit/automatic memory', 'Prospective memory', 'Working memory'], ans: 1, exp: 'Implicit memory (without conscious awareness) is more intact than deliberate memory in older adults.' },
+              { q: 'Autobiographical memories best recalled by seniors are from which life period?', opts: ['Childhood (ages 5–12)', 'Middle adulthood (40–60)', 'Adolescence and early adulthood', 'Late adulthood (65+)'], ans: 2, exp: 'Seniors best recall adolescent and early adult experiences — they were emotionally charged, novel, and involved major life decisions.' },
+            ]
+          },
+          {
+            icon: '📚', name: 'Theories of Ageing & Learning', sub: 'Disengagement, activity, ageism',
+            content: `<p><strong>Disengagement Theory:</strong> As people age, their withdrawal from society is normal and desirable — it relieves them of roles that have become difficult and opens opportunities for younger people.</p>
+            <p><strong>Activity Theory:</strong> Activity is necessary to maintain quality of life — "use it or lose it." People who remain active physically, mentally, and socially adjust better to ageing. Activities from earlier years should be maintained as long as possible.</p>
+            <p><strong>Selective Optimisation with Compensation:</strong> Older adults narrow their goals, select personally valued activities to maximise returns from their energy, and find means to compensate for losses.</p>
+            <p><strong>Ageism:</strong> Prejudice or discrimination based on age. Older people are most frequently its target, often resulting in forced retirement and stereotyping.</p>
+            <p><strong>Cognitive interventions:</strong> Lifelong learning programs (e.g. Elderhostel) help seniors continue education. Schaie and Willis found cognitive decline could be reversed in 40–60% of elderly given remedial training.</p>`,
+            flashcards: [
+              { q: 'What does the Activity Theory of ageing state?', a: '"Use it or lose it" — people who remain active physically, mentally, and socially adjust better to ageing.' },
+              { q: 'What is selective optimisation with compensation?', a: 'Older adults narrow goals, select valued activities to maximise returns from energy, and compensate for losses.' },
+              { q: 'What did Schaie and Willis find about cognitive decline?', a: 'Cognitive performance could be reversed in 40–60% of elderly given remedial training.' },
+            ],
+            quiz: [
+              { q: 'The Disengagement Theory argues that social withdrawal in old age is...', opts: ['A sign of depression', 'Normal and desirable', 'Due to ageism only', 'Preventable with training'], ans: 1, exp: 'Disengagement theory holds that withdrawal from society is normal and desirable, relieving elders of responsibilities and opening roles for younger people.' },
+              { q: 'Ageism is best defined as...', opts: ['Normal age-related decline', 'Prejudice or discrimination based on age', 'Physical changes due to ageing', 'Biological deterioration'], ans: 1, exp: 'Ageism is prejudice or discrimination that occurs on the basis of age. Older people are most frequently its target.' },
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 3, cls: 'b3', label: 'Block 3',
+    title: 'Psychosocial Changes',
+    desc: 'Identity, relationships, family life and personality across adulthood',
+    units: [
+      {
+        id: 'u3', num: 'Unit 3', label: 'Psychosocial Changes',
+        sub: 'Early Adulthood · Middle Age · Old Age',
+        topics: [
+          {
+            icon: '🤝', name: 'Erikson\'s Psychosocial Stages', sub: 'Three adult crises',
+            content: `<p>Erikson proposed that adult development involves three major crises, each requiring resolution to advance:</p>
+            <p><strong>1. Intimacy vs. Isolation</strong> (Early Adulthood): Developing the ability to form deep, intimate relationships. Those who succeed are cooperative, tolerant, accepting. Those who fail become socially/emotionally isolated, fear closeness, and are more competitive than cooperative.</p>
+            <p><strong>2. Generativity vs. Stagnation</strong> (Middle Adulthood, 45–65): The desire to expand influence and commitment to family, society, and future generations. Generativity can involve parenting, mentoring, volunteering, creative work. Stagnation = self-centered narcissism, detachment from even one's own children.</p>
+            <p><strong>3. Ego Integrity vs. Despair</strong> (Old Age): Looking back at life and asking "Did my life have meaning?" Integrity = feeling whole, complete, satisfied. Despair = bitterness, defeat, anxiety about death. Comes with a sense of peace about mortality if resolved well.</p>`,
+            flashcards: [
+              { q: 'What is Erikson\'s crisis in early adulthood?', a: 'Intimacy vs. Isolation — developing the ability to form deep, intimate relationships. Failure leads to social isolation.' },
+              { q: 'What does generativity involve?', a: 'Concern for and guidance of the next generation — through parenting, mentoring, community involvement, or creative work.' },
+              { q: 'What is Ego Integrity vs. Despair?', a: 'Final stage of life — feeling whole and satisfied with one\'s life (integrity) vs. bitterness and regret about missed opportunities (despair).' },
+            ],
+            quiz: [
+              { q: 'Erikson\'s crisis of generativity vs. stagnation occurs during...', opts: ['Early adulthood', 'Middle adulthood', 'Old age', 'Adolescence'], ans: 1, exp: 'Generativity vs. stagnation occurs in middle adulthood (45–65), focusing on contributing to future generations.' },
+              { q: 'People who fail to develop generativity experience...', opts: ['Depression', 'Integrity', 'Stagnation/self-absorption', 'Isolation'], ans: 2, exp: 'Stagnation involves self-centeredness, narcissism, and loss of interest in others or in being productive.' },
+            ]
+          },
+          {
+            icon: '🌊', name: 'Levinson\'s Seasons of Life', sub: 'Transitions & life structures',
+            content: `<p>Levinson believed development moves through <strong>stages with transitions</strong> (~5 years each) and stable periods (5–7 years) where a person builds a life structure — the underlying design of their life.</p>
+            <p><strong>Early adulthood transition (17–22):</strong> Most people construct a <em>dream</em> — an image of themselves in the adult world. Men's dreams tend to be more individualistic (career success); women's often include supporting others.</p>
+            <p><strong>Age-30 transition:</strong> Re-evaluation of life structure. Singles begin seeking partners. Women who focused on family begin asserting individualistic goals. A real crisis if neither relationships nor occupation is successful.</p>
+            <p><strong>Midlife transition (40–45):</strong> People evaluate their success in meeting adult goals. Realising there is more time behind than ahead. Often make big changes in family or occupation. May turn inward.</p>
+            <p><strong>Social Clock:</strong> Age-graded expectations for life events (first job, marriage, children, retirement). Women who followed a masculine social clock (early career) became more dominant and independent.</p>`,
+            flashcards: [
+              { q: 'What is a "life structure" in Levinson\'s theory?', a: 'The underlying design of a person\'s life involving relationships with significant others and occupations, designed to balance inner and outer demands.' },
+              { q: 'What is the Social Clock?', a: 'Age-graded expectations society holds for life events: first job, marriage, children, buying a house, retirement.' },
+              { q: 'What happens during Levinson\'s Midlife Transition (40–45)?', a: 'People evaluate success in meeting adult goals, realise more time is behind than ahead, and may make big life changes — family, occupation, or turning inward.' },
+            ],
+            quiz: [
+              { q: 'In Levinson\'s theory, a "dream" is...', opts: ['A career goal only', 'An image of oneself in the adult world that guides decision making', 'A subconscious wish', 'A social comparison process'], ans: 1, exp: 'During the early adult transition (17–22), most people construct a dream — an image of themselves in the adult world that motivates decision making.' },
+              { q: 'Women who followed a masculine social clock (early career) tended to be...', opts: ['More dependent and caring', 'More dominant, sociable, and independent', 'More vulnerable with lower self-esteem', 'Less likely to marry'], ans: 1, exp: 'Women who pursued early career development became more dominant, sociable, independent, and intellectually effective.' },
+            ]
+          },
+          {
+            icon: '👨‍👩‍👧', name: 'Family Life Cycle', sub: 'Marriage, parenthood & divorce',
+            content: `<p>The family life cycle describes the sequence of phases in most families' development. Key stages:</p>
+            <p><strong>Marriage patterns today:</strong> People wait longer — average marriage age is 25 (men) and 27 (women). Marriage represents the connection of two family systems. Egalitarian marriages share power and authority.</p>
+            <p><strong>Marital satisfaction:</strong> Described as a <em>U-curve</em> — happiest in early years, least happy in middle years, rising again in later years once finances stabilise and parenting ends. Men report higher happiness in marriage than women.</p>
+            <p><strong>Parenthood:</strong> Advantages include warmth, affection, learning, and passing on values. Disadvantages include loss of freedom, financial burden, and work-family conflict. Roles become more traditional after a baby, even in egalitarian couples.</p>
+            <p><strong>Divorce:</strong> Reasons include poor communication, incompatibility, and growing apart. Women who cite specific reasons (abuse, autonomy) for divorce tend to adjust better post-divorce.</p>`,
+            flashcards: [
+              { q: 'What is the U-curve of marital satisfaction?', a: 'Marriages are happiest in early years, least happy in middle years, then rise again later when finances stabilise and parenting responsibilities end.' },
+              { q: 'What makes long-term relationships last?', a: 'Both partners regard the relationship as long-term, express appreciation and love, offer emotional support, and consider each other a best friend.' },
+              { q: 'What is consummate love according to Sternberg?', a: 'Consummate (complete) love involves three components: passion, intimacy, and commitment.' },
+            ],
+            quiz: [
+              { q: 'The U-curve of marital satisfaction means...', opts: ['Satisfaction rises then falls', 'Satisfaction falls then rises', 'Satisfaction is constant throughout', 'Satisfaction is highest in middle years'], ans: 1, exp: 'Marital satisfaction starts high (early years), dips in middle years, and rises again in later years — forming a U-shape.' },
+              { q: 'Sternberg\'s three components of love are...', opts: ['Trust, respect, admiration', 'Passion, intimacy, commitment', 'Attraction, affection, devotion', 'Friendship, romance, loyalty'], ans: 1, exp: 'Sternberg\'s triangular theory of love includes intimacy (emotional), passion (physical/romance), and commitment (decision to stay).' },
+            ]
+          },
+          {
+            icon: '🎋', name: 'Psychosocial Changes in Old Age', sub: 'Relationships, retirement & spirituality',
+            content: `<p>The social world of older adults is rich and varied. Older adults often <em>value time with friends more than family</em>, preferring independence and companionship with peers of similar cohort.</p>
+            <p><strong>Peck's Three Tasks of Ego Integrity:</strong><br>
+            1. <em>Ego differentiation vs. Work-role preoccupation</em> — finding self-worth beyond career after retirement<br>
+            2. <em>Body transcendence vs. Body preoccupation</em> — finding value in cognitive and social strengths despite physical limitations<br>
+            3. <em>Ego transcendence vs. Ego preoccupation</em> — finding a future beyond one's own mortality through giving back</p>
+            <p><strong>Spirituality:</strong> Advances to a higher level in late life — more reflective, comfortable with the unknowable. Religion provides stabilising rituals and meaning.</p>
+            <p><strong>Retirement:</strong> Adjustment depends on health, financial stability, personal control, social support, and marital happiness. Women retire earlier than men due to family demands. Leisure activities reduce mortality.</p>`,
+            flashcards: [
+              { q: 'What is Peck\'s first task of ego integrity?', a: 'Ego differentiation vs. work-role preoccupation — finding other sources of self-worth after retirement beyond career identity.' },
+              { q: 'What is a social convoy?', a: 'A cluster of family members and friends who provide safety and support throughout one\'s life, shifting over time as some bonds grow closer and others fade.' },
+              { q: 'What is life review?', a: 'Reminiscence in which the person reflects on past experiences to achieve greater self-understanding and find meaning in their life.' },
+            ],
+            quiz: [
+              { q: 'Older adults tend to prefer time with...', opts: ['Family over friends', 'Friends over family', 'Neither — prefer solitude', 'Professional contacts'], ans: 1, exp: 'Older adults often place a high value on friends, sometimes more so than family, to maintain independence and peer companionship.' },
+              { q: 'Body transcendence in Peck\'s theory means...', opts: ['Obsession with physical health', 'Finding value in cognitive/social strengths despite physical decline', 'Cosmetic interventions', 'Avoiding illness'], ans: 1, exp: 'Body transcendence requires finding value in cognitive, social strengths and relationships, transcending physical limitations.' },
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: 4, cls: 'b4', label: 'Block 4',
+    title: 'Challenges in Ageing',
+    desc: 'Ageing process, gender differences, and challenges across life stages',
+    units: [
+      {
+        id: 'u4', num: 'Unit 4', label: 'Challenges & Issues in Ageing',
+        sub: 'Process · Early · Middle · Late Adulthood',
+        topics: [
+          {
+            icon: '♀️', name: 'Ageing Process in Women', sub: 'Physical, psychological & social',
+            content: `<p>The ageing process in women brings changes across three domains:</p>
+            <p><strong>Physical:</strong> Menopause is the central milestone, dividing women's lives into premenopausal and postmenopausal phases. Hormonal changes cause: loss of bone mass and muscle strength (leading to osteoporosis and arthritis), skin becomes sunken/sallow/wrinkled, immune system weakens, and vital organs show diminished performance.</p>
+            <p><strong>Psychological:</strong> Hormonal changes during menopause cause behavioural changes. Many women experience depression from loss of fertility. Emotional insecurity may arise from fears about attractiveness and spousal love. Some women become extremely moody. However, optimistic women may see this as an opportunity to fulfil unaccomplished dreams.</p>
+            <p><strong>Social:</strong> Social life depends on attitude towards life and health. Some women withdraw from the world; others engage in community activities and hobbies. Most in this age group are financially settled with an independent family — presenting a golden chance to live for themselves.</p>`,
+            flashcards: [
+              { q: 'What are the two phases of a woman\'s life relative to menopause?', a: 'Premenopausal (before menopause) and postmenopausal (after menopause).' },
+              { q: 'What physical conditions result from bone mass loss in ageing women?', a: 'Osteoporosis and arthritis, which may accompany the woman throughout the rest of her life.' },
+              { q: 'What psychological challenge do many women face due to menopause?', a: 'Depression from loss of fertility, emotional insecurity about attractiveness and relationships, moodiness, and a feeling of "end" associated with ageing.' },
+            ],
+            quiz: [
+              { q: 'The key factor in how women cope with ageing, according to the text, is...', opts: ['Physical health', 'Financial status', 'Her perspective about life', 'Social network size'], ans: 2, exp: 'The key to fighting ageing in women depends solely on her perspective about life — if she decides to age gracefully, nothing can deter her.' },
+              { q: 'What happens to the immune system during ageing in women?', opts: ['It strengthens', 'It remains unchanged', 'It becomes unable to produce sufficient antibodies', 'It only weakens after 80'], ans: 2, exp: 'The immune system becomes unable to produce sufficient antibodies, making the body susceptible to various illnesses.' },
+            ]
+          },
+          {
+            icon: '♂️', name: 'Ageing Process in Men', sub: 'Health, prostate, heart & mental health',
+            content: `<p>Ageing from the male perspective is frequently associated with <em>loss of physical and mental function and vitality</em>. The implied stigma often prevents men from dealing with important health issues.</p>
+            <p><strong>Whole health:</strong> A diet high in fiber, low in saturated fat, rich in antioxidants reduces cancer risk. Consistent moderate exercise promotes cardiovascular health and reduces risk of obesity, diabetes, and osteoporosis.</p>
+            <p><strong>Mental health:</strong> Alzheimer's Disease and Dementia are common concerns. Herbal extracts like ginkgo biloba and nutrients like DHA can support cognitive function and protect nerve cells.</p>
+            <p><strong>Heart health:</strong> Cardiovascular disease is still among the most common causes of death in men. Diet, lifestyle, and high-fiber foods combined with exercise can positively affect even severe heart disease.</p>
+            <p><strong>Prostate health:</strong> A consideration from age 40+. Over 60% of men over 40 will have an enlarged prostate (BPH). High levels of DHT (dihydrotestosterone) have been associated with prostate cancer.</p>
+            <p><strong>Skeletal health:</strong> Past sports injuries lead to osteoarthritis. Even one-sixth of all men will fracture a hip during their lifetime.</p>`,
+            flashcards: [
+              { q: 'What percentage of men over 40 will have an enlarged prostate?', a: 'An estimated 60 percent of men over 40 will have an enlarged prostate (BPH — benign prostatic hyperplasia).' },
+              { q: 'What hormone is associated with prostate cancer?', a: 'High levels of dihydrotestosterone (DHT) have been associated with prostate cancer.' },
+              { q: 'What cognitive supplement is mentioned for brain health in men?', a: 'Ginkgo biloba — helps increase circulation to the brain, acts as an antioxidant, and supports cognitive function.' },
+            ],
+            quiz: [
+              { q: 'What is the most obvious health concern for ageing men?', opts: ['Prostate health', 'Heart health/cardiovascular disease', 'Skeletal health', 'Mental health'], ans: 1, exp: 'Heart health is cited as the most obvious concern for ageing men; cardiovascular disease remains among the most common causes of death.' },
+              { q: 'What prevents many men from dealing with health issues associated with ageing?', opts: ['Lack of access to care', 'The implied stigma of ageing', 'Financial constraints', 'Denial about symptoms'], ans: 1, exp: 'The implied stigma that comes with ageing often prevents men from dealing with important health issues associated with the process.' },
+            ]
+          },
+          {
+            icon: '🌅', name: 'Challenges in Middle Adulthood', sub: 'Diseases, relationships & divorce',
+            content: `<p>Middle adulthood brings specific health and relationship challenges.</p>
+            <p><strong>Health diseases:</strong> Diabetes, heart disease and cancer are the most common diseases discovered during middle adulthood. Men are more prone to heart disease, cancer and stroke. Women are more affected by non-fatal illnesses (goiter, arthritis), though diabetes rates are higher in women.</p>
+            <p><strong>Physical changes:</strong> Hair greys, teeth yellow, wrinkles appear. Hearing loss begins around 40 — men experience <em>twice as much hearing loss</em> as women. Strength, flexibility and reaction time all decrease. Muscle is replaced by fat.</p>
+            <p><strong>Sexuality:</strong> Women begin menopause; men's fertility decreases though they retain reproductive ability.</p>
+            <p><strong>Elder care:</strong> Middle adults may find themselves caring for ageing parents. Daughters and daughters-in-law are the most common caretakers of ageing parents and in-laws.</p>
+            <p><strong>Love types:</strong> Consummate love (passion + intimacy + commitment) is the ideal. Many middle adults settle into <em>companionate love</em> — intimate and committed but less passionate.</p>`,
+            flashcards: [
+              { q: 'Which gender experiences twice as much hearing loss in middle adulthood?', a: 'Men experience twice as much hearing loss as women during middle adulthood.' },
+              { q: 'Who are the most common caretakers of ageing parents?', a: 'Daughters and daughters-in-law are the most common caretakers of ageing parents and in-laws.' },
+              { q: 'What is companionate love?', a: 'Love that is both committed and intimate, but not passionate — common in long-term middle-age relationships.' },
+            ],
+            quiz: [
+              { q: 'Hearing loss in middle adulthood is...', opts: ['Equal between men and women', 'Twice as common in men', 'Twice as common in women', 'Only begins after 60'], ans: 1, exp: 'Men experience twice as much hearing loss as women during the middle life stage, with loss typically beginning around age 40.' },
+              { q: 'What type of love involves passion, intimacy AND commitment?', opts: ['Companionate love', 'Romantic love only', 'Consummate love', 'Infatuation'], ans: 2, exp: 'Consummate love (complete love) involves all three components: passion, intimacy, and commitment — the ideal form of adult love.' },
+            ]
+          },
+          {
+            icon: '🌖', name: 'Challenges in Late Adulthood', sub: 'Obesity, arthritis, cancer, mental health',
+            content: `<p>Late adulthood brings accumulative health challenges, but the rate of ageing is not fixed — lifestyle habits over decades are determining factors.</p>
+            <p><strong>Obesity & Metabolic Syndrome:</strong> Most adults aged 60+ are overweight or obese. Linked to type 2 diabetes, cardiovascular disease, and cancer. Reduce calories, alcohol; increase omega-3 and unsaturated fats; eliminate trans fats; avoid high-fructose corn syrup.</p>
+            <p><strong>Arthritis:</strong> Affects nearly half the elderly. Prevention: avoid overuse, exercise regularly, manage weight. Stop if you feel pain.</p>
+            <p><strong>Cancer:</strong> Risk increases with age. Cervical cancer decreases but endometrial cancer increases in women. Prostate cancer risk rises in men; Black men have higher rates than white men. Lung cancer accounts for more deaths than breast, prostate, and colon cancer combined.</p>
+            <p><strong>Mental health:</strong> Alzheimer's is a perplexing challenge. Depression is often underdiagnosed — many mistakenly believe it is a natural condition of old age. Retirement often triggers depression and suicide rates rise.</p>`,
+            flashcards: [
+              { q: 'What cancer accounts for the most deaths in late adulthood?', a: 'Lung cancer accounts for more deaths than breast cancer, prostate cancer, and colon cancer combined.' },
+              { q: 'What is glaucoma known as?', a: '"The sneak thief of sight" — the first symptom is vision loss, which cannot be restored once lost, though the disease can be arrested.' },
+              { q: 'Why does depression often go undetected in old age?', a: 'Many people mistakenly believe depression is a natural condition of old age, so it is often underdiagnosed and untreated.' },
+            ],
+            quiz: [
+              { q: 'Arthritis affects approximately what proportion of the elderly population?', opts: ['One-quarter', 'One-third', 'Nearly half', 'Two-thirds'], ans: 2, exp: 'Arthritis affects nearly half the elderly population and is a leading cause of disability.' },
+              { q: 'What triggers increased suicide and depression rates in late adulthood?', opts: ['Chronic pain', 'Retirement', 'Loss of friends', 'Hospitalisation'], ans: 1, exp: 'Retirement is a major life change — many people have their sense of worth tied to work, and depression and suicide rates rise upon retirement.' },
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let activeBlock = null;
+let activeUnit = null;
+let activeTopic = null;
+let modalMode = null;
+let quizIdx = 0;
+let quizAnswered = false;
+let fcIdx = 0;
+let fcFlipped = false;
+
+// ============================================================
+// INIT
+// ============================================================
+function init() {
+  renderBlocks();
+  renderHeaderNav();
+}
+
+function renderHeaderNav() {
+  const nav = document.getElementById('headerNav');
+  const colors = ['#2d4a6e','#6e2d4a','#2d6e4a','#6e4a2d'];
+  BLOCKS.forEach((b, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn';
+    btn.style.borderColor = colors[i];
+    btn.style.color = colors[i];
+    btn.textContent = `Block ${b.id}: ${b.title}`;
+    btn.onclick = () => openBlock(b.id);
+    nav.appendChild(btn);
+  });
+}
+
+function renderBlocks() {
+  const grid = document.getElementById('blocksGrid');
+  grid.innerHTML = '';
+  BLOCKS.forEach(b => {
+    const card = document.createElement('div');
+    card.className = `block-card b${b.id}-card`;
+    card.id = `block-${b.id}`;
+    card.innerHTML = `
+      <div class="block-num">${String(b.id).padStart(2,'0')}</div>
+      <div class="block-title">${b.title}</div>
+      <div class="block-desc">${b.desc}</div>
+      <div class="block-pill">Explore ${b.units.length} unit${b.units.length>1?'s':''}</div>
+    `;
+    card.onclick = () => openBlock(b.id);
+    grid.appendChild(card);
+  });
+}
+
+// ============================================================
+// BLOCK & UNIT NAVIGATION
+// ============================================================
+function openBlock(id) {
+  activeBlock = BLOCKS.find(b => b.id === id);
+  activeUnit = activeBlock.units[0];
+  activeTopic = null;
+
+  // highlight card
+  document.querySelectorAll('.block-card').forEach(c => c.classList.remove('active'));
+  const card = document.getElementById(`block-${id}`);
+  if (card) { card.classList.add('active'); card.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
+
+  renderUnitPanel();
+  document.getElementById('unitPanel').classList.add('visible');
+  document.getElementById('unitPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closePanel() {
+  document.getElementById('unitPanel').classList.remove('visible');
+  document.querySelectorAll('.block-card').forEach(c => c.classList.remove('active'));
+  activeBlock = null; activeUnit = null; activeTopic = null;
+}
+
+function renderUnitPanel() {
+  const block = activeBlock;
+  document.getElementById('panelTitle').textContent = `Block ${block.id}: ${block.title}`;
+
+  const tabs = document.getElementById('unitsTabs');
+  tabs.innerHTML = '';
+  const clr = `var(--b${block.id})`;
+  block.units.forEach(u => {
+    const tab = document.createElement('button');
+    tab.className = 'unit-tab' + (u.id === activeUnit.id ? ' active' : '');
+    tab.textContent = `${u.num}: ${u.label}`;
+    if (u.id === activeUnit.id) { tab.style.background = clr; }
+    tab.onclick = () => { activeUnit = u; activeTopic = null; renderUnitPanel(); };
+    tabs.appendChild(tab);
+  });
+
+  renderUnitContent();
+}
+
+function renderUnitContent() {
+  const u = activeUnit;
+  const block = activeBlock;
+  const clr = `var(--b${block.id})`;
+  const clrL = `var(--b${block.id}l)`;
+
+  document.getElementById('contentTitle').textContent = `${u.num}: ${u.label}`;
+  const badge = document.getElementById('contentBadge');
+  badge.textContent = u.sub;
+  badge.style.background = clrL;
+  badge.style.color = `var(--b${block.id})`;
+
+  const grid = document.getElementById('topicsGrid');
+  grid.innerHTML = '';
+  u.topics.forEach((t, i) => {
+    const item = document.createElement('div');
+    item.className = 'topic-item' + (activeTopic === i ? ' active' : '');
+    item.style.color = clr;
+    item.innerHTML = `
+      <span class="topic-icon">${t.icon}</span>
+      <div>
+        <div class="topic-name">${t.name}</div>
+        <div class="topic-sub">${t.sub}</div>
+      </div>
+    `;
+    item.onclick = () => openTopic(i);
+    grid.appendChild(item);
+  });
+
+  const deepDiv = document.getElementById('deepDive');
+  if (activeTopic !== null) {
+    renderDeepDive(activeTopic);
+    deepDiv.classList.add('visible');
+  } else {
+    deepDiv.classList.remove('visible');
+  }
+
+  document.getElementById('contentArea').classList.add('visible');
+}
+
+function openTopic(i) {
+  activeTopic = i;
+  renderUnitContent();
+  document.getElementById('deepDive').scrollIntoView({ behavior:'smooth', block:'nearest' });
+}
+
+function renderDeepDive(i) {
+  const t = activeUnit.topics[i];
+  const block = activeBlock;
+  const clr = `var(--b${block.id})`;
+
+  document.getElementById('deepBreadcrumb').textContent = `Block ${block.id} → ${activeUnit.num} → ${t.name}`;
+  document.getElementById('deepTitle').textContent = t.name;
+  document.getElementById('deepContent').innerHTML = t.content;
+
+  const tools = document.getElementById('studyTools');
+  tools.innerHTML = '';
+  const toolDefs = [
+    { icon: '🃏', label: 'Flashcards', mode: 'flashcard' },
+    { icon: '✏️', label: 'Quiz Me', mode: 'quiz' },
+    { icon: '🗺️', label: 'Mind Map', mode: 'mindmap' },
+    { icon: '📝', label: 'Key Takeaways', mode: 'summary' },
+  ];
+  toolDefs.forEach(td => {
+    const btn = document.createElement('button');
+    btn.className = 'tool-btn';
+    btn.style.borderColor = clr;
+    btn.innerHTML = `<span class="icon">${td.icon}</span>${td.label}`;
+    btn.onclick = () => openModal(td.mode, i);
+    tools.appendChild(btn);
+  });
+}
+
+// ============================================================
+// MODAL
+// ============================================================
+function openModal(mode, topicIdx) {
+  modalMode = mode;
+  const t = activeUnit.topics[topicIdx];
+  const modal = document.getElementById('modal');
+  const overlay = document.getElementById('modalOverlay');
+  const clr = `var(--b${activeBlock.id})`;
+
+  let titleMap = { flashcard:'🃏 Flashcards', quiz:'✏️ Quiz', mindmap:'🗺️ Mind Map', summary:'📝 Key Takeaways' };
+  document.getElementById('modalTitle').textContent = `${titleMap[mode]} — ${t.name}`;
+
+  let body = '';
+  if (mode === 'flashcard') { fcIdx = 0; fcFlipped = false; body = renderFlashcardHTML(t, clr); }
+  else if (mode === 'quiz') { quizIdx = 0; quizAnswered = false; body = renderQuizHTML(t, clr); }
+  else if (mode === 'mindmap') { body = renderMindmapHTML(t, clr); }
+  else if (mode === 'summary') { body = renderSummaryHTML(t, clr); }
+
+  document.getElementById('modalBody').innerHTML = body;
+  overlay.classList.add('open');
+
+  if (mode === 'flashcard') attachFlashcardEvents(t, clr);
+  if (mode === 'quiz') attachQuizEvents(t, clr);
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+// ============================================================
+// FLASHCARDS
+// ============================================================
+function renderFlashcardHTML(t, clr) {
+  const cards = t.flashcards;
+  const pct = Math.round(((fcIdx+1)/cards.length)*100);
+  return `
+    <div style="margin-bottom:10px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;color:#888;font-family:'Fira Mono',monospace">Card ${fcIdx+1} of ${cards.length}</span>
+        <span style="font-size:12px;color:${clr};font-weight:600">${pct}% complete</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%;background:${clr}"></div></div>
+    </div>
+    <div class="flashcard-scene" onclick="flipCard()">
+      <div class="flashcard" id="fcCard">
+        <div class="card-face card-front">
+          <div class="label">TAP TO FLIP · QUESTION</div>
+          <div class="question">${cards[fcIdx].q}</div>
+        </div>
+        <div class="card-face card-back">
+          <div class="label">ANSWER</div>
+          <div class="answer">${cards[fcIdx].a}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-nav">
+      <button onclick="prevCard()" ${fcIdx===0?'disabled':''}>← Prev</button>
+      <span class="card-counter">${fcIdx+1} / ${cards.length}</span>
+      <button onclick="nextCard()" ${fcIdx===cards.length-1?'disabled':''}>Next →</button>
+    </div>
+  `;
+}
+function attachFlashcardEvents(t, clr) {}
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  const card = document.getElementById('fcCard');
+  if (card) card.classList.toggle('flipped', fcFlipped);
+}
+function nextCard() {
+  const t = activeUnit.topics[activeTopic];
+  if (fcIdx < t.flashcards.length - 1) { fcIdx++; fcFlipped = false; }
+  document.getElementById('modalBody').innerHTML = renderFlashcardHTML(t, `var(--b${activeBlock.id})`);
+}
+function prevCard() {
+  const t = activeUnit.topics[activeTopic];
+  if (fcIdx > 0) { fcIdx--; fcFlipped = false; }
+  document.getElementById('modalBody').innerHTML = renderFlashcardHTML(t, `var(--b${activeBlock.id})`);
+}
+
+// ============================================================
+// QUIZ
+// ============================================================
+function renderQuizHTML(t, clr) {
+  const q = t.quiz[quizIdx];
+  const total = t.quiz.length;
+  const pct = Math.round(((quizIdx)/total)*100);
+  return `
+    <div style="margin-bottom:12px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+        <span style="font-size:12px;color:#888;font-family:'Fira Mono',monospace">Question ${quizIdx+1} of ${total}</span>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:${pct}%;background:${clr}"></div></div>
+    </div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts" id="quizOpts">
+      ${q.opts.map((o,i) => `<div class="quiz-opt" data-idx="${i}" onclick="answerQuiz(${i})">${String.fromCharCode(65+i)}. ${o}</div>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="quizFeedback"></div>
+    <div class="quiz-nav">
+      ${quizIdx < total-1 ? `<button id="nextQBtn" onclick="nextQuestion()" style="display:none">Next Question →</button>` : `<button id="nextQBtn" onclick="finishQuiz()" style="display:none">See Results 🎉</button>`}
+    </div>
+  `;
+}
+function attachQuizEvents(t, clr) {}
+function answerQuiz(selected) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  const t = activeUnit.topics[activeTopic];
+  const q = t.quiz[quizIdx];
+  const opts = document.querySelectorAll('.quiz-opt');
+  opts.forEach(o => { o.classList.add('locked'); o.style.cursor='default'; });
+  opts[selected].classList.add(selected === q.ans ? 'correct' : 'wrong');
+  if (selected !== q.ans) opts[q.ans].classList.add('correct');
+  const fb = document.getElementById('quizFeedback');
+  fb.innerHTML = `<strong>${selected===q.ans?'✅ Correct!':'❌ Not quite.'}</strong> ${q.exp}`;
+  fb.classList.add('visible');
+  const btn = document.getElementById('nextQBtn');
+  if (btn) btn.style.display = 'block';
+}
+function nextQuestion() {
+  quizIdx++; quizAnswered = false;
+  const t = activeUnit.topics[activeTopic];
+  document.getElementById('modalBody').innerHTML = renderQuizHTML(t, `var(--b${activeBlock.id})`);
+}
+function finishQuiz() {
+  document.getElementById('modalBody').innerHTML = `
+    <div style="text-align:center;padding:24px 0">
+      <div style="font-size:48px;margin-bottom:12px">🎉</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:8px">Quiz Complete!</div>
+      <div style="font-size:14px;color:#666;margin-bottom:24px">Great work reviewing this topic.</div>
+      <button onclick="resetQuiz()" style="padding:10px 24px;border-radius:8px;border:none;background:var(--ink);color:white;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500">Retake Quiz ↺</button>
+    </div>
+  `;
+}
+function resetQuiz() {
+  quizIdx = 0; quizAnswered = false;
+  const t = activeUnit.topics[activeTopic];
+  document.getElementById('modalBody').innerHTML = renderQuizHTML(t, `var(--b${activeBlock.id})`);
+}
+
+// ============================================================
+// MIND MAP
+// ============================================================
+function renderMindmapHTML(t, clr) {
+  const clrRgb = clr.replace('var(--b','').replace(')','');
+  const hexMap = {'1':'#2d4a6e','2':'#6e2d4a','3':'#2d6e4a','4':'#6e4a2d'};
+  const hex = hexMap[activeBlock.id] || '#333';
+  const lighter = hex + '22';
+
+  // extract key points from flashcard q's
+  const pts = t.flashcards.map(f => f.q.replace(/\?/g,'').substring(0,38) + (f.q.length>38?'…':''));
+  const angles = pts.map((_, i) => (i / pts.length) * 2 * Math.PI - Math.PI/2);
+  const cx = 250, cy = 160, r = 100;
+
+  const nodes = pts.map((p, i) => ({
+    x: cx + r * Math.cos(angles[i]),
+    y: cy + r * Math.sin(angles[i]),
+    label: p
+  }));
+
+  const lines = nodes.map(n => `<line x1="${cx}" y1="${cy}" x2="${n.x}" y2="${n.y}" stroke="${hex}" stroke-width="1.5" stroke-dasharray="4,3" opacity=".5"/>`).join('');
+  const circles = nodes.map(n => {
+    const words = n.label.split(' ');
+    const lines2 = [];
+    let cur = '';
+    words.forEach(w => {
+      if ((cur+' '+w).trim().length > 16) { lines2.push(cur.trim()); cur = w; }
+      else cur = (cur+' '+w).trim();
+    });
+    if (cur) lines2.push(cur);
+    const textEls = lines2.map((l,li) => `<text x="${n.x}" y="${n.y - (lines2.length-1)*7 + li*14}" text-anchor="middle" font-size="9" fill="${hex}" font-family="DM Sans,sans-serif" font-weight="500">${l}</text>`).join('');
+    return `<circle cx="${n.x}" cy="${n.y}" r="34" fill="${lighter}" stroke="${hex}" stroke-width="1.5"/>` + textEls;
+  }).join('');
+
+  return `
+    <p style="font-size:12px;color:#888;margin-bottom:12px;font-family:'Fira Mono',monospace">Key concepts in ${t.name}</p>
+    <div class="mindmap-wrap">
+      <svg viewBox="0 0 500 320" xmlns="http://www.w3.org/2000/svg" style="width:100%;border-radius:12px;background:${lighter}">
+        ${lines}
+        <circle cx="${cx}" cy="${cy}" r="52" fill="${hex}"/>
+        <text x="${cx}" y="${cy-8}" text-anchor="middle" font-size="11" fill="white" font-family="DM Serif Display,serif" font-weight="bold">
+          ${t.name.split(' ').slice(0,2).join(' ')}
+        </text>
+        <text x="${cx}" y="${cy+8}" text-anchor="middle" font-size="10" fill="rgba(255,255,255,.8)" font-family="DM Sans,sans-serif">
+          ${t.name.split(' ').slice(2).join(' ')}
+        </text>
+        ${circles}
+      </svg>
+    </div>
+    <p style="font-size:11px;color:#aaa;margin-top:10px;text-align:center">Nodes represent key questions from this topic's flashcards</p>
+  `;
+}
+
+// ============================================================
+// SUMMARY
+// ============================================================
+function renderSummaryHTML(t, clr) {
+  const hex = {'1':'#2d4a6e','2':'#6e2d4a','3':'#2d6e4a','4':'#6e4a2d'}[activeBlock.id];
+  const items = t.flashcards.map(f => `<li><span>${f.q}<br><em style="color:${hex};font-style:normal">${f.a}</em></span></li>`).join('');
+  return `
+    <p style="font-size:13px;color:#666;margin-bottom:16px">Core concepts from <strong>${t.name}</strong></p>
+    <ul class="summary-list">${items}</ul>
+    <div style="margin-top:20px;padding:14px;background:var(--paper);border-radius:8px;font-size:13px;color:#555;line-height:1.6">
+      <strong style="color:${hex}">💡 Remember:</strong> ${t.sub}. Review these key Q&A pairs regularly using spaced repetition for best retention.
+    </div>
+  `;
+}
+
+// ============================================================
+// START
+// ============================================================
+init();
+</script>
+</body>
+</html>
