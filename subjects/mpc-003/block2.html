@@ -1,1 +1,1238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Theories of Personality — Interactive Learning Builder</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&display=swap');
 
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0f0f13;
+    --bg2: #16161d;
+    --bg3: #1e1e28;
+    --bg4: #25252f;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --text: #f0eff8;
+    --text2: #a09fb8;
+    --text3: #6b6a80;
+    --accent1: #7c6bff;
+    --accent1b: #5a49e0;
+    --accent2: #ff6b9d;
+    --accent3: #00d4aa;
+    --accent4: #ffb547;
+    --block1: #7c6bff;
+    --block2: #ff6b9d;
+    --block3: #00d4aa;
+    --block4: #ffb547;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    text-align: center;
+    padding: 3.5rem 2rem 2rem;
+    position: relative;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 260px;
+    background: radial-gradient(ellipse 70% 200px at 50% -30px, rgba(124,107,255,0.18), transparent);
+    pointer-events: none;
+  }
+  .header h1 {
+    font-family: 'DM Serif Display', Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 400;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, #c4bdff 0%, #f0eff8 50%, #ffb3d0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .header p {
+    color: var(--text2);
+    font-size: 1rem;
+    font-weight: 300;
+    letter-spacing: 0.02em;
+  }
+
+  /* BLOCKS GRID */
+  .blocks-section { padding: 1rem 1.5rem 3rem; max-width: 1100px; margin: 0 auto; }
+  .blocks-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 1rem;
+  }
+  .blocks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  @media (min-width: 700px) { .blocks-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .block-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.5rem 1.25rem 1.25rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .block-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    border-radius: 16px 16px 0 0;
+    background: var(--block-color);
+    opacity: 0.8;
+  }
+  .block-card:hover { border-color: var(--block-color); transform: translateY(-2px); background: var(--bg4); }
+  .block-card.active { border-color: var(--block-color); background: var(--bg4); box-shadow: 0 0 0 1px var(--block-color), inset 0 0 30px rgba(0,0,0,0.2); }
+  .block-num {
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--block-color);
+    margin-bottom: 0.5rem;
+  }
+  .block-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+  }
+  .block-subtitle { font-size: 0.78rem; color: var(--text2); font-weight: 300; line-height: 1.4; }
+  .block-chapters { margin-top: 0.8rem; font-size: 0.72rem; color: var(--text3); }
+  .block-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 0.75rem;
+    background: color-mix(in srgb, var(--block-color) 15%, transparent);
+    font-size: 1.1rem;
+  }
+
+  /* CONTENT PANEL */
+  .content-panel {
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+    padding: 0 1.5rem;
+    display: none;
+  }
+  .content-panel.visible { display: block; }
+
+  .panel-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .panel-back {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 0.4rem 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .panel-back:hover { border-color: var(--border2); color: var(--text); }
+  .panel-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--block-color-current);
+  }
+  .breadcrumb { font-size: 0.8rem; color: var(--text3); display: flex; align-items: center; gap: 6px; }
+  .breadcrumb span { color: var(--text2); }
+
+  /* CHAPTERS ROW */
+  .chapters-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  @media (min-width: 600px) { .chapters-row { grid-template-columns: repeat(4, 1fr); } }
+
+  .chapter-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .chapter-btn:hover { border-color: var(--border2); background: var(--bg4); }
+  .chapter-btn.active { border-color: var(--block-color-current); background: var(--bg4); }
+  .chapter-btn .ch-num {
+    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--block-color-current); margin-bottom: 0.35rem;
+  }
+  .chapter-btn .ch-name { font-size: 0.82rem; font-weight: 500; line-height: 1.35; color: var(--text); }
+
+  /* CONCEPTS GRID */
+  .concepts-section { display: none; }
+  .concepts-section.visible { display: block; }
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+  .concept-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .concept-card:hover { border-color: var(--block-color-current); background: var(--bg4); transform: translateY(-1px); }
+  .concept-card.active { border-color: var(--block-color-current); background: var(--bg4); }
+  .concept-tag {
+    display: inline-block;
+    font-size: 0.65rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 4px;
+    background: color-mix(in srgb, var(--block-color-current) 20%, transparent);
+    color: var(--block-color-current);
+    margin-bottom: 0.5rem;
+  }
+  .concept-title { font-size: 0.9rem; font-weight: 500; color: var(--text); line-height: 1.35; }
+  .concept-preview { font-size: 0.78rem; color: var(--text2); margin-top: 0.3rem; line-height: 1.4; }
+
+  /* DEEP DIVE */
+  .deep-dive {
+    display: none;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-top: 0.5rem;
+  }
+  .deep-dive.visible { display: block; }
+  .deep-dive-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 1rem; margin-bottom: 1.5rem;
+  }
+  .deep-dive-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.25;
+  }
+  .close-btn {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .close-btn:hover { background: var(--bg4); color: var(--text); }
+
+  .concept-body {
+    font-size: 0.92rem;
+    line-height: 1.75;
+    color: var(--text2);
+    margin-bottom: 1.5rem;
+  }
+  .concept-body strong { color: var(--text); font-weight: 500; }
+  .concept-body ul { margin: 0.75rem 0 0.75rem 1.2rem; }
+  .concept-body li { margin-bottom: 0.4rem; }
+  .concept-body .highlight {
+    background: color-mix(in srgb, var(--block-color-current) 12%, transparent);
+    border-left: 3px solid var(--block-color-current);
+    padding: 0.75rem 1rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1rem 0;
+    font-style: italic;
+    color: var(--text);
+  }
+
+  /* RECALL TOOLS */
+  .recall-section { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+  .recall-label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text3); margin-bottom: 1rem;
+  }
+  .recall-tabs {
+    display: flex; gap: 6px; margin-bottom: 1.25rem; flex-wrap: wrap;
+  }
+  .recall-tab {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    color: var(--text2);
+    padding: 0.38rem 0.85rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+  .recall-tab:hover { border-color: var(--border2); color: var(--text); }
+  .recall-tab.active { background: color-mix(in srgb, var(--block-color-current) 20%, transparent); border-color: var(--block-color-current); color: var(--block-color-current); }
+
+  .recall-content { display: none; }
+  .recall-content.visible { display: block; }
+
+  /* Flashcard */
+  .flashcard {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    min-height: 180px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 0.75rem;
+  }
+  .flashcard:hover { border-color: var(--block-color-current); }
+  .flashcard .q-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--block-color-current); }
+  .flashcard .q-text { font-size: 1rem; font-weight: 500; color: var(--text); line-height: 1.5; max-width: 500px; }
+  .flashcard .a-text { font-size: 0.88rem; color: var(--text2); line-height: 1.6; max-width: 500px; display: none; }
+  .flashcard.flipped .a-text { display: block; }
+  .flashcard.flipped .q-label { color: var(--accent3); }
+  .flashcard.flipped .q-label::after { content: ' — Answer'; }
+  .flashcard-hint { font-size: 0.75rem; color: var(--text3); text-align: center; margin-top: 0.5rem; }
+  .card-nav { display: flex; align-items: center; gap: 1rem; justify-content: center; margin-top: 1rem; }
+  .card-nav button {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); padding: 0.4rem 1rem; border-radius: 8px;
+    cursor: pointer; font-size: 0.82rem; transition: all 0.2s;
+  }
+  .card-nav button:hover { border-color: var(--border2); color: var(--text); }
+  .card-counter { font-size: 0.78rem; color: var(--text3); }
+
+  /* Quiz */
+  .quiz-q { font-size: 0.95rem; font-weight: 500; color: var(--text); margin-bottom: 1rem; line-height: 1.5; }
+  .quiz-options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1rem; }
+  .quiz-option {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); padding: 0.7rem 1rem; border-radius: 10px;
+    cursor: pointer; font-size: 0.88rem; transition: all 0.2s; text-align: left;
+  }
+  .quiz-option:hover { border-color: var(--border2); color: var(--text); }
+  .quiz-option.correct { border-color: var(--accent3); background: color-mix(in srgb, var(--accent3) 12%, transparent); color: var(--accent3); }
+  .quiz-option.wrong { border-color: #ff5566; background: color-mix(in srgb, #ff5566 12%, transparent); color: #ff8898; }
+  .quiz-feedback { font-size: 0.85rem; line-height: 1.5; padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1rem; display: none; }
+  .quiz-feedback.visible { display: block; }
+  .quiz-feedback.good { background: color-mix(in srgb, var(--accent3) 12%, transparent); color: var(--accent3); }
+  .quiz-feedback.bad { background: color-mix(in srgb, #ff5566 12%, transparent); color: #ff8898; }
+  .quiz-next {
+    background: var(--bg3); border: 1px solid var(--border);
+    color: var(--text2); padding: 0.5rem 1.25rem; border-radius: 8px;
+    cursor: pointer; font-size: 0.85rem; transition: all 0.2s; display: none;
+  }
+  .quiz-next.visible { display: inline-flex; align-items: center; gap: 6px; }
+  .quiz-next:hover { border-color: var(--border2); color: var(--text); }
+
+  /* Summary */
+  .summary-box {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.25rem 1.5rem;
+    font-size: 0.88rem; line-height: 1.75; color: var(--text2);
+  }
+  .summary-box h3 { font-size: 0.9rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
+  .summary-box ul { margin-left: 1.1rem; margin-top: 0.5rem; }
+  .summary-box li { margin-bottom: 0.35rem; }
+  .key-terms { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 1rem; }
+  .key-term {
+    background: color-mix(in srgb, var(--block-color-current) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--block-color-current) 30%, transparent);
+    color: var(--block-color-current);
+    font-size: 0.75rem; padding: 4px 12px; border-radius: 6px; font-weight: 500;
+  }
+
+  /* Analogy */
+  .analogy-card {
+    background: var(--bg3); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.5rem;
+  }
+  .analogy-card .analogy-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .analogy-card h3 { font-size: 0.95rem; font-weight: 500; color: var(--text); margin-bottom: 0.5rem; }
+  .analogy-card p { font-size: 0.88rem; color: var(--text2); line-height: 1.7; }
+
+  /* Progress dots */
+  .progress-bar { display: flex; gap: 5px; align-items: center; flex-wrap: wrap; margin-top: 1.5rem; }
+  .p-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); transition: all 0.3s; }
+  .p-dot.done { background: var(--block-color-current); }
+
+  /* Visited tracking */
+  .concept-card .visited-badge {
+    float: right;
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--block-color-current);
+    opacity: 0;
+    transition: opacity 0.3s;
+    margin-top: 3px;
+  }
+  .concept-card.visited .visited-badge { opacity: 1; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Theories of Personality</h1>
+  <p>Four blocks · Four units each · Deep dive into every concept</p>
+</div>
+
+<div class="blocks-section">
+  <div class="blocks-label">Choose a block to begin</div>
+  <div class="blocks-grid" id="blocksGrid"></div>
+</div>
+
+<div class="content-panel" id="contentPanel">
+  <div class="panel-header">
+    <button class="panel-back" onclick="goBack()">← Back</button>
+    <div>
+      <div class="breadcrumb" id="breadcrumb"></div>
+      <div class="panel-title" id="panelTitle"></div>
+    </div>
+  </div>
+  <div class="chapters-row" id="chaptersRow"></div>
+  <div class="concepts-section" id="conceptsSection">
+    <div class="concepts-grid" id="conceptsGrid"></div>
+    <div class="deep-dive" id="deepDive">
+      <div class="deep-dive-header">
+        <div class="deep-dive-title" id="diveTitle"></div>
+        <button class="close-btn" onclick="closeDive()">✕</button>
+      </div>
+      <div class="concept-body" id="diveBody"></div>
+      <div class="recall-section">
+        <div class="recall-label">Recall & Practice</div>
+        <div class="recall-tabs">
+          <div class="recall-tab active" onclick="switchRecall('flashcard', this)">Flashcard</div>
+          <div class="recall-tab" onclick="switchRecall('quiz', this)">Quick Quiz</div>
+          <div class="recall-tab" onclick="switchRecall('summary', this)">Summary</div>
+          <div class="recall-tab" onclick="switchRecall('analogy', this)">Analogy</div>
+        </div>
+        <div class="recall-content visible" id="flashcard-content"></div>
+        <div class="recall-content" id="quiz-content"></div>
+        <div class="recall-content" id="summary-content"></div>
+        <div class="recall-content" id="analogy-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const BLOCKS = [
+  {
+    id: 1,
+    color: '#7c6bff',
+    icon: '🧠',
+    title: 'Psychodynamic Theory',
+    subtitle: 'Freud, Horney & Sullivan',
+    tag: 'Block 1',
+    units: [
+      {
+        name: 'Freud\'s Psychoanalytic Theory',
+        short: 'Freud',
+        concepts: [
+          {
+            title: 'Structure of Personality: Id, Ego & Superego',
+            tag: 'Structural Model',
+            preview: 'Three regions of the mind in constant conflict',
+            body: `<p>Freud proposed that personality consists of three regions or structures, each representing different aspects of our mental life.</p>
+            <div class="highlight">"Parts of the unconscious mind are in constant conflict with the conscious part of the mind."</div>
+            <p><strong>The Id</strong> is present from birth and is totally unconscious. It operates on the <strong>pleasure principle</strong> — demanding immediate satisfaction of primitive needs, sexual desires, and aggressive impulses without regard for reality or consequences. It is the raw, instinctual core of personality.</p>
+            <p><strong>The Ego</strong> develops out of the id as we learn about reality. It operates on the <strong>reality principle</strong> — it involves perception, reasoning, and learning to interact effectively with the world. The ego tries to maximise pleasure while minimising pain within realistic constraints.</p>
+            <p><strong>The Superego</strong> develops as children are exposed to their parents' moral values. It contains two aspects:</p>
+            <ul>
+              <li><strong>Ego-ideal:</strong> The standard of ideal behaviour</li>
+              <li><strong>Conscience:</strong> The sense of right and wrong</li>
+            </ul>
+            <p>The superego represents societal demands and creates feelings of guilt when we fall short of norms. These three structures are in constant dynamic tension — what we desire (id), what is possible (ego), and what is moral (superego).</p>`,
+            flashcards: [
+              { q: 'What principle does the Id operate on?', a: 'The pleasure principle — seeking immediate gratification of primitive needs without regard for reality or consequences.' },
+              { q: 'What does the Superego contain?', a: 'Two parts: the Ego-ideal (standards of ideal behaviour) and the Conscience (sense of right and wrong internalized from parents).' },
+              { q: 'How does the Ego differ from the Id?', a: 'The Ego operates on the reality principle and mediates between Id\'s desires and the demands of the real world, unlike the Id which demands immediate satisfaction.' }
+            ],
+            quiz: [
+              { q: 'Which structure of personality is present at birth and completely unconscious?', opts: ['Ego', 'Superego', 'Id', 'Preconscious'], ans: 2, exp: 'The Id is present from birth, is totally unconscious, and operates on the pleasure principle.' },
+              { q: 'What principle does the Ego operate on?', opts: ['Pleasure principle', 'Reality principle', 'Moral principle', 'Survival principle'], ans: 1, exp: 'The Ego operates on the reality principle — it deals with what is actually possible in the real world.' },
+              { q: 'Which structure internalizes parental moral values?', opts: ['Id', 'Ego', 'Superego', 'Libido'], ans: 2, exp: 'The Superego develops as children absorb their parents\' moral values, creating the ego-ideal and conscience.' }
+            ],
+            summary: { points: ['Id = pleasure principle, unconscious, primitive', 'Ego = reality principle, mediator, develops from Id', 'Superego = morality, ego-ideal + conscience, parental values'], terms: ['Id', 'Ego', 'Superego', 'Pleasure Principle', 'Reality Principle', 'Conscience'] },
+            analogy: { icon: '⚖️', title: 'A courtroom', text: 'Think of personality as a courtroom. The Id is the defendant who wants everything NOW. The Ego is the judge trying to make a fair, realistic ruling. The Superego is the strict moral prosecutor who never lets anything slide. Every decision is the result of this constant three-way negotiation.' }
+          },
+          {
+            title: 'States of Consciousness: Conscious, Preconscious & Unconscious',
+            tag: 'Topographical Model',
+            preview: 'The iceberg of the mind — what lies below the surface',
+            body: `<p>Freud's topographical model describes three levels of mental functioning, often compared to an iceberg.</p>
+            <div class="highlight">"Only 10% of an iceberg is visible (conscious) whereas the other 90% is beneath the water."</div>
+            <p><strong>The Conscious</strong> is what you are currently aware of — your immediate experiences. It is small, fleeting, and limited. Right now, you are consciously reading these words.</p>
+            <p><strong>The Preconscious</strong> holds memories not currently active but retrievable with effort — like what you had for breakfast today. You weren't thinking about it until asked, yet you can bring it to mind. It bridges conscious and unconscious.</p>
+            <p><strong>The Unconscious</strong> is the vast, inaccessible reservoir of repressed memories, forbidden desires, and threatening impulses — material that was either never conscious or was pushed out due to anxiety. It contains:</p>
+            <ul>
+              <li>Hostile feelings too threatening to acknowledge</li>
+              <li>Sexual cravings and desperate fears</li>
+              <li>Material that leaks out in dreams, slips of the tongue, and neurotic symptoms</li>
+            </ul>
+            <p>Material flows relatively easily between conscious and preconscious, but truly unconscious material requires psychoanalysis to surface.</p>`,
+            flashcards: [
+              { q: 'What does the preconscious contain?', a: 'Stored memories not currently active in awareness but that can be brought to consciousness with effort — like recalling what you ate yesterday.' },
+              { q: 'Why can\'t we access the unconscious directly?', a: 'It contains material so anxiety-provoking that it has been repressed. We need psychoanalysis to bring it to conscious awareness.' },
+              { q: 'What percentage of the mind is conscious, according to Freud\'s iceberg metaphor?', a: 'Only about 10% is conscious. The preconscious is 10-15%, and the unconscious makes up 75-80% — the bulk of the iceberg.' }
+            ],
+            quiz: [
+              { q: 'Which level contains repressed desires that cannot be voluntarily accessed?', opts: ['Conscious', 'Preconscious', 'Unconscious', 'Subconscious'], ans: 2, exp: 'The unconscious contains repressed memories and desires inaccessible without psychoanalysis.' },
+              { q: 'What is the preconscious?', opts: ['Currently active thoughts', 'Memories that can be recalled with effort', 'Forbidden desires', 'Dream content only'], ans: 1, exp: 'The preconscious holds stored memories not currently in awareness but retrievable — like yesterday\'s breakfast.' }
+            ],
+            summary: { points: ['Conscious = immediate awareness (10%)', 'Preconscious = retrievable memories (10-15%)', 'Unconscious = repressed, inaccessible (75-80%)'], terms: ['Conscious', 'Preconscious', 'Unconscious', 'Repression', 'Topographical Model'] },
+            analogy: { icon: '🧊', title: 'An iceberg', text: 'Freud\'s mind is an iceberg: the tiny visible tip is consciousness — what you\'re thinking right now. Just below the waterline is the preconscious — things you can remember if you try. The massive, dark, submerged bulk is the unconscious — thoughts, desires, and fears so threatening they were pushed below the surface and locked away.' }
+          },
+          {
+            title: 'Defense Mechanisms',
+            tag: 'Dynamics',
+            preview: 'How the ego protects us from anxiety',
+            body: `<p>When the id desires something the ego and superego reject, anxiety results. The ego deploys <strong>defense mechanisms</strong> — unconscious strategies to reduce this anxiety. Freud identified several key ones:</p>
+            <ul>
+              <li><strong>Repression:</strong> Banishing threatening memories or desires from consciousness entirely. The original defense mechanism — the foundation of all others.</li>
+              <li><strong>Denial:</strong> Refusing to accept reality (e.g., "I did not fail my exam"). Often involves daydreaming about how things could have been different.</li>
+              <li><strong>Projection:</strong> Attributing your own unacceptable impulses to someone else (e.g., an unfaithful person suspecting their partner of cheating).</li>
+              <li><strong>Reaction Formation:</strong> Doing or thinking the opposite of what you feel (e.g., being excessively kind to someone you're angry at). Hallmark: excessive behaviour.</li>
+              <li><strong>Displacement:</strong> Moving an impulse from its true target to a safer one (e.g., angry at your boss, you go home and yell at your family).</li>
+              <li><strong>Sublimation:</strong> Channelling unacceptable impulses into socially productive activities. Freud considered this the most adaptive defense — e.g., turning aggression into athletic achievement.</li>
+              <li><strong>Rationalisation:</strong> Finding a logical excuse for behaviour you regret (e.g., "The exam was badly written, that's why I failed").</li>
+              <li><strong>Regression:</strong> Returning to an earlier stage of development under stress — an adult who becomes clingy or throws tantrums when overwhelmed.</li>
+              <li><strong>Intellectualisation:</strong> Turning emotional pain into abstract thought (e.g., obsessively researching a disease rather than grieving a diagnosis).</li>
+            </ul>`,
+            flashcards: [
+              { q: 'Which defense mechanism does Freud consider the most adaptive?', a: 'Sublimation — channelling unacceptable impulses (like aggression or sexuality) into constructive, socially valued activities like art or sport.' },
+              { q: 'What is projection as a defense mechanism?', a: 'Attributing your own unacceptable thoughts or impulses to someone else. For example, an unfaithful person who becomes intensely jealous of their faithful partner.' },
+              { q: 'What is the difference between displacement and projection?', a: 'Displacement shifts an impulse to a different (safer) target (anger at boss → yell at family). Projection attributes the impulse itself to another person (your jealousy becomes their jealousy).' }
+            ],
+            quiz: [
+              { q: 'A student fails an exam and says "the questions were unfair." This is an example of:', opts: ['Projection', 'Rationalisation', 'Sublimation', 'Displacement'], ans: 1, exp: 'Rationalisation involves finding a logical excuse for a failure or unacceptable behaviour.' },
+              { q: 'Going back to childlike behaviour under stress is called:', opts: ['Repression', 'Denial', 'Regression', 'Reaction formation'], ans: 2, exp: 'Regression is returning to earlier, more childlike coping strategies when overwhelmed by stress.' },
+              { q: 'Which defense is the original foundation of all other defenses?', opts: ['Denial', 'Repression', 'Sublimation', 'Displacement'], ans: 1, exp: 'Repression is the original defense — banishing threatening content from consciousness.' }
+            ],
+            summary: { points: ['Defense mechanisms are unconscious ego strategies against anxiety', 'Key ones: repression, denial, projection, displacement, sublimation, rationalisation', 'Sublimation is most adaptive; regression returns to earlier stages'], terms: ['Defense Mechanisms', 'Repression', 'Projection', 'Sublimation', 'Displacement', 'Rationalisation'] },
+            analogy: { icon: '🛡️', title: 'Emotional security guards', text: 'Think of defense mechanisms as security guards in your mind. When a threatening thought tries to enter consciousness, the guards intercept it and redirect it — sometimes locking it away (repression), sometimes disguising it (reaction formation), or smuggling it to a safe exit (sublimation). They protect you short-term, but overworked guards create bigger problems.' }
+          },
+          {
+            title: 'Psychosexual Stages of Development',
+            tag: 'Development',
+            preview: 'Five stages that shape adult personality',
+            body: `<p>Freud proposed that personality develops through five stages, each centred on a different <em>erogenous zone</em>. Failure to resolve a stage leads to <strong>fixation</strong> — being psychologically "stuck" there — which shapes adult personality patterns.</p>
+            <ul>
+              <li><strong>Oral Stage (Birth–18 months):</strong> Focus on sucking and feeding. Fixation → oral personality: dependent, gullible, overeating, smoking, pessimism.</li>
+              <li><strong>Anal Stage (18 months–3 years):</strong> Conflict around toilet training — expulsion vs. retention. Fixation → anal-retentive (obsessively clean, controlling, perfectionistic) or anal-expulsive (messy, disorganised).</li>
+              <li><strong>Phallic Stage (3–6 years):</strong> Focus shifts to genitals. Boys experience the <strong>Oedipus complex</strong> (desire for mother, rivalry with father). Girls experience the <strong>Electra complex</strong>. Resolution involves identifying with the same-sex parent and repressing sexual feelings.</li>
+              <li><strong>Latency Stage (6–puberty):</strong> Sexual urges are dormant. Children focus on social and intellectual skills; libido is sublimated into learning and play.</li>
+              <li><strong>Genital Stage (Puberty onward):</strong> Sexual urges re-emerge directed toward opposite-sex peers. Healthy resolution leads to mature adult relationships.</li>
+            </ul>
+            <div class="highlight">Key insight: Fixation at any stage creates lasting personality patterns that echo throughout adult life — Freud believed adult character is written in childhood.</div>`,
+            flashcards: [
+              { q: 'What happens if a child becomes fixated at the oral stage?', a: 'They may develop an "oral personality" in adulthood — prone to dependency, gullibility, smoking, overeating, or excessive pessimism and aggression toward others.' },
+              { q: 'What is the Oedipus complex?', a: 'In the phallic stage (ages 3-6), boys develop unconscious sexual attraction to their mother and see their father as a rival. Resolution involves identifying with the father and repressing feelings for the mother.' },
+              { q: 'What occurs during the latency stage?', a: 'Sexual urges become dormant. Children focus on intellectual and social development, channelling libido into learning and peer relationships. This lasts from about age 6 to puberty.' }
+            ],
+            quiz: [
+              { q: 'A person who is obsessively neat and controlling may have a fixation at which stage?', opts: ['Oral', 'Anal', 'Phallic', 'Latency'], ans: 1, exp: 'Anal-retentive fixation leads to obsessive cleanliness, perfectionism, and need for control.' },
+              { q: 'During which stage are sexual urges dormant and children focus on social skills?', opts: ['Oral', 'Phallic', 'Latency', 'Genital'], ans: 2, exp: 'The latency stage (age 6 to puberty) is marked by dormant libido and focus on social and intellectual development.' },
+              { q: 'What is psychosexual "fixation"?', opts: ['Moving forward to the next stage', 'Getting stuck at a developmental stage', 'Returning to an earlier stage', 'Reaching genital maturity'], ans: 1, exp: 'Fixation means failing to fully resolve a stage, leaving a psychological imprint that shapes adult personality.' }
+            ],
+            summary: { points: ['Five stages: oral, anal, phallic, latency, genital', 'Fixation at any stage shapes adult personality', 'Oedipus/Electra complex in the phallic stage is key', 'Latency = dormant libido, social learning'], terms: ['Psychosexual Stages', 'Fixation', 'Regression', 'Oedipus Complex', 'Electra Complex', 'Libido'] },
+            analogy: { icon: '🌱', title: 'A plant\'s growth rings', text: 'Each psychosexual stage is like a growth ring in a tree. If a ring forms well (stage resolved), the tree grows strong. But if the ring is damaged by drought or flood (unresolved conflict), that weakness is baked in permanently — visible in the adult tree\'s structure. Fixation is the permanent record of a troubled growing season.' }
+          }
+        ]
+      },
+      {
+        name: 'Karen Horney\'s Theory',
+        short: 'Horney',
+        concepts: [
+          {
+            title: 'Basic Anxiety & Basic Hostility',
+            tag: 'Foundation',
+            preview: 'The root of neurotic personality development',
+            body: `<p>Karen Horney reformulated Freudian theory with a focus on <em>social and cultural</em> forces rather than biology. Her central concept is <strong>basic anxiety</strong>.</p>
+            <div class="highlight">"Basic anxiety is the feeling a child has of being isolated and helpless in a potentially hostile world."</div>
+            <p>When parents are indifferent, disparaging, overprotective, or erratic, children develop insecurity. Horney listed adverse environmental factors she called <strong>basic evil</strong>: direct domination, lack of warmth, unkept promises, hostile atmospheres, discrimination, and overprotection.</p>
+            <p>When a child experiences basic evil, they naturally feel resentment — <strong>basic hostility</strong>. But here's the dilemma: expressing that hostility risks punishment and loss of parental love. So the child suppresses the hostility, which turns inward and increases anxiety.</p>
+            <p>This creates a vicious cycle: anxiety → suppressed hostility → more anxiety → neurotic coping strategies.</p>
+            <p>Horney's key departure from Freud: she did not see the Oedipus complex as sexual. She reinterpreted it as simply anxiety caused by a <em>disturbance in the parent-child relationship</em>.</p>`,
+            flashcards: [
+              { q: 'What is "basic anxiety" according to Horney?', a: 'The feeling a child has of being isolated and helpless in a potentially hostile world, arising from inadequate or harmful parenting.' },
+              { q: 'What is "basic hostility" and why is it problematic?', a: 'The resentment children feel toward indifferent or harmful parents. It\'s problematic because expressing it risks losing parental love, so it is suppressed, increasing anxiety.' },
+              { q: 'How did Horney reinterpret the Oedipus complex?', a: 'She desexualised it — arguing it was simply anxiety from a disturbed parent-child relationship, not sexual desire for the opposite-sex parent.' }
+            ],
+            quiz: [
+              { q: 'What is Horney\'s term for harmful environmental conditions causing childhood anxiety?', opts: ['Basic anxiety', 'Basic evil', 'Neurotic needs', 'Basic hostility'], ans: 1, exp: 'Basic evil refers to the adverse parenting factors (domination, lack of warmth, hostility) that produce basic anxiety.' },
+              { q: 'What did Horney emphasise over Freud\'s biological drives?', opts: ['Sexual instincts', 'Social and cultural influences', 'Unconscious wishes', 'Birth order'], ans: 1, exp: 'Horney\'s key shift was replacing Freud\'s biological focus with social and cultural determinants of personality.' }
+            ],
+            summary: { points: ['Basic anxiety = feeling isolated and helpless in a hostile world', 'Caused by "basic evil" — harmful parenting', 'Creates suppressed basic hostility → more anxiety', 'Social, not biological, forces shape neurosis'], terms: ['Basic Anxiety', 'Basic Hostility', 'Basic Evil', 'Neurosis', 'Parent-Child Relationship'] },
+            analogy: { icon: '🌀', title: 'A quicksand trap', text: 'Basic anxiety is like sinking in quicksand. A child surrounded by indifferent or hostile parents feels helpless — alone in a dangerous world. When they try to fight back (hostility), they sink faster (lose love). So they freeze, suppressing their anger, which makes the quicksand grip tighter. The only way out is coping strategies — but neurotic ones often make things worse.' }
+          },
+          {
+            title: 'The Ten Neurotic Needs & Three Coping Strategies',
+            tag: 'Neurosis',
+            preview: 'Distorted needs and how people cope with anxiety',
+            body: `<p>From clinical experience, Horney identified <strong>ten neurotic needs</strong> — universal human needs that become distorted, excessive, and desperate in anxious individuals.</p>
+            <p>What makes a need "neurotic"? It becomes <em>indiscriminate, unrealistic, and intensely anxious</em> when unmet. Normal people need affection; neurotics need constant affirmation from everyone, always.</p>
+            <p>Horney grouped these ten needs into <strong>three broad coping strategies</strong>:</p>
+            <ul>
+              <li><strong>Moving Toward (Compliance / Self-effacing):</strong> Seeking safety through love and approval. Needs: affection/approval, a partner to take over life, restricting life to narrow borders. Core fear: helplessness and abandonment.</li>
+              <li><strong>Moving Against (Aggression / Expansive):</strong> Seeking safety through power and control. Needs: power, exploitation of others, social prestige, personal admiration, personal achievement. Core response: basic hostility → dominance.</li>
+              <li><strong>Moving Away (Withdrawal / Resigning):</strong> Seeking safety through detachment. Needs: self-sufficiency/independence, perfection/unassailability. Core solution: "I don't need anyone."</li>
+            </ul>
+            <div class="highlight">Healthy people use all three flexibly. Neurotics become trapped in one compulsively.</div>`,
+            flashcards: [
+              { q: 'What makes a normal need "neurotic" according to Horney?', a: 'A neurotic need is indiscriminate (expected from everyone), unrealistic (expecting perfect fulfilment always), and causes intense anxiety when unmet — unlike the flexible, realistic needs of healthy people.' },
+              { q: 'What are Horney\'s three broad coping strategies?', a: 'Moving toward (compliance/seeking love), moving against (aggression/seeking power), and moving away (withdrawal/seeking self-sufficiency).' },
+              { q: 'Which coping strategy involves the neurotic need for power and exploitation of others?', a: 'Moving against (the expansive/aggressive strategy) — needs 4-8, including power, exploitation, prestige, admiration, and achievement.' }
+            ],
+            quiz: [
+              { q: 'A person who desperately seeks approval from everyone and clings to romantic relationships for security is using which strategy?', opts: ['Moving toward', 'Moving against', 'Moving away', 'Sublimation'], ans: 0, exp: 'Moving toward (compliance) involves seeking love and approval from others to manage anxiety, including the need for a partner to take over one\'s life.' },
+              { q: 'How many neurotic needs did Horney identify?', opts: ['5', '7', '10', '12'], ans: 2, exp: 'Horney identified exactly 10 neurotic needs from her clinical experience.' }
+            ],
+            summary: { points: ['10 neurotic needs = distorted versions of universal needs', '3 strategies: toward (love), against (power), away (independence)', 'Healthy = flexible use; neurotic = compulsive overuse of one'], terms: ['Neurotic Needs', 'Moving Toward', 'Moving Against', 'Moving Away', 'Compliance', 'Withdrawal'] },
+            analogy: { icon: '🎭', title: 'Three survival masks', text: 'Imagine three masks someone wears when afraid: the Lover (moving toward) — "Please love me, then I\'ll be safe." The Fighter (moving against) — "I\'ll be so powerful, nothing can hurt me." The Hermit (moving away) — "I don\'t need anyone, so no one can hurt me." Neurotics get stuck wearing one mask permanently, even when it no longer fits the situation.' }
+          },
+          {
+            title: 'Real Self vs. Ideal Self & Theory of Self',
+            tag: 'Self',
+            preview: 'The tyranny of the "should" and the search for glory',
+            body: `<p>Horney shared Maslow's view that <strong>self-actualisation</strong> — fulfilling one's true potential — is the goal of healthy living. Central to this is her theory of the self.</p>
+            <p><strong>The Real Self</strong> is who and what you actually are — with genuine potential for growth, happiness, and fulfilment, but also real limitations. It's the authentic core of your being.</p>
+            <p><strong>The Ideal Self</strong> is who you feel you <em>should</em> be — a standard set by society and neurotic anxiety. Horney saw it not as an aspirational goal but as an impossible, tyrannical demand.</p>
+            <div class="highlight">"Neurotic individuals are like a clock's pendulum, oscillating between a fallacious 'perfection' and a manifestation of self-hate."</div>
+            <p>The neurotic person's self splits: they idealise themselves (the "ideal self") while simultaneously despising their real self (the "despised self"). This is what Horney called the <strong>"tyranny of the should"</strong> and the neurotic <strong>"search for glory."</strong></p>
+            <p>Each neurotic type has its own "should":</p>
+            <ul>
+              <li><em>Compliant:</em> "I should be sweet, self-sacrificing, saintly."</li>
+              <li><em>Aggressive:</em> "I should be powerful, recognised, a winner."</li>
+              <li><em>Withdrawing:</em> "I should be independent, aloof, perfect."</li>
+            </ul>
+            <p>Healthy living means knowing your real self, accepting its limits, and growing from there — rather than chasing an impossible ideal.</p>`,
+            flashcards: [
+              { q: 'What is the "tyranny of the should" in Horney\'s theory?', a: 'The neurotic compulsion to live up to an impossible ideal self, driven by "should" imperatives. This creates constant self-condemnation when the real self inevitably falls short.' },
+              { q: 'What is the "despised self" in Horney\'s theory?', a: 'When the neurotic fails to match their ideal self, the real self degenerates into a "despised self" — they believe this flawed version is their "true" self, leading to self-hate.' },
+              { q: 'How does Horney\'s ideal self differ from Maslow\'s view of the ideal?', a: 'Maslow sees self-actualisation as a positive aspiration. Horney sees the neurotic ideal self as an impossible, tyrannical imposition — not something to strive for but something imposed that can never be met.' }
+            ],
+            quiz: [
+              { q: 'What does Horney call the neurotic\'s impossible standard of perfection?', opts: ['The search for glory', 'The tyranny of the should', 'Basic anxiety', 'Moving toward'], ans: 1, exp: 'The "tyranny of the should" describes the impossible internal demands neurotics place on themselves — always having to be perfect, powerful, or self-sacrificing.' },
+              { q: 'For Horney, what is the real self?', opts: ['The person you should be', 'Your actual being with genuine potential and real limits', 'Your social mask', 'Your unconscious desires'], ans: 1, exp: 'The real self is who you actually are — with authentic potential for growth, and real limitations, as distinct from the impossible ideal self.' }
+            ],
+            summary: { points: ['Real self = authentic core with actual potential and limits', 'Ideal self = impossible societal demand (not a goal)', 'Neurotic = trapped between ideal self and despised self', '"Tyranny of the should" = the unrealistic "I should be perfect"'], terms: ['Real Self', 'Ideal Self', 'Despised Self', 'Tyranny of the Should', 'Search for Glory', 'Self-Actualisation'] },
+            analogy: { icon: '🪞', title: 'A distorted mirror', text: 'The neurotic looks in two mirrors: one shows an airbrushed, perfect image of who they "should" be (the ideal self). The other shows every flaw magnified (the despised self). They swing between worshipping the first mirror and being crushed by the second. The healthy person smashes both and looks at reality directly — the real self, imperfect and genuinely growing.' }
+          },
+          {
+            title: 'Sullivan\'s Interpersonal Theory: Self-System & Personifications',
+            tag: 'Sullivan',
+            preview: 'Personality as patterns of interpersonal relationships',
+            body: `<p>Harry Stack Sullivan proposed a radically different view: <strong>personality cannot exist or be studied apart from interpersonal relationships.</strong> The unit of study is not the individual, but the <em>interpersonal situation</em>.</p>
+            <p><strong>The Self-System</strong> is the most comprehensive dynamism (pattern of behaviour) — the set of behaviours that protect us from anxiety and maintain interpersonal security. It uses <em>security operations</em>:</p>
+            <ul>
+              <li><strong>Dissociation:</strong> Blocking entire experiences from awareness</li>
+              <li><strong>Selective Inattention:</strong> Blocking only certain experiences from awareness</li>
+            </ul>
+            <p><strong>Personifications</strong> are mental images we develop of ourselves and others through social interaction. We see ourselves in three ways:</p>
+            <ul>
+              <li><strong>Good-me:</strong> Aspects of self we like and share with others — produces no anxiety.</li>
+              <li><strong>Bad-me:</strong> Negative aspects hidden from others, sometimes from ourselves — source of guilt and anxiety.</li>
+              <li><strong>Not-me:</strong> Aspects so threatening we cannot integrate them into self at all — buried deep in the unconscious, associated with intense anxiety or horror.</li>
+            </ul>
+            <p><strong>Sullivan's Developmental Epochs</strong> span 7 stages from infancy to adulthood, with particular emphasis on the <em>adolescent years</em> (early adolescence, late adolescence) as critical periods for interpersonal development.</p>`,
+            flashcards: [
+              { q: 'Why did Sullivan call his theory "interpersonal"?', a: 'Because he believed personality cannot exist or be studied apart from interpersonal situations. The unit of study is the interpersonal relationship, not the individual alone.' },
+              { q: 'What are the three personifications of the self in Sullivan\'s theory?', a: 'Good-me (liked, shared openly), Bad-me (negative, hidden), and Not-me (so threatening it cannot be integrated — buried in the unconscious).' },
+              { q: 'What is Sullivan\'s "self-system"?', a: 'The comprehensive pattern of behaviours that protects us from anxiety and maintains interpersonal security, using security operations like dissociation and selective inattention.' }
+            ],
+            quiz: [
+              { q: 'According to Sullivan, what is the primary unit of psychological study?', opts: ['The individual mind', 'The interpersonal situation', 'The unconscious', 'Childhood experiences'], ans: 1, exp: 'Sullivan said personality is only knowable through interpersonal situations — relationships, not isolated individuals.' },
+              { q: 'The "not-me" personification represents:', opts: ['Positive self-aspects', 'Hidden but acknowledged flaws', 'Aspects too threatening to integrate into self', 'Public social persona'], ans: 2, exp: 'Not-me represents experiences so anxiety-provoking they cannot be considered part of the self — kept in the unconscious.' }
+            ],
+            summary: { points: ['Personality = interpersonal patterns, not individual traits', 'Self-system protects from anxiety via security operations', 'Three self-views: good-me, bad-me, not-me', '7 developmental epochs, especially emphasising adolescence'], terms: ['Interpersonal Theory', 'Self-System', 'Personification', 'Good-me', 'Bad-me', 'Not-me', 'Developmental Epochs'] },
+            analogy: { icon: '🤝', title: 'You are your relationships', text: 'Sullivan\'s insight: you don\'t have a personality in isolation. Like a musical instrument that only makes sense when it plays with others, your personality is only real in relationship. The good-me is the melody you share. The bad-me is the notes you hide. The not-me is the sound so dissonant you refuse to believe it\'s yours — but it shapes the music anyway.' }
+          }
+        ]
+      },
+      {
+        name: 'Social Cognitive Theory (Bandura)',
+        short: 'Bandura',
+        concepts: [
+          {
+            title: 'Reciprocal Determinism',
+            tag: 'Core Model',
+            preview: 'Behaviour, person, and environment as a three-way dynamic',
+            body: `<p>Albert Bandura rejected both pure behaviourism (environment shapes us) and pure internalism (we control our environment). Instead he proposed <strong>reciprocal determinism</strong> — a triangular model of mutual influence.</p>
+            <div class="highlight">"Behaviour, cognition and personal factors, and environmental influences all operate as interacting determinants that influence each other bidirectionally."</div>
+            <p>The three elements are:</p>
+            <ul>
+              <li><strong>P (Person):</strong> Cognitive, affective, and biological factors — beliefs, values, emotions, expectations</li>
+              <li><strong>B (Behaviour):</strong> What we actually do — our actions</li>
+              <li><strong>E (Environment):</strong> External conditions that influence and are influenced by us</li>
+            </ul>
+            <p>Key interactions:</p>
+            <ul>
+              <li><strong>P→B:</strong> What you believe and feel shapes how you act. A person who believes they can succeed (high self-efficacy) acts more ambitiously.</li>
+              <li><strong>E→P:</strong> Social environments shape beliefs and competencies. Growing up in an encouraging environment builds confidence.</li>
+              <li><strong>B→E:</strong> Your behaviour changes the environment. How you act determines who you spend time with, what opportunities arise.</li>
+            </ul>
+            <p>People are simultaneously <em>products and producers</em> of their environment.</p>`,
+            flashcards: [
+              { q: 'What is reciprocal determinism?', a: 'Bandura\'s model that behaviour, personal factors (cognition, emotion), and the environment all mutually and bidirectionally influence each other — not a one-way street.' },
+              { q: 'In reciprocal determinism, what does the B→E link mean?', a: 'Behaviour changes the environment. How you act creates consequences that alter your environment — which then influences future behaviour and personal factors.' },
+              { q: 'Why does reciprocal determinism make people "products and producers" of their environment?', a: 'Because the environment shapes us (product) but we also act on and create our environment through our behaviour (producer) — the influence flows both ways simultaneously.' }
+            ],
+            quiz: [
+              { q: 'Reciprocal determinism involves which three elements?', opts: ['Id, Ego, Superego', 'Behaviour, Person, Environment', 'Stimulus, Response, Reinforcement', 'Observation, Retention, Reproduction'], ans: 1, exp: 'Bandura\'s triadic model involves Person (P), Behaviour (B), and Environment (E) in mutual bidirectional influence.' },
+              { q: 'Which theorist proposed reciprocal determinism?', opts: ['Freud', 'Skinner', 'Bandura', 'Maslow'], ans: 2, exp: 'Albert Bandura introduced reciprocal determinism as the core of his social cognitive theory.' }
+            ],
+            summary: { points: ['Three-way mutual influence: Person, Behaviour, Environment', 'All influence all others bidirectionally', 'People are both shaped by and shape their environment', 'Rejects simple one-directional causation (Skinner\'s env → behaviour)'], terms: ['Reciprocal Determinism', 'Social Cognitive Theory', 'Triadic Model', 'Bidirectional Influence'] },
+            analogy: { icon: '🔄', title: 'A three-way conversation', text: 'Imagine three people (You, Your Actions, Your World) in a constant conversation. What You believe shapes what You Do. What You Do changes Your World. Your World talks back and changes what You believe. The conversation never stops, no one controls it entirely — everyone influences everyone. That\'s reciprocal determinism.' }
+          },
+          {
+            title: 'Self-Efficacy: Sources & Effects',
+            tag: 'Self-System',
+            preview: 'Your belief in your own ability to succeed',
+            body: `<p><strong>Self-efficacy</strong> is the belief in one's capabilities to organise and execute the actions required to manage prospective situations. It is perhaps Bandura's most influential concept.</p>
+            <div class="highlight">"Self-efficacy can have an impact on everything from psychological states to behaviour to motivation."</div>
+            <p>People with <strong>high self-efficacy</strong>:</p>
+            <ul>
+              <li>View challenging problems as tasks to be mastered, not threats</li>
+              <li>Develop deeper interest in their activities</li>
+              <li>Form stronger commitment to their goals</li>
+              <li>Recover quickly from setbacks</li>
+            </ul>
+            <p>People with <strong>low self-efficacy</strong>:</p>
+            <ul>
+              <li>Avoid challenging tasks</li>
+              <li>Focus on personal failings and negative outcomes</li>
+              <li>Quickly lose confidence after difficulty</li>
+            </ul>
+            <p><strong>Four sources of self-efficacy:</strong></p>
+            <ul>
+              <li><strong>Mastery Experiences:</strong> Direct success builds efficacy most powerfully. Failure weakens it.</li>
+              <li><strong>Social Modelling:</strong> Seeing similar others succeed convinces you that you can too.</li>
+              <li><strong>Social Persuasion:</strong> Verbal encouragement from others helps overcome self-doubt.</li>
+              <li><strong>Psychological Responses:</strong> Your emotional state affects efficacy — anxiety before public speaking weakens it; calm excitement strengthens it.</li>
+            </ul>`,
+            flashcards: [
+              { q: 'What are the four sources of self-efficacy?', a: 'Mastery experiences (direct success), social modelling (observing similar others), social persuasion (verbal encouragement), and psychological responses (emotional/physiological states).' },
+              { q: 'Which source of self-efficacy is the most powerful?', a: 'Mastery experiences — actually performing a task successfully gives the strongest boost to self-efficacy. Failure that is managed well can also strengthen it.' },
+              { q: 'How does self-efficacy differ from self-esteem?', a: 'Self-efficacy is task-specific confidence ("I can do this particular thing") while self-esteem is a global sense of self-worth. High self-esteem doesn\'t necessarily mean high self-efficacy in any particular domain.' }
+            ],
+            quiz: [
+              { q: 'Watching a peer similar to yourself succeed at a task and feeling you could do it too is which source of self-efficacy?', opts: ['Mastery experience', 'Social modelling', 'Social persuasion', 'Psychological response'], ans: 1, exp: 'Social modelling — observing similar others succeed — raises self-efficacy by providing vicarious evidence of capability.' },
+              { q: 'A person with low self-efficacy is most likely to:', opts: ['Seek out challenging tasks', 'Recover quickly from failure', 'Avoid difficult tasks and focus on failings', 'Develop deeper interest in activities'], ans: 2, exp: 'Low self-efficacy leads to avoidance of challenges, focus on personal failings, and rapid loss of confidence.' }
+            ],
+            summary: { points: ['Self-efficacy = belief in your capability to succeed in specific situations', '4 sources: mastery, modelling, persuasion, physiological state', 'High efficacy → approach challenges; Low → avoid them', 'Most studied topic in psychology after Bandura\'s 1977 paper'], terms: ['Self-Efficacy', 'Mastery Experience', 'Social Modelling', 'Social Persuasion', 'Psychological Response'] },
+            analogy: { icon: '🏋️', title: 'A confidence muscle', text: 'Self-efficacy is like a muscle. It grows strongest through use — every task you complete successfully (mastery) adds bulk. Watching others lift weights you haven\'t tried (modelling) shows you it\'s possible. A coach\'s encouragement (persuasion) is a training supplement. And being calm instead of anxious (physiological state) means your muscle performs at its best on the day.' }
+          },
+          {
+            title: 'Observational Learning & the Bobo Doll Experiment',
+            tag: 'Learning',
+            preview: 'How we learn by watching others without direct reinforcement',
+            body: `<p>Bandura\'s most famous insight: <strong>people learn by observing others, even without reinforcement.</strong> This challenged Skinner\'s behaviourism directly.</p>
+            <div class="highlight">The Bobo Doll Experiment (1961): Children who watched an adult aggressively beat an inflatable doll later reproduced the same behaviours precisely — without ever being reinforced for doing so.</div>
+            <p><strong>Four processes of observational learning:</strong></p>
+            <ul>
+              <li><strong>Attention:</strong> You must notice the model. Factors that increase attention: model is attractive, prestigious, similar to you, or the behaviour is dramatic. Distractions, sleepiness, or anxiety reduce learning.</li>
+              <li><strong>Retention:</strong> You must store what you observed — through mental images or verbal descriptions. You can later "bring up" the memory and reproduce it.</li>
+              <li><strong>Reproduction:</strong> You must be able to physically or mentally reproduce the behaviour. Practice improves reproduction — even mental rehearsal improves performance (athletes use this).</li>
+              <li><strong>Motivation:</strong> You must have a reason to perform what you've learned. Motivators include: past reinforcement, expected reinforcement (incentives), and <em>vicarious reinforcement</em> — seeing the model rewarded makes you want to do the same.</li>
+            </ul>
+            <p><strong>Vicarious learning</strong> is a core extension: we learn from others' consequences, not just our own. One model can transmit behaviour simultaneously to many people — the "multiplicative power" of symbolic modelling (TV, books, media).</p>`,
+            flashcards: [
+              { q: 'What did the Bobo Doll experiment demonstrate?', a: 'That children learn behaviours (specifically aggression) by observing models, without any direct reinforcement — challenging the behaviourist view that reinforcement is required for learning.' },
+              { q: 'What are the four steps of observational learning?', a: 'Attention (noticing the model), Retention (storing what you saw), Reproduction (being able to perform the behaviour), and Motivation (having a reason to perform it).' },
+              { q: 'What is vicarious reinforcement?', a: 'Learning motivation that comes from seeing the model receive reinforcement. Observing someone else being rewarded for a behaviour increases your motivation to perform that behaviour.' }
+            ],
+            quiz: [
+              { q: 'Bandura\'s Bobo Doll experiment challenged which major theory?', opts: ['Freudian psychoanalysis', 'Skinner\'s behaviourism', 'Maslow\'s hierarchy', 'Rogers\' person-centred theory'], ans: 1, exp: 'The experiment showed learning can occur without reinforcement, directly challenging Skinner\'s operant conditioning as the primary learning mechanism.' },
+              { q: 'Mental rehearsal improving performance is related to which step of observational learning?', opts: ['Attention', 'Retention', 'Reproduction', 'Motivation'], ans: 2, exp: 'Reproduction involves physically or mentally performing the behaviour. Even mental practice (imagery) improves actual performance.' }
+            ],
+            summary: { points: ['Learning occurs through observation without direct reinforcement', 'Bobo Doll: children imitate aggression seen in video', '4 steps: attention, retention, reproduction, motivation', 'Vicarious learning = learning from others\' consequences'], terms: ['Observational Learning', 'Modelling', 'Vicarious Learning', 'Bobo Doll', 'Vicarious Reinforcement', 'Symbolic Modelling'] },
+            analogy: { icon: '👁️', title: 'The apprentice and the master', text: 'Before formal education, humans learned by watching masters. An apprentice blacksmith watches every hammer stroke. They don\'t get paid to watch (no direct reinforcement) — but they store mental blueprints (retention), practice in their mind (reproduction), and are motivated by wanting to be a master themselves (motivation). That\'s observational learning — the original human school.' }
+          },
+          {
+            title: 'Classical vs. Operant Conditioning in Personality',
+            tag: 'Learning Theory',
+            preview: 'Pavlov\'s conditioning vs. Skinner\'s reinforcement',
+            body: `<p>Two foundational learning theories show how personality is shaped by experience.</p>
+            <p><strong>Classical Conditioning (Pavlov)</strong> explains how a neutral stimulus comes to produce a learned response through association:</p>
+            <ul>
+              <li><strong>UCS</strong> (Unconditioned Stimulus) → <strong>UCR</strong> (Unconditioned Response) [natural link]</li>
+              <li>CS (Conditioned Stimulus) paired with UCS → CS eventually produces <strong>CR</strong> (Conditioned Response)</li>
+            </ul>
+            <p>Key principles: <strong>acquisition</strong> (learning through pairing), <strong>generalisation</strong> (responding to similar stimuli), <strong>discrimination</strong> (distinguishing stimuli), <strong>extinction</strong> (response fades without UCS), <strong>spontaneous recovery</strong> (extinguished response returns).</p>
+            <p><strong>Operant Conditioning (Skinner)</strong> explains how consequences shape voluntary behaviour:</p>
+            <ul>
+              <li><strong>Positive reinforcement:</strong> Add something pleasant → behaviour increases (praise → child behaves)</li>
+              <li><strong>Negative reinforcement:</strong> Remove something unpleasant → behaviour increases (turn off alarm by waking up)</li>
+              <li><strong>Punishment:</strong> Add something unpleasant → behaviour decreases (Skinner doubted punishment's effectiveness)</li>
+              <li><strong>Schedules of reinforcement:</strong> Fixed ratio, fixed interval, variable ratio, variable interval — variable schedules most resistant to extinction</li>
+            </ul>
+            <p>Both theories treat personality as learned behaviour patterns — modifiable through conditioning.</p>`,
+            flashcards: [
+              { q: 'What is the key difference between classical and operant conditioning?', a: 'Classical conditioning pairs a neutral stimulus with an automatic response (reflexive, involuntary). Operant conditioning shapes voluntary behaviours through consequences (reinforcement/punishment).' },
+              { q: 'What schedule of reinforcement is most resistant to extinction and why?', a: 'Variable ratio — because the timing of reinforcement is unpredictable. You can\'t know when to stop (like slot machines). This creates the most persistent behaviour.' },
+              { q: 'What is extinction in conditioning?', a: 'When a conditioned response fades because the conditioned stimulus is repeatedly presented without the unconditioned stimulus. But the response can return via spontaneous recovery.' }
+            ],
+            quiz: [
+              { q: 'Pavlov\'s bell causing salivation is an example of:', opts: ['Operant conditioning', 'Classical conditioning', 'Observational learning', 'Shaping'], ans: 1, exp: 'This is the classic example of classical conditioning — a neutral stimulus (bell) paired with a UCS (food) until the bell alone produces salivation (CR).' },
+              { q: 'Skinner\'s "shaping" involves:', opts: ['Punishing wrong behaviours', 'Reinforcing successively closer approximations to the target behaviour', 'Pairing neutral stimuli with unconditioned stimuli', 'Presenting stimuli without reinforcement'], ans: 1, exp: 'Shaping (successive approximation) reinforces behaviours progressively closer to the desired outcome.' }
+            ],
+            summary: { points: ['Classical: stimulus pairing → conditioned response (involuntary)', 'Operant: consequences shape voluntary behaviour', 'Key schedules: fixed ratio/interval, variable ratio/interval', 'Variable schedules = most resistant to extinction'], terms: ['Classical Conditioning', 'Operant Conditioning', 'Reinforcement', 'Extinction', 'Generalisation', 'Shaping', 'Schedule of Reinforcement'] },
+            analogy: { icon: '🐕', title: 'Two ways to train a dog', text: 'Classical conditioning: ring a bell every time food arrives → the dog salivates at the bell alone (Pavlov\'s insight). Operant conditioning: give a treat every time the dog sits on command → sitting becomes more frequent (Skinner\'s method). One conditions automatic reflexes. The other shapes chosen actions through consequences. Both rewrite the personality — in animals and humans alike.' }
+          }
+        ]
+      },
+      {
+        name: 'Humanistic Theory (Maslow & Rogers)',
+        short: 'Maslow/Rogers',
+        concepts: [
+          {
+            title: 'Maslow\'s Hierarchy of Needs',
+            tag: 'Motivation',
+            preview: 'Five levels from survival to self-actualisation',
+            body: `<p>Abraham Maslow proposed a <strong>hierarchy of needs</strong> — a pyramid of human motivation where lower needs must be met before higher ones become motivating.</p>
+            <div class="highlight">"The lower a need in the hierarchy, the more prepotent or dominating that need is."</div>
+            <p>The five levels from bottom to top:</p>
+            <ul>
+              <li><strong>Physiological Needs (Level 1):</strong> Air, food, water, sleep. Most basic and instinctive. The organism cannot survive without these. All other needs become secondary when these are unmet.</li>
+              <li><strong>Safety Needs (Level 2):</strong> Security, shelter, steady employment, health, safe neighbourhoods. Less urgent than physiological but vital.</li>
+              <li><strong>Belongingness Needs (Level 3):</strong> Love, friendship, family, community groups. Social connection and acceptance. Less basic than physical safety.</li>
+              <li><strong>Esteem Needs (Level 4):</strong> Two versions — lower (respect from others: prestige, recognition) and higher (self-respect: competence, mastery, independence). Deprivation leads to inferiority and helplessness.</li>
+              <li><strong>Self-Actualisation (Level 5):</strong> Becoming all one can be — realising one's unique potential. Not driven by deficit but by growth desire. "What a man can be, he must be."</li>
+            </ul>
+            <p>The first four are <strong>Deficiency Needs (D-needs)</strong> — motivation ceases once satisfied. The fifth is a <strong>Growth Need (B-need)</strong> — it grows stronger the more it is fulfilled.</p>`,
+            flashcards: [
+              { q: 'What is the key difference between D-needs and B-needs?', a: 'D-needs (deficiency) motivate through lack — once met, motivation stops. B-needs (being/growth) like self-actualisation grow stronger the more they are pursued — they don\'t get "filled up."' },
+              { q: 'What are the two types of esteem needs Maslow identified?', a: 'Lower esteem: respect from others (recognition, prestige, status). Higher esteem: self-respect through competence, mastery, independence, and freedom — higher because it rests on inner achievement.' },
+              { q: 'Under what conditions can someone regress to a lower level of needs?', a: 'Under stress or when survival is threatened — e.g., losing a job might push someone back from esteem needs to safety needs. Childhood deprivation can cause "fixation" at a lower need level throughout life.' }
+            ],
+            quiz: [
+              { q: 'Which needs does Maslow call "D-needs"?', opts: ['Only physiological needs', 'The first four levels', 'Only self-actualisation', 'All five levels'], ans: 1, exp: 'D-needs (deficiency needs) are the first four: physiological, safety, belongingness, and esteem.' },
+              { q: 'What does Maslow mean by "prepotency"?', opts: ['The strength of self-actualisation', 'The dominance of lower needs when unsatisfied', 'The ability to meet multiple needs at once', 'The importance of social belonging'], ans: 1, exp: 'Prepotency means that when several needs are active, lower needs dominate — you can\'t focus on esteem when starving.' }
+            ],
+            summary: { points: ['5 levels: physiological, safety, belonging, esteem, self-actualisation', 'D-needs (1-4): motivation stops when met', 'B-need (5): grows with fulfilment', 'Lower needs must be substantially met before higher ones motivate'], terms: ['Hierarchy of Needs', 'D-Needs', 'B-Needs', 'Self-Actualisation', 'Prepotency', 'Belongingness'] },
+            analogy: { icon: '🏗️', title: 'Building a skyscraper', text: 'You cannot build the penthouse without the foundation. Physiological needs are the bedrock — concrete and steel. Safety is the structural frame. Belonging is the walls. Esteem is the interior fit-out. Self-actualisation is the spectacular rooftop observatory. Neglect the foundation, and everything above collapses. But once the building stands, the view from the top is worth everything.' }
+          },
+          {
+            title: 'Self-Actualisation & Characteristics of Self-Actualisers',
+            tag: 'Peak of Growth',
+            preview: 'What the fully flourishing person looks like',
+            body: `<p>Maslow studied highly flourishing individuals (Lincoln, Einstein, Eleanor Roosevelt, William James) using <strong>biographical analysis</strong> to identify what self-actualisation looks like in practice.</p>
+            <p><strong>Key characteristics of self-actualisers:</strong></p>
+            <ul>
+              <li>Reality-centred — distinguishing the genuine from the fake</li>
+              <li>Problem-centred — treating difficulties as solvable challenges, not personal tragedies</li>
+              <li>Autonomy — relatively independent from social pressure and approval</li>
+              <li>Resistance to enculturation — not susceptible to pressure to "fit in" or "be well-adjusted"</li>
+              <li>Democratic values — humility, respect for all, sense of human kinship</li>
+              <li>Freshness of appreciation — seeing ordinary things with wonder</li>
+              <li>Peak experiences — intense moments of transcendence, oneness with life or nature</li>
+              <li>Creativity and originality in their work and thinking</li>
+              <li>Unhostile humour — laughing at human condition, never at others' expense</li>
+              <li>Deep relationships with few, rather than shallow ones with many</li>
+            </ul>
+            <div class="highlight">Maslow was honest: even self-actualisers have flaws — moments of ruthlessness, unexpected cruelty, anxiety and guilt. Self-actualisation is not perfection.</div>
+            <p>Only ~2% of people achieve genuine self-actualisation, according to Maslow — a criticism of his theory, since it seems to restrict it unnecessarily.</p>`,
+            flashcards: [
+              { q: 'What method did Maslow use to study self-actualisers?', a: 'Biographical analysis — studying the writings, biographies, and known facts about historical figures (Lincoln, Einstein, Eleanor Roosevelt, etc.) and people he knew personally who seemed to exemplify self-actualisation.' },
+              { q: 'What are "peak experiences" in Maslow\'s theory?', a: 'Intense transcendent moments that take you out of yourself — feelings of unity with life, nature, or God; being part of the infinite. Self-actualisers have more of these. Also called mystical experiences.' },
+              { q: 'What is a key criticism of Maslow\'s theory of self-actualisation?', a: 'Methodologically weak (small, self-selected sample), and it limits self-actualisation to only ~2% of people while Maslow himself chose who "qualified" — circular reasoning and poor science by many standards.' }
+            ],
+            quiz: [
+              { q: 'What does "resistance to enculturation" mean in a self-actualiser?', opts: ['Rejecting all cultural values', 'Being immune to social pressure to conform', 'Living outside of society', 'Having no cultural identity'], ans: 1, exp: 'Self-actualisers resist pressure to fit in or be "well-adjusted" — they are genuine nonconformists in the positive sense, not merely rebellious.' },
+              { q: 'What proportion of people does Maslow estimate achieve self-actualisation?', opts: ['About 25%', 'About 10%', 'About 2%', 'About 50%'], ans: 2, exp: 'Maslow estimated only about 2% of people achieve genuine self-actualisation — a point widely criticised as too restrictive.' }
+            ],
+            summary: { points: ['Self-actualisers studied via biographical analysis', 'Key traits: reality-centred, autonomous, creative, democratic, peak experiences', 'Even self-actualisers have flaws (anxiety, occasional ruthlessness)', 'Only ~2% achieve it — a key criticism'], terms: ['Self-Actualisation', 'Peak Experience', 'Biographical Analysis', 'Autonomy', 'Resistance to Enculturation', 'Metapathologies'] },
+            analogy: { icon: '🌟', title: 'A rare instrument in tune', text: 'Most instruments are somewhat out of tune — a few strings sharp, some flat. Self-actualisers are like a perfectly tuned instrument: every string resonates true. They don\'t force conformity on others or themselves. They make music that is uniquely theirs. But even the finest violin has worn spots and repaired cracks — Maslow never claimed self-actualisers were flawless.' }
+          },
+          {
+            title: 'Carl Rogers: The Organism, Self, and Congruence',
+            tag: 'Self Theory',
+            preview: 'Real self, ideal self, and the path to psychological health',
+            body: `<p>Carl Rogers built a <strong>person-centred theory</strong> from his clinical work as a therapist. His theory is phenomenological — focused on the individual's subjective experience.</p>
+            <p><strong>The Organism</strong> is the locus of all experience — the totality of experience at any moment (conscious and unconscious) constitutes the <strong>phenomenal field</strong>. Crucially, behaviour depends on this subjective phenomenal field, not objective external reality.</p>
+            <p><strong>The Self (Real and Ideal):</strong></p>
+            <ul>
+              <li><strong>Real self:</strong> The "you" that you actually can become if the actualising tendency is allowed to operate freely — created through authentic experience.</li>
+              <li><strong>Ideal self:</strong> The self imposed by society's demands — often an impossible standard you can never fully meet.</li>
+            </ul>
+            <p><strong>Congruence vs. Incongruence:</strong></p>
+            <div class="highlight">When the self as perceived faithfully mirrors actual experience → congruence → psychological health and full functioning. When they diverge → incongruence → defensive behaviours, anxiety, potential breakdown.</div>
+            <p>Incongruent individuals use two defenses:</p>
+            <ul>
+              <li><strong>Distortion:</strong> Twisting a perception to fit the self-concept, reducing the threat without eliminating it.</li>
+              <li><strong>Denial:</strong> Refusing to acknowledge the threatening experience at all.</li>
+            </ul>
+            <p>If incongruence becomes severe, defenses collapse, and the personality becomes disorganised — what Rogers describes as psychological breakdown.</p>`,
+            flashcards: [
+              { q: 'What is the phenomenal field in Rogers\'s theory?', a: 'The totality of all experience (conscious and unconscious) available to an individual at any moment — their subjective reality. Behaviour is determined by this field, not objective external conditions.' },
+              { q: 'What is congruence in Rogers\'s theory?', a: 'When the self as perceived accurately reflects actual organismic experience — the person is adjusted, mature, and fully functioning. Incongruence is when there is a gap between self-concept and experience.' },
+              { q: 'How does Rogers\'s "real self" differ from Horney\'s?', a: 'Both refer to authentic potential, but Rogers\' real self is created through the actualising tendency and experience. Horney\'s real self is the core being, contrasted against the neurotic ideal self. Rogers places more emphasis on unconditional positive regard in development.' }
+            ],
+            quiz: [
+              { q: 'When a person\'s self-concept does not match their actual experience, Rogers calls this:', opts: ['Congruence', 'Peak experience', 'Incongruence', 'Self-actualisation'], ans: 2, exp: 'Incongruence is the mismatch between self-concept and organismic experience — it leads to anxiety and defensive behaviours.' },
+              { q: 'What does Rogers mean by the "phenomenal field"?', opts: ['The social environment', 'All experience available to awareness at a given moment', 'The unconscious only', 'External objective reality'], ans: 1, exp: 'The phenomenal field is the totality of conscious and unconscious experience — the subjective reality that determines behaviour.' }
+            ],
+            summary: { points: ['Phenomenal field = subjective experience that drives behaviour', 'Real self = authentic potential through actualising tendency', 'Ideal self = society\'s impossible imposed standards', 'Congruence (match) = health; Incongruence (gap) = anxiety & defense'], terms: ['Phenomenal Field', 'Real Self', 'Ideal Self', 'Congruence', 'Incongruence', 'Distortion', 'Denial'] },
+            analogy: { icon: '🎯', title: 'Aiming at the right target', text: 'Congruence is like an archer whose sight is perfectly aligned — self-perception matches reality, so every shot lands true. Incongruence is when the sight is bent: the archer aims where they think the target is, but it\'s not where it actually stands. The more bent the sight, the more energy wasted defending the wrong aim — until finally, overwhelmed, the whole apparatus collapses.' }
+          },
+          {
+            title: 'Rogers\'s Actualising Tendency & Development of Self',
+            tag: 'Growth',
+            preview: 'The single motivating force in all living things',
+            body: `<p>Rogers proposed that there is only <strong>one fundamental motive</strong> in all living organisms: the <strong>actualising tendency</strong> — a biological pressure to develop all capacities in ways that enhance the organism.</p>
+            <div class="highlight">"The actualising tendency can be suppressed but can never be destroyed without the destruction of the organism itself."</div>
+            <p>Key features:</p>
+            <ul>
+              <li>It is <strong>directional and constructive</strong> — always moving toward wholeness and fulfilment</li>
+              <li>It is <strong>selective</strong> — paying attention to aspects of the environment that promise growth</li>
+              <li>It encompasses all motivations — drives, needs, creative and pleasure-seeking tendencies</li>
+            </ul>
+            <p><strong>Development of Self:</strong> Unlike Freud, Rogers did NOT propose fixed stages. Instead, healthy development depends on <strong>congruence between self-concept and experience</strong>.</p>
+            <p>Critical roles in development:</p>
+            <ul>
+              <li><strong>Positive regard:</strong> We all need love, respect, and approval — especially from parents. This shapes what we believe about ourselves.</li>
+              <li><strong>Conditions of worth:</strong> When parents only love conditionally ("I love you when you behave"), children distort their self-concept to earn that love — creating incongruence.</li>
+              <li><strong>Unconditional positive regard:</strong> The therapist (and ideally, parent) accepts the person completely — creating conditions for congruence and growth.</li>
+            </ul>
+            <p>Rogers's therapy: <strong>client-centred (person-centred)</strong> — the therapist provides empathy, openness, and unconditional positive regard, acting as a mirror rather than a director.</p>`,
+            flashcards: [
+              { q: 'What is Rogers\'s "actualising tendency"?', a: 'The single motivating force in all living things — a biological pressure to develop all capacities in ways that maintain and enhance the organism, moving it toward autonomy and wholeness. It cannot be destroyed, only suppressed.' },
+              { q: 'What are "conditions of worth" in Rogers\'s theory?', a: 'When parents provide love conditionally — only when the child behaves in approved ways. This forces the child to distort their self-concept to match parental expectations, creating incongruence between real experience and self-concept.' },
+              { q: 'What is "unconditional positive regard" in Rogers\'s therapy?', a: 'Complete acceptance of the person as they are, without conditions. The therapist provides empathy and openness, allowing clients to explore their real selves without fear of judgment — the core of person-centred therapy.' }
+            ],
+            quiz: [
+              { q: 'According to Rogers, what is the single motivating force in all living things?', opts: ['Self-actualisation drive', 'The actualising tendency', 'Positive regard', 'The phenomenal field'], ans: 1, exp: 'The actualising tendency is Rogers\'s one universal motive — the biological pressure toward development, fulfilment, and wholeness.' },
+              { q: 'In Rogers\'s therapy, the therapist acts as:', opts: ['A directive authority', 'A mirror reflecting the client\'s thoughts and feelings', 'An analyst of the unconscious', 'A behaviour modifier'], ans: 1, exp: 'Rogers called his technique non-directive — the therapist is a mirror, reflecting and accepting, not directing. The client leads their own healing.' }
+            ],
+            summary: { points: ['Actualising tendency = single universal motive in all living things', 'Cannot be destroyed — only suppressed', 'Healthy development = congruence between self and experience', 'Conditions of worth → distorted self-concept → incongruence', 'Person-centred therapy: empathy + unconditional positive regard'], terms: ['Actualising Tendency', 'Positive Regard', 'Unconditional Positive Regard', 'Conditions of Worth', 'Person-Centred Therapy', 'Non-Directive Therapy'] },
+            analogy: { icon: '🌱', title: 'A seed seeking light', text: 'Rogers saw every person as a seed with the built-in drive to grow toward light and fulfilment — the actualising tendency. But seeds planted in rocky, conditional soil (conditions of worth) grow twisted, bending away from their natural form to reach whatever light is permitted. Person-centred therapy is like removing the rocks and giving the seed fertile, unconditional ground — so it can finally grow straight.' }
+          }
+        ]
+      }
+    ]
+  }
+];
+
+const blockColors = ['#7c6bff', '#ff6b9d', '#00d4aa', '#ffb547'];
+let currentBlock = null;
+let currentUnit = null;
+let currentConcept = null;
+let currentFlashcardIdx = 0;
+let currentFlashcardFlipped = false;
+let currentQuizIdx = 0;
+let currentQuizAnswered = false;
+let visitedConcepts = {};
+
+function setBlockColorVar(color) {
+  document.documentElement.style.setProperty('--block-color-current', color);
+}
+
+function renderBlocks() {
+  const grid = document.getElementById('blocksGrid');
+  const icons = ['🧠', '🔬', '👁️', '🌿'];
+  const subtitles = [
+    'Freud · Horney · Sullivan',
+    'Bandura · Pavlov · Skinner',
+    'Bandura · Pavlov · Skinner',
+    'Maslow · Rogers'
+  ];
+  const blockTitles = [
+    'Psychodynamic Theory',
+    'Social Cognitive Theory',
+    'Learning Theory',
+    'Humanistic & Self Theory'
+  ];
+  const blockSubtitles = [
+    'Freud · Horney · Sullivan',
+    'Bandura & Observational Learning',
+    'Pavlov & Skinner',
+    'Maslow · Rogers'
+  ];
+  
+  const blockData = [
+    { title: 'Psychodynamic Theory', sub: 'Freud · Horney · Sullivan', icon: '🧠', unitNames: ['Freud\'s Psychoanalysis', 'Horney\'s Social Theory', 'Sullivan\'s Interpersonal', 'Defense & Development'] },
+    { title: 'Social Cognitive Theory', sub: 'Bandura & Social Learning', icon: '🔬', unitNames: ['Reciprocal Determinism', 'Self-Efficacy', 'Observational Learning', 'Vicarious Learning'] },
+    { title: 'Learning Theory', sub: 'Pavlov & Skinner', icon: '⚗️', unitNames: ['Classical Conditioning', 'Principles of Conditioning', 'Operant Conditioning', 'Behaviour Modification'] },
+    { title: 'Humanistic & Self Theory', sub: 'Maslow · Rogers', icon: '🌿', unitNames: ['Hierarchy of Needs', 'Self-Actualisation', 'Rogers\'s Self Theory', 'Congruence & Growth'] }
+  ];
+
+  grid.innerHTML = BLOCKS.map((b, i) => `
+    <div class="block-card" style="--block-color: ${blockColors[i]}" onclick="openBlock(${i})">
+      <div class="block-icon" style="--block-color: ${blockColors[i]}">${blockData[i].icon}</div>
+      <div class="block-num">Block ${i+1}</div>
+      <div class="block-title">${blockData[i].title}</div>
+      <div class="block-subtitle">${blockData[i].sub}</div>
+      <div class="block-chapters">${b.units.length} units · ${b.units.reduce((a,u)=>a+u.concepts.length,0)} concepts</div>
+    </div>
+  `).join('');
+}
+
+function openBlock(blockIdx) {
+  currentBlock = blockIdx;
+  currentUnit = null;
+  currentConcept = null;
+  setBlockColorVar(blockColors[blockIdx]);
+
+  const panel = document.getElementById('contentPanel');
+  const title = document.getElementById('panelTitle');
+  const breadcrumb = document.getElementById('breadcrumb');
+  const chaptersRow = document.getElementById('chaptersRow');
+  const conceptsSection = document.getElementById('conceptsSection');
+  const deepDive = document.getElementById('deepDive');
+
+  const blockData = ['Psychodynamic Theory','Social Cognitive Theory','Learning Theory','Humanistic & Self Theory'];
+  title.textContent = blockData[blockIdx];
+  breadcrumb.innerHTML = `<span>Block ${blockIdx+1}</span>`;
+  conceptsSection.classList.remove('visible');
+  deepDive.classList.remove('visible');
+
+  const block = BLOCKS[blockIdx];
+  chaptersRow.innerHTML = block.units.map((u, i) => `
+    <div class="chapter-btn" onclick="openUnit(${i})" id="chBtn-${i}">
+      <div class="ch-num">Unit ${i+1}</div>
+      <div class="ch-name">${u.name}</div>
+    </div>
+  `).join('');
+
+  panel.classList.add('visible');
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function openUnit(unitIdx) {
+  currentUnit = unitIdx;
+  currentConcept = null;
+
+  document.querySelectorAll('.chapter-btn').forEach((b,i) => {
+    b.classList.toggle('active', i === unitIdx);
+  });
+
+  const block = BLOCKS[currentBlock];
+  const unit = block.units[unitIdx];
+
+  const conceptsSection = document.getElementById('conceptsSection');
+  const conceptsGrid = document.getElementById('conceptsGrid');
+  const deepDive = document.getElementById('deepDive');
+
+  conceptsGrid.innerHTML = unit.concepts.map((c, i) => {
+    const key = `${currentBlock}-${unitIdx}-${i}`;
+    const isVisited = visitedConcepts[key];
+    return `
+    <div class="concept-card ${isVisited ? 'visited' : ''}" id="conceptCard-${i}" onclick="openConcept(${i})">
+      <div class="visited-badge"></div>
+      <div class="concept-tag">${c.tag}</div>
+      <div class="concept-title">${c.title}</div>
+      <div class="concept-preview">${c.preview}</div>
+    </div>
+  `;}).join('');
+
+  conceptsSection.classList.add('visible');
+  deepDive.classList.remove('visible');
+}
+
+function openConcept(conceptIdx) {
+  currentConcept = conceptIdx;
+  const key = `${currentBlock}-${currentUnit}-${conceptIdx}`;
+  visitedConcepts[key] = true;
+
+  document.querySelectorAll('.concept-card').forEach((c,i) => {
+    c.classList.toggle('active', i === conceptIdx);
+    if (i === conceptIdx) c.classList.add('visited');
+  });
+
+  const unit = BLOCKS[currentBlock].units[currentUnit];
+  const concept = unit.concepts[conceptIdx];
+
+  document.getElementById('diveTitle').textContent = concept.title;
+  document.getElementById('diveBody').innerHTML = concept.body;
+
+  currentFlashcardIdx = 0;
+  currentFlashcardFlipped = false;
+  currentQuizIdx = 0;
+  currentQuizAnswered = false;
+
+  renderFlashcard(concept);
+  renderQuiz(concept, 0);
+  renderSummary(concept);
+  renderAnalogy(concept);
+
+  document.querySelectorAll('.recall-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+  document.querySelectorAll('.recall-content').forEach((c,i) => c.classList.toggle('visible', i===0));
+
+  const deepDive = document.getElementById('deepDive');
+  deepDive.classList.add('visible');
+  deepDive.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderFlashcard(concept) {
+  const el = document.getElementById('flashcard-content');
+  const total = concept.flashcards.length;
+  const idx = currentFlashcardIdx;
+  const card = concept.flashcards[idx];
+  el.innerHTML = `
+    <div class="flashcard" id="fc" onclick="flipCard()">
+      <div class="q-label">Question ${idx+1} of ${total}</div>
+      <div class="q-text">${card.q}</div>
+      <div class="a-text">${card.a}</div>
+    </div>
+    <div class="flashcard-hint">Click to reveal answer</div>
+    <div class="card-nav">
+      <button onclick="prevCard(event)">← Prev</button>
+      <span class="card-counter">${idx+1} / ${total}</span>
+      <button onclick="nextCard(event)">Next →</button>
+    </div>
+  `;
+  currentFlashcardFlipped = false;
+}
+
+function flipCard() {
+  const fc = document.getElementById('fc');
+  if (fc) {
+    fc.classList.toggle('flipped');
+    currentFlashcardFlipped = !currentFlashcardFlipped;
+    fc.nextElementSibling.textContent = currentFlashcardFlipped ? 'Click to hide answer' : 'Click to reveal answer';
+  }
+}
+
+function nextCard(e) {
+  e.stopPropagation();
+  const concept = BLOCKS[currentBlock].units[currentUnit].concepts[currentConcept];
+  currentFlashcardIdx = (currentFlashcardIdx + 1) % concept.flashcards.length;
+  renderFlashcard(concept);
+}
+
+function prevCard(e) {
+  e.stopPropagation();
+  const concept = BLOCKS[currentBlock].units[currentUnit].concepts[currentConcept];
+  currentFlashcardIdx = (currentFlashcardIdx - 1 + concept.flashcards.length) % concept.flashcards.length;
+  renderFlashcard(concept);
+}
+
+function renderQuiz(concept, idx) {
+  const el = document.getElementById('quiz-content');
+  if (!concept.quiz || concept.quiz.length === 0) { el.innerHTML = '<p style="color:var(--text2)">No quiz available.</p>'; return; }
+  const total = concept.quiz.length;
+  const q = concept.quiz[idx];
+  el.innerHTML = `
+    <div class="quiz-q">Q${idx+1} of ${total}: ${q.q}</div>
+    <div class="quiz-options">
+      ${q.opts.map((o,i) => `<button class="quiz-option" onclick="answerQuiz(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qFeedback"></div>
+    <button class="quiz-next" id="qNext" onclick="nextQuiz()">Next question →</button>
+  `;
+  currentQuizAnswered = false;
+}
+
+function answerQuiz(chosen) {
+  if (currentQuizAnswered) return;
+  currentQuizAnswered = true;
+  const concept = BLOCKS[currentBlock].units[currentUnit].concepts[currentConcept];
+  const q = concept.quiz[currentQuizIdx];
+  const opts = document.querySelectorAll('.quiz-option');
+  opts[chosen].classList.add(chosen === q.ans ? 'correct' : 'wrong');
+  if (chosen !== q.ans) opts[q.ans].classList.add('correct');
+  const fb = document.getElementById('qFeedback');
+  fb.className = `quiz-feedback visible ${chosen === q.ans ? 'good' : 'bad'}`;
+  fb.textContent = (chosen === q.ans ? '✓ Correct! ' : '✗ Not quite. ') + q.exp;
+  const nxt = document.getElementById('qNext');
+  if (nxt) nxt.classList.add('visible');
+}
+
+function nextQuiz() {
+  const concept = BLOCKS[currentBlock].units[currentUnit].concepts[currentConcept];
+  currentQuizIdx = (currentQuizIdx + 1) % concept.quiz.length;
+  renderQuiz(concept, currentQuizIdx);
+}
+
+function renderSummary(concept) {
+  const el = document.getElementById('summary-content');
+  const s = concept.summary;
+  el.innerHTML = `
+    <div class="summary-box">
+      <h3>Key Points</h3>
+      <ul>${s.points.map(p => `<li>${p}</li>`).join('')}</ul>
+      <div style="margin-top:1rem;font-size:0.78rem;color:var(--text3);font-weight:500;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:0.5rem;">Key Terms</div>
+      <div class="key-terms">${s.terms.map(t => `<span class="key-term">${t}</span>`).join('')}</div>
+    </div>
+  `;
+}
+
+function renderAnalogy(concept) {
+  const el = document.getElementById('analogy-content');
+  const a = concept.analogy;
+  el.innerHTML = `
+    <div class="analogy-card">
+      <div class="analogy-icon">${a.icon}</div>
+      <h3>Think of it like: ${a.title}</h3>
+      <p>${a.text}</p>
+    </div>
+  `;
+}
+
+function switchRecall(type, tab) {
+  document.querySelectorAll('.recall-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  document.querySelectorAll('.recall-content').forEach(c => c.classList.remove('visible'));
+  document.getElementById(`${type}-content`).classList.add('visible');
+}
+
+function closeDive() {
+  document.getElementById('deepDive').classList.remove('visible');
+  document.querySelectorAll('.concept-card').forEach(c => c.classList.remove('active'));
+  currentConcept = null;
+}
+
+function goBack() {
+  if (currentUnit !== null) {
+    currentUnit = null;
+    currentConcept = null;
+    document.getElementById('conceptsSection').classList.remove('visible');
+    document.getElementById('deepDive').classList.remove('visible');
+    document.querySelectorAll('.chapter-btn').forEach(b => b.classList.remove('active'));
+  } else {
+    document.getElementById('contentPanel').classList.remove('visible');
+    currentBlock = null;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+
+renderBlocks();
+</script>
+</body>
+</html>
