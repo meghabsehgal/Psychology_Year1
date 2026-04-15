@@ -1,1 +1,1702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Group Dynamics — Interactive Learning Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --card: #1a1a26;
+    --border: #2a2a3e;
+    --accent1: #7c6ef8;
+    --accent2: #f87c6e;
+    --accent3: #6ef8c4;
+    --accent4: #f8d96e;
+    --text: #e8e8f4;
+    --muted: #7a7a9a;
+    --glow1: rgba(124,110,248,0.15);
+    --glow2: rgba(248,124,110,0.15);
+    --glow3: rgba(110,248,196,0.15);
+    --glow4: rgba(248,217,110,0.15);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
+  /* GRAIN OVERLAY */
+  body::before {
+    content:'';
+    position:fixed; inset:0; pointer-events:none; z-index:999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.4;
+  }
+
+  /* HEADER */
+  header {
+    padding: 40px 48px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(10,10,15,0.92);
+    backdrop-filter: blur(16px);
+  }
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--accent1), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .subtitle {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .breadcrumb {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .breadcrumb span { color: var(--text); }
+
+  /* MAIN */
+  main { padding: 48px; max-width: 1400px; margin: 0 auto; }
+
+  /* BLOCKS GRID */
+  .blocks-intro {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.2;
+  }
+  .blocks-intro em { font-style: italic; color: var(--accent1); }
+  .blocks-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 40px;
+    max-width: 500px;
+  }
+
+  .blocks-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 0;
+  }
+
+  .block-card {
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: var(--card);
+  }
+  .block-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 16px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .block-card[data-block="1"]::before { background: var(--glow1); }
+  .block-card[data-block="2"]::before { background: var(--glow2); }
+  .block-card[data-block="3"]::before { background: var(--glow3); }
+  .block-card[data-block="4"]::before { background: var(--glow4); }
+  .block-card:hover::before { opacity: 1; }
+  .block-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent1);
+  }
+  .block-card[data-block="1"]:hover { border-color: var(--accent1); }
+  .block-card[data-block="2"]:hover { border-color: var(--accent2); }
+  .block-card[data-block="3"]:hover { border-color: var(--accent3); }
+  .block-card[data-block="4"]:hover { border-color: var(--accent4); }
+
+  .block-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .block-card[data-block="1"] .block-num { color: var(--accent1); }
+  .block-card[data-block="2"] .block-num { color: var(--accent2); }
+  .block-card[data-block="3"] .block-num { color: var(--accent3); }
+  .block-card[data-block="4"] .block-num { color: var(--accent4); }
+
+  .block-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.3;
+  }
+  .block-topics {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .topic-pill {
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .block-arrow {
+    position: absolute; bottom: 24px; right: 24px;
+    font-size: 1.4rem;
+    opacity: 0.3;
+    transition: all 0.3s;
+  }
+  .block-card:hover .block-arrow { opacity: 1; transform: translate(4px,-4px); }
+
+  /* UNIT VIEW */
+  .view { display: none; }
+  .view.active { display: block; animation: fadeUp 0.4s ease; }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 8px 0;
+    margin-bottom: 32px;
+    border: none; background: none;
+    transition: color 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .back-btn:hover { color: var(--text); }
+
+  .unit-header {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    margin-bottom: 40px;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .unit-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .unit-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    max-width: 600px;
+    line-height: 1.2;
+  }
+  .unit-progress {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: right;
+  }
+
+  /* CONCEPT CARDS */
+  .concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .concept-card {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: var(--surface);
+    position: relative;
+  }
+  .concept-card:hover {
+    border-color: var(--accent1);
+    background: var(--card);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(124,110,248,0.1);
+  }
+  .concept-icon {
+    font-size: 1.8rem;
+    margin-bottom: 12px;
+  }
+  .concept-name {
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 8px;
+  }
+  .concept-preview {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .concept-tag {
+    position: absolute; top: 16px; right: 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+
+  /* MODAL / DETAIL PANEL */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(8px);
+    padding: 20px;
+    overflow-y: auto;
+  }
+  .modal-overlay.open { display: flex; align-items: flex-start; justify-content: center; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 780px;
+    margin: auto;
+    overflow: hidden;
+    animation: modalIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+  }
+  @keyframes modalIn {
+    from { opacity:0; transform: scale(0.92) translateY(20px); }
+    to { opacity:1; transform: scale(1) translateY(0); }
+  }
+  .modal-header {
+    padding: 32px 36px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; justify-content: space-between;
+    gap: 16px;
+  }
+  .modal-icon { font-size: 2.4rem; }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.7rem;
+    font-weight: 700;
+    line-height: 1.2;
+    flex: 1;
+  }
+  .modal-close {
+    background: var(--border); border: none; cursor: pointer;
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--muted); font-size: 1.1rem;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .modal-close:hover { background: var(--accent2); color: white; }
+
+  .modal-body { padding: 28px 36px; }
+
+  /* TABS */
+  .tabs {
+    display: flex; gap: 4px;
+    margin-bottom: 24px;
+    background: var(--surface);
+    padding: 4px;
+    border-radius: 10px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    flex: 1; min-width: 80px;
+    padding: 9px 14px;
+    border: none; background: transparent;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .tab-btn.active {
+    background: var(--accent1);
+    color: white;
+  }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* CONTENT STYLES */
+  .explain-section h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+    color: var(--accent3);
+  }
+  .explain-section p {
+    color: var(--muted);
+    line-height: 1.75;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+  .key-points {
+    background: var(--surface);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .key-point {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+  .key-point:last-child { border-bottom: none; }
+  .key-point .kp-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent1); flex-shrink: 0; margin-top: 8px;
+  }
+
+  /* QUIZ */
+  .quiz-q {
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+    line-height: 1.5;
+  }
+  .quiz-options {
+    display: flex; flex-direction: column; gap: 8px;
+    margin-bottom: 20px;
+  }
+  .quiz-opt {
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.88rem;
+    transition: all 0.2s;
+    background: var(--surface);
+    text-align: left;
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+  }
+  .quiz-opt:hover { border-color: var(--accent1); background: var(--glow1); }
+  .quiz-opt.correct { border-color: var(--accent3); background: rgba(110,248,196,0.1); color: var(--accent3); }
+  .quiz-opt.wrong { border-color: var(--accent2); background: rgba(248,124,110,0.1); color: var(--accent2); }
+  .quiz-feedback {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    display: none;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.correct-fb { background: rgba(110,248,196,0.08); border: 1px solid var(--accent3); color: var(--accent3); }
+  .quiz-feedback.wrong-fb { background: rgba(248,124,110,0.08); border: 1px solid var(--accent2); color: var(--muted); }
+  .quiz-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 16px;
+  }
+  .quiz-score {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .btn-primary {
+    padding: 10px 20px;
+    background: var(--accent1);
+    color: white;
+    border: none; border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-primary:hover { opacity: 0.85; transform: translateY(-1px); }
+  .btn-ghost {
+    padding: 10px 20px;
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent1); color: var(--accent1); }
+
+  /* FLASHCARDS */
+  .flashcard-wrap {
+    perspective: 1200px;
+    margin-bottom: 20px;
+  }
+  .flashcard {
+    width: 100%;
+    min-height: 200px;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.34,1.56,0.64,1);
+    cursor: pointer;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-front, .fc-back {
+    position: absolute; inset: 0;
+    backface-visibility: hidden;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 32px;
+    border: 1px solid var(--border);
+    flex-direction: column;
+    gap: 12px;
+  }
+  .fc-front {
+    background: var(--surface);
+  }
+  .fc-back {
+    background: linear-gradient(135deg, var(--glow1), var(--glow3));
+    border-color: var(--accent1);
+    transform: rotateY(180deg);
+  }
+  .fc-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .fc-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+  .fc-hint { font-size: 0.8rem; color: var(--muted); }
+  .fc-controls {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 12px;
+  }
+  .fc-counter {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  /* MINDMAP */
+  .mindmap-container {
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 24px;
+    overflow-x: auto;
+  }
+  .mindmap-root {
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+  .mm-center {
+    background: linear-gradient(135deg, var(--accent1), var(--accent3));
+    color: white;
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-align: center;
+    flex-shrink: 0;
+    min-width: 120px;
+  }
+  .mm-branches {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-left: 0;
+  }
+  .mm-branch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mm-line {
+    width: 40px;
+    height: 2px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .mm-node {
+    padding: 8px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .mm-node:hover { border-color: var(--accent1); color: var(--accent1); background: var(--glow1); }
+
+  /* COMPLETION */
+  .completed-badge {
+    position: absolute; top: 12px; right: 12px;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--accent3);
+    display: none; align-items: center; justify-content: center;
+    font-size: 0.7rem; color: #0a0a0f;
+  }
+  .concept-card.done .completed-badge { display: flex; }
+  .concept-card.done { border-color: rgba(110,248,196,0.3); }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    height: 3px;
+    background: var(--border);
+    border-radius: 100px;
+    margin-bottom: 32px;
+    overflow: hidden;
+  }
+  .progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent1), var(--accent3));
+    border-radius: 100px;
+    transition: width 0.5s ease;
+  }
+
+  /* UNIT NAV */
+  .unit-nav {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 32px;
+  }
+  .unit-nav-btn {
+    padding: 8px 18px;
+    border-radius: 100px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .unit-nav-btn:hover, .unit-nav-btn.active {
+    background: var(--accent1);
+    border-color: var(--accent1);
+    color: white;
+  }
+
+  /* SUMMARY BOX */
+  .summary-box {
+    background: var(--surface);
+    border-left: 3px solid var(--accent1);
+    border-radius: 0 10px 10px 0;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: var(--muted);
+  }
+
+  /* ANALOGY BOX */
+  .analogy-box {
+    background: linear-gradient(135deg, var(--glow4), var(--glow1));
+    border: 1px solid rgba(248,217,110,0.2);
+    border-radius: 10px;
+    padding: 16px 20px;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: var(--text);
+  }
+  .analogy-box strong { color: var(--accent4); }
+
+  /* QUIZ RESULT */
+  .quiz-result {
+    text-align: center;
+    padding: 32px;
+    display: none;
+  }
+  .quiz-result.show { display: block; }
+  .result-score {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent1), var(--accent3));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .result-msg { color: var(--muted); margin-top: 8px; font-size: 0.9rem; }
+
+  @media (max-width: 768px) {
+    main { padding: 24px; }
+    header { padding: 24px; }
+    .blocks-grid { grid-template-columns: 1fr; }
+    .blocks-intro { font-size: 1.8rem; }
+    .modal-header { padding: 20px 20px 16px; }
+    .modal-body { padding: 16px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo">GroupDynamics</div>
+    <div class="subtitle">Interactive Learning Explorer</div>
+  </div>
+  <div class="breadcrumb" id="breadcrumb">
+    <span>Home</span>
+  </div>
+</header>
+
+<main>
+  <!-- HOME VIEW -->
+  <div class="view active" id="view-home">
+    <p class="blocks-intro">Choose your <em>learning block</em></p>
+    <p class="blocks-desc">Four units covering group behaviour, dynamics, identity and social processes. Click any block to explore its concepts.</p>
+
+    <div class="blocks-grid">
+      <div class="block-card" data-block="1" onclick="openBlock(1)">
+        <div class="block-num">Block 01</div>
+        <div class="block-title">Introduction to Group, Formation & Types</div>
+        <div class="block-topics">
+          <span class="topic-pill">Definition</span>
+          <span class="topic-pill">Characteristics</span>
+          <span class="topic-pill">Group Formation</span>
+          <span class="topic-pill">Types</span>
+          <span class="topic-pill">Structure</span>
+          <span class="topic-pill">Conflict</span>
+        </div>
+        <div class="block-arrow">↗</div>
+      </div>
+
+      <div class="block-card" data-block="2" onclick="openBlock(2)">
+        <div class="block-num">Block 02</div>
+        <div class="block-title">Group Dynamics — Forces, Cohesion & Culture</div>
+        <div class="block-topics">
+          <span class="topic-pill">Definition</span>
+          <span class="topic-pill">Communication</span>
+          <span class="topic-pill">Cohesion</span>
+          <span class="topic-pill">Social Integration</span>
+          <span class="topic-pill">Culture</span>
+          <span class="topic-pill">Measurement</span>
+        </div>
+        <div class="block-arrow">↗</div>
+      </div>
+
+      <div class="block-card" data-block="3" onclick="openBlock(3)">
+        <div class="block-num">Block 03</div>
+        <div class="block-title">Social Identity, Crowding & Crowd Behaviour</div>
+        <div class="block-topics">
+          <span class="topic-pill">Social Identity</span>
+          <span class="topic-pill">Crowd Types</span>
+          <span class="topic-pill">Crowd Psychology</span>
+          <span class="topic-pill">Theories</span>
+          <span class="topic-pill">Mob & Audience</span>
+          <span class="topic-pill">Fashion</span>
+        </div>
+        <div class="block-arrow">↗</div>
+      </div>
+
+      <div class="block-card" data-block="4" onclick="openBlock(4)">
+        <div class="block-num">Block 04</div>
+        <div class="block-title">Cooperation, Competition & Conflicts</div>
+        <div class="block-topics">
+          <span class="topic-pill">Social Interaction</span>
+          <span class="topic-pill">Cooperation</span>
+          <span class="topic-pill">Competition</span>
+          <span class="topic-pill">Conflict</span>
+          <span class="topic-pill">Accommodation</span>
+          <span class="topic-pill">Distinction</span>
+        </div>
+        <div class="block-arrow">↗</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BLOCK VIEW -->
+  <div class="view" id="view-block">
+    <button class="back-btn" onclick="goHome()">← Back to Blocks</button>
+    <div class="unit-header">
+      <div>
+        <div class="unit-label" id="block-label">Block 01</div>
+        <div class="unit-title" id="block-title">Introduction to Group</div>
+      </div>
+      <div class="unit-progress" id="block-progress">0 / 0 concepts explored</div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="block-progress-bar" style="width:0%"></div>
+    </div>
+
+    <div class="unit-nav" id="unit-nav"></div>
+
+    <div class="concepts-grid" id="concepts-grid"></div>
+  </div>
+</main>
+
+<!-- CONCEPT MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-icon" id="modal-icon">📚</div>
+        <div class="modal-title" id="modal-title">Concept</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('explain')">📖 Explain</button>
+        <button class="tab-btn" onclick="switchTab('flashcard')">🃏 Flashcard</button>
+        <button class="tab-btn" onclick="switchTab('quiz')">🧠 Quiz</button>
+        <button class="tab-btn" onclick="switchTab('mindmap')">🗺️ Map</button>
+      </div>
+
+      <div class="tab-panel active" id="tab-explain">
+        <div id="explain-content"></div>
+      </div>
+
+      <div class="tab-panel" id="tab-flashcard">
+        <div class="flashcard-wrap">
+          <div class="flashcard" id="flashcard" onclick="flipCard()">
+            <div class="fc-front">
+              <div class="fc-label">Term</div>
+              <div class="fc-text" id="fc-front-text"></div>
+              <div class="fc-hint">Tap to reveal definition →</div>
+            </div>
+            <div class="fc-back">
+              <div class="fc-label">Definition</div>
+              <div class="fc-text" id="fc-back-text" style="font-size:0.95rem;font-family:'Outfit',sans-serif;color:var(--text)"></div>
+            </div>
+          </div>
+        </div>
+        <div class="fc-controls">
+          <span class="fc-counter" id="fc-counter">Card 1 of 1</span>
+          <div style="display:flex;gap:8px">
+            <button class="btn-ghost" onclick="prevCard()">← Prev</button>
+            <button class="btn-primary" onclick="nextCard()">Next →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-quiz">
+        <div id="quiz-content"></div>
+        <div class="quiz-result" id="quiz-result">
+          <div class="result-score" id="result-score">0/0</div>
+          <div class="result-msg" id="result-msg"></div>
+          <br>
+          <button class="btn-primary" onclick="resetQuiz()">Try Again</button>
+        </div>
+      </div>
+
+      <div class="tab-panel" id="tab-mindmap">
+        <div class="mindmap-container" id="mindmap-content"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DATA = {
+  1: {
+    label: "Block 01",
+    title: "Introduction to Group, Formation & Types of Group",
+    color: "#7c6ef8",
+    units: [
+      {
+        id: "u1-definition",
+        icon: "🏛️",
+        name: "Definition & Meaning of Group",
+        preview: "What is a group? Multiple scholars define it differently but share core ideas.",
+        tag: "Foundations",
+        explain: {
+          summary: "A group is defined as two or more individuals who interact, share common goals, and recognize themselves as belonging to a unit. Different scholars emphasize different aspects.",
+          keyPoints: [
+            "R.M. Williams (1951): An aggregate of people playing inter-related roles, recognized as a unit.",
+            "R.M. MacIver (1953): Any collection of social beings in distinctive social relationships.",
+            "David (1968): An organized system of individuals with role relationships and norms.",
+            "Kretch et al. (1962): Two or more persons with interdependent relations who share an ideology.",
+            "Paulus (1989): Two or more interacting persons sharing common goals with a stable relationship.",
+            "Three main uses: physical proximity, shared classification, or organizational membership.",
+            "Children develop group belonging gradually — from 'I' and 'Mine' to 'You' and 'Yours'."
+          ],
+          analogy: "<strong>Think of it like a sports team:</strong> Individuals exist before the team forms, but once they share goals, roles and norms — interacting toward a common purpose — they become a group, not just a crowd."
+        },
+        flashcards: [
+          { front: "Group (R.M. MacIver)", back: "Any collection of social beings who enter into distinctive social relationships with one another." },
+          { front: "Group (Paulus, 1989)", back: "Two or more interacting persons who share common goals, have a stable relationship, are interdependent and perceive themselves as part of a group." },
+          { front: "Three uses of 'Group'", back: "1) Physical proximity, 2) Shared classification/characteristics, 3) Organizational belonging with structure." },
+          { front: "What makes a group different from a crowd?", back: "A group has structure, shared norms, stable relationships and mutual goals — a crowd lacks these organized bonds." }
+        ],
+        quiz: [
+          { q: "According to Paulus (1989), which element is NOT required for a group?", opts: ["Common goals","Stable relationship","Leadership hierarchy","Interdependence"], correct: 2, explain: "Paulus lists common goals, stable relationships, interdependence and self-recognition — but NOT a leadership hierarchy specifically." },
+          { q: "Which scholar defined a group as 'an organized system with role relationships and norms'?", opts: ["MacIver","Williams","David","Paulus"], correct: 2, explain: "David (1968) emphasized the organized, systemic nature with standard role relationships and norms." },
+          { q: "When children develop group sense, which emerges first?", opts: ["'We' and 'Ours'","'I' and 'Mine'","'You' and 'Yours'","'Us' and 'Them'"], correct: 1, explain: "Children first develop the 'I' and 'Mine' sense before expanding to 'You/Yours' and then 'We/Ours'." }
+        ],
+        mindmap: { center: "Group", branches: ["2+ individuals","Shared goals","Stable relationships","Interdependence","Role recognition","Common norms","We-feeling"] }
+      },
+      {
+        id: "u1-characteristics",
+        icon: "✨",
+        name: "Characteristics of a Group",
+        preview: "Nine core characteristics that define group life — from we-feeling to obligation.",
+        tag: "Core Concepts",
+        explain: {
+          summary: "Groups share a set of defining characteristics that distinguish them from random collections of people. These characteristics create the cohesive structure of group life.",
+          keyPoints: [
+            "We-feeling: Members feel belonging and work collectively against external threats.",
+            "Common interest: Shared interests promote unity among members.",
+            "Feeling of unity: Members treat each other as their own with camaraderie.",
+            "Inter-related members: Reciprocal communication forms the fundamental basis.",
+            "Affected by group characteristics: Shared traits influence all members differently.",
+            "Common values: Traditionally respected values bind members and pass to next generations.",
+            "Control of group: Customs, norms and procedures regulate member behavior.",
+            "Obligation: Members have complementary duties toward each other.",
+            "Expectations: Members expect empathy, cooperation and compassion from each other."
+          ],
+          analogy: "<strong>Think of a school class:</strong> All students share a common goal (learning), interact daily, follow class norms, feel unity, expect respect from peers, and the teacher's control shapes behavior — every characteristic is present."
+        },
+        flashcards: [
+          { front: "We-feeling in a group", back: "The sense of belonging among group members — working collectively, protecting against outsiders and striving to be self-sufficient." },
+          { front: "Common values in a group", back: "Traditionally respected values shared by all members, communicated across generations and manifested in mutual behaviors." },
+          { front: "Group control", back: "Customs, norms and procedures that regulate member actions. Without norms, group existence is impossible." },
+          { front: "Obligation in a group", back: "All members have complementary duties toward each other, strengthening relationships through mutual obligations." }
+        ],
+        quiz: [
+          { q: "Which characteristic involves members passing values to the next generation?", opts: ["We-feeling","Common values","Obligation","Unity"], correct: 1, explain: "Common values are traditionally respected, shared by members, and communicated to succeeding generations." },
+          { q: "What happens when a member breaks group norms?", opts: ["They become leader","They are ostracised","They gain privileges","Nothing happens"], correct: 1, explain: "Rule 4 of group psychology states: break the group's rules and members will be ostracised or face consequences." },
+          { q: "The obligation characteristic means:", opts: ["Members must pay fees","Members have complementary duties to each other","Leaders control members","All decisions are group decisions"], correct: 1, explain: "Obligation means all members have complementary duties that strengthen relationships through mutual fulfillment." }
+        ],
+        mindmap: { center: "Characteristics", branches: ["We-feeling","Common interest","Unity","Inter-relation","Common values","Group control","Obligation","Expectations","Cultural affect"] }
+      },
+      {
+        id: "u1-formation",
+        icon: "🌱",
+        name: "Group Formation & Theories",
+        preview: "How and why groups form — classic theory, social exchange, social identity and the 10 rules.",
+        tag: "Theories",
+        explain: {
+          summary: "Groups form through identifiable stages and are explained by three major theories. Additionally, 10 psychological rules govern how groups function once formed.",
+          keyPoints: [
+            "Classic Theory (Homans): Groups form through shared activities → more interaction → positive/negative attitudes.",
+            "Social Exchange Theory: Relationships form on implicit expectation of mutually beneficial exchanges based on trust.",
+            "Social Identity Theory (Tajfel & Turner): Individuals gain identity and self-esteem from salient group memberships.",
+            "5 Stages: Forming (orientation), Storming (conflict emerges), Norming (shared expectations), Performing (cohesion & goals), Adjourning (dissolution).",
+            "Rule 1: Groups arise from almost nothing — even minimal cues create in-group/out-group dynamics (Tajfel et al., 1971).",
+            "Rule 3: Groups breed conformity — 76% of Asch's participants denied their own senses to conform.",
+            "Rule 6: Leaders gain trust by first conforming, then subtly suggesting new directions (Merei, 1949).",
+            "Rule 8: People loaf — in groups, individual effort drops when individual contribution is hard to measure.",
+            "Rule 10: Groups breed competition between each other, even with cooperative individuals."
+          ],
+          analogy: "<strong>Think of group formation like baking bread:</strong> Raw ingredients (individuals) come together (forming), there's initial heat/conflict (storming), the dough settles into shape (norming), it bakes fully (performing), and finally it's consumed/complete (adjourning)."
+        },
+        flashcards: [
+          { front: "Classic Theory of Group Formation", back: "Proposed by George Homans — groups develop based on shared activities, interactions and sentiments. Common activities increase interaction, which builds attitudes." },
+          { front: "Social Exchange Theory", back: "Individuals form relationships based on implicit expectation of mutually beneficial exchanges based on trust and felt obligation." },
+          { front: "Storming stage", back: "Highest level of disagreement and conflict. Members voice concerns, interpersonal conflicts arise, differences about group goals emerge." },
+          { front: "Asch's conformity finding", back: "76% of participants denied evidence from their own senses at least once, just to conform with the group majority." },
+          { front: "Adjourning stage", back: "Final stage when the group, after achieving its objectives, gradually dissolves. Members often feel closure and sadness." }
+        ],
+        quiz: [
+          { q: "Which stage of group development is characterized by the highest conflict?", opts: ["Forming","Storming","Norming","Performing"], correct: 1, explain: "Storming is characterized by the highest level of disagreement, criticism and interpersonal conflict." },
+          { q: "Social Exchange Theory suggests groups form based on:", opts: ["Physical proximity","Shared appearance","Mutually beneficial exchanges on trust","Random chance"], correct: 2, explain: "Social Exchange Theory posits groups form when individuals expect mutually beneficial exchanges based on trust and obligation." },
+          { q: "In Asch's conformity experiment, what percentage denied their own senses?", opts: ["36%","56%","76%","96%"], correct: 2, explain: "Incredibly, 76% of Asch's participants denied the evidence from their own senses at least once to conform with the group." }
+        ],
+        mindmap: { center: "Group Formation", branches: ["Classic Theory","Social Exchange","Social Identity","Forming","Storming","Norming","Performing","Adjourning","10 Rules"] }
+      },
+      {
+        id: "u1-types",
+        icon: "🗂️",
+        name: "Types of Groups",
+        preview: "Primary vs secondary, formal vs informal, and many more classification systems.",
+        tag: "Classification",
+        explain: {
+          summary: "Groups can be classified in multiple ways — by intimacy, formality, purpose, and organizational structure. Each type has distinct characteristics and functions.",
+          keyPoints: [
+            "Primary group: Intimate, face-to-face relations with maximum 'we-feeling' — family, play groups, village community.",
+            "Secondary group: Casual relations with common interest — clubs, trade unions.",
+            "In-group (we-group): Group you identify with, sharing common object and interest, treating others as outsiders.",
+            "Out-group: Groups whose members are considered outsiders by us.",
+            "Formal group: Formed on specific norms, rules and values — classroom, school.",
+            "Informal group: Flexible rules, not formally organized — play groups, peer groups, social clubs.",
+            "Command groups: Specified by organizational chart — supervisor and subordinates.",
+            "Task groups: Work together for common task, often time-limited (task forces).",
+            "Functional groups: Created for specific goals without fixed time frame — continue after achieving current goals.",
+            "Reference groups: Where people evaluate themselves — strong influence on behavior."
+          ],
+          analogy: "<strong>Your life involves ALL types:</strong> Family (primary), colleagues (secondary), close friends (in-group), rivals (out-group), school class (formal), friend circle (informal), sports squad (task group), and the celebrities/peers you compare yourself to (reference group)."
+        },
+        flashcards: [
+          { front: "Primary Group", back: "Intimate face-to-face relationships with maximum 'we-feeling'. Examples: family, play groups, village community." },
+          { front: "Reference Group", back: "Groups where people evaluate themselves. They have strong influence on members' behavior and self-assessment." },
+          { front: "Functional Group", back: "Created by an organization to accomplish specific goals within an unspecified time frame. Continues even after achieving current goals." },
+          { front: "Difference: Formal vs Informal Group", back: "Formal: specific norms, rules, values (e.g., school class). Informal: flexible rules, not formally organized (e.g., peer group, social club)." },
+          { front: "Task Group", back: "People working together toward a common task, often within a specified time period — also called task forces." }
+        ],
+        quiz: [
+          { q: "Which type of group has the most intimate face-to-face relationships?", opts: ["Secondary group","Formal group","Primary group","Task group"], correct: 2, explain: "Primary groups have intimate face-to-face relationships with maximum we-feeling — like family and play groups." },
+          { q: "A classroom of students is an example of which group type?", opts: ["Informal group","Primary group","Reference group","Formal group"], correct: 3, explain: "Classroom is a formal group, formed on the basis of specific norms, rules and values." },
+          { q: "Reference groups primarily serve what function?", opts: ["Physical protection","Economic benefit","Self-evaluation benchmark","Entertainment"], correct: 2, explain: "Reference groups are where people evaluate themselves — they have a strong influence on behavior through self-comparison." }
+        ],
+        mindmap: { center: "Types of Groups", branches: ["Primary / Secondary","In-group / Out-group","Formal / Informal","Command Group","Task Group","Functional Group","Interest Group","Reference Group","Friendship Group"] }
+      }
+    ]
+  },
+  2: {
+    label: "Block 02",
+    title: "Group Dynamics — Forces, Cohesion & Culture",
+    color: "#f87c6e",
+    units: [
+      {
+        id: "u2-definition",
+        icon: "⚡",
+        name: "Group Dynamics: Definition & Concept",
+        preview: "What is group dynamics? How Lewin's field theory underpins group behavior science.",
+        tag: "Foundations",
+        explain: {
+          summary: "Group dynamics is the scientific study of the forces, processes, and changes that occur within groups. Coined by Kurt Lewin, it examines how groups influence and are influenced by individual members.",
+          keyPoints: [
+            "Coined by Kurt Lewin (1944) at the Research Centre for Group Dynamics.",
+            "Definition: A field of inquiry dedicated to understanding group nature, laws of development, and interrelations with individuals and institutions.",
+            "Based on Lewin's Field Theory: human behavior is a function of the field existing at the time of the behavior.",
+            "Two core variables: Group cohesiveness (how tightly members stick together) and Group locomotion (movement toward desired goals).",
+            "Cartwright & Zander (1968) assumptions: groups are inevitable; they mobilize powerful forces; can be constructive OR destructive; empirical understanding improves outcomes.",
+            "Group dynamics is influenced by sympathy, suggestion and imitation.",
+            "Techniques for group improvement: buzz sessions, role playing, brain storming, recreational experiences.",
+            "Group dynamics = change of behavior through interaction in the group."
+          ],
+          analogy: "<strong>Think of a magnetic field:</strong> You can't see magnetism directly, but it powerfully affects objects within its range. Group dynamics is the invisible 'field' that pushes and pulls member behavior — Lewin called this exactly a 'field theory'."
+        },
+        flashcards: [
+          { front: "Group Dynamics (Lewin's definition)", back: "A field of inquiry dedicated to advancing knowledge about group nature, laws of development, and interrelations with individuals, other groups and larger institutions." },
+          { front: "Field Theory (Lewin)", back: "Human behavior is a function of the field existing at the time of behavior. Group dynamics is the change of behavior through interaction in the group." },
+          { front: "Group Cohesiveness", back: "The degree to which members stick together — unity in the group. Influenced by task direction, personal attraction, and group prestige." },
+          { front: "Group Locomotion", back: "The movement toward the desired goal. One of two core variables in group dynamics alongside cohesiveness." },
+          { front: "Buzz Session", back: "A group technique with 5-6 members, organized for stimulating discussion and problem-solving within the group." }
+        ],
+        quiz: [
+          { q: "Who coined the term 'Group Dynamics' and established the Research Centre for it?", opts: ["Carl Jung","Kurt Lewin","Sigmund Freud","Jean Piaget"], correct: 1, explain: "Kurt Lewin set up the Research Centre for Group Dynamics in 1944 and introduced the term 'group dynamics'." },
+          { q: "According to Lewin's Field Theory, human behavior is a function of:", opts: ["Past experiences only","Personality traits","The field existing at the time of behavior","Genetic predispositions"], correct: 2, explain: "Lewin's Field Theory states behavior is a function of the field (situation/environment) existing at the time of occurrence." },
+          { q: "Which two are the core variables in group dynamics?", opts: ["Leadership and authority","Cohesiveness and locomotion","Norms and roles","Communication and conflict"], correct: 1, explain: "The two important variables are 'group cohesiveness' (sticking together) and 'group locomotion' (moving toward goals)." }
+        ],
+        mindmap: { center: "Group Dynamics", branches: ["Kurt Lewin (1944)","Field Theory","Cohesiveness","Locomotion","Sympathy","Suggestion","Imitation","Buzz Sessions","Role Playing"] }
+      },
+      {
+        id: "u2-communication",
+        icon: "💬",
+        name: "Communication & Interaction Patterns",
+        preview: "How messages flow within groups — encoding, decoding and interaction patterns.",
+        tag: "Processes",
+        explain: {
+          summary: "Communication is the backbone of group dynamics. How information flows — vertically or horizontally, verbally or non-verbally — shapes how groups function and achieve goals.",
+          keyPoints: [
+            "Communication involves: encoding → transmission → decoding of messages.",
+            "Face-to-face groups: both verbal and non-verbal communication.",
+            "Telephone groups: only verbal. Computer groups: only virtual.",
+            "Key interaction patterns (David, 1980): leader-centered, turn-taking, full participation, decentralized.",
+            "Group-centered interaction is more valued than leader-centered interaction.",
+            "Status and power within groups affect interaction patterns.",
+            "Interpersonal attraction and emotional bonds influence interaction.",
+            "Smaller groups allow more communication opportunity.",
+            "Sub-group formation occurs when members don't interact with equal importance.",
+            "Physical arrangement of space also affects interaction patterns."
+          ],
+          analogy: "<strong>Think of group communication like a radio network:</strong> The sender encodes a message (radio station transmits), it travels (airwaves), and the receiver decodes (your radio interprets). Just as some stations dominate airtime, some group members dominate interaction — this is the 'leader-centered' pattern."
+        },
+        flashcards: [
+          { front: "Communication process (Toseland & Rivas)", back: "1) Encoding perceptions/thoughts/feelings into language, 2) Transmitting verbally/non-verbally/virtually, 3) Decoding the message by receiver." },
+          { front: "Leader-centered interaction", back: "Communication flows FROM member TO leader and FROM leader TO member. Leader is the central figure." },
+          { front: "Why smaller groups communicate better", back: "In general, there is more chance to communicate if the group size is small — members get more opportunity to participate." },
+          { front: "Sub-group formation cause", back: "When members don't interact with equal valence (importance), sub-group formation tends to occur within the main group." }
+        ],
+        quiz: [
+          { q: "In telephone groups, what type of communication occurs?", opts: ["Non-verbal only","Both verbal and non-verbal","Only verbal","Only virtual"], correct: 2, explain: "Members of telephone groups experience only verbal communication — they can't see each other for non-verbal cues." },
+          { q: "Which interaction pattern is considered MORE valuable?", opts: ["Leader-centered","Member-to-member only","Group-centered","Authority-based"], correct: 2, explain: "Group-centered interaction pattern is more valued than leader-centered pattern, allowing full participation." },
+          { q: "What does encoding in communication mean?", opts: ["Receiving the message","Transmitting the message through a channel","Converting perceptions and feelings into language","Understanding what was said"], correct: 2, explain: "Encoding is the process of converting perceptions, thoughts and feelings into language or symbols by the sender." }
+        ],
+        mindmap: { center: "Communication", branches: ["Encoding","Transmission","Decoding","Verbal","Non-verbal","Virtual","Leader-centered","Group-centered","Sub-groups","Size effects"] }
+      },
+      {
+        id: "u2-cohesion",
+        icon: "🔗",
+        name: "Interpersonal Attraction & Cohesion",
+        preview: "What holds groups together — the forces of attraction, compatibility and cohesion.",
+        tag: "Social Forces",
+        explain: {
+          summary: "Cohesion is the sum of all forces that keep members in a group. It is built on interpersonal attraction, compatibility and shared need satisfaction.",
+          keyPoints: [
+            "Proximity increases interaction, which increases attraction.",
+            "Similarity attracts people toward each other.",
+            "Acceptance and approval are key contributing factors to attraction.",
+            "Group cohesion = sum of all forces causing members to remain in the group.",
+            "Cohesion means satisfying members' needs for affiliation, recognition and security.",
+            "High cohesion benefits: greater perseverance, willingness to take responsibility, express feelings, listen, and use feedback.",
+            "High cohesion outcomes: greater goal attainment, commitment, self-confidence, self-esteem, personal adjustment.",
+            "Downside: high cohesion can lead to groupthink, dependence, or some members staying silent.",
+            "Compatibility promotes cohesion — but compatibility doesn't guarantee effectiveness in all tasks."
+          ],
+          analogy: "<strong>Think of cohesion like gravity in a solar system:</strong> The stronger the gravitational pull (cohesion), the more tightly planets (members) orbit the center. Too little gravity and planets drift away; too much and they may collide (groupthink). The sweet spot keeps the system functioning."
+        },
+        flashcards: [
+          { front: "Group Cohesion (definition)", back: "The sum of all the forces that are exerted on members to remain in a group — including affiliation, recognition, security and interpersonal bonds." },
+          { front: "High cohesion benefits (Toseland & Rivas)", back: "Greater perseverance toward goals, willingness to take responsibility, express feelings, listen, and use feedback and evaluations." },
+          { front: "Why proximity increases attraction", back: "Proximity increases interaction among people, and increased interaction leads to greater interpersonal attraction and familiarity." },
+          { front: "Downside of very high cohesion", back: "Can lead to dependence on the group, groupthink, some members staying silent, or conformity that detracts from the group's work." }
+        ],
+        quiz: [
+          { q: "Group cohesion is best defined as:", opts: ["Number of members in a group","Sum of all forces keeping members in the group","Shared beliefs among members","Leader's authority over members"], correct: 1, explain: "Cohesion is the sum of all forces exerted on members to remain in a group — the 'glue' that holds groups together." },
+          { q: "Which factor does NOT directly build interpersonal attraction?", opts: ["Proximity","Similarity","Group size","Acceptance"], correct: 2, explain: "Proximity, similarity and acceptance build attraction. Group SIZE affects interaction opportunity but isn't directly an attraction factor." },
+          { q: "High cohesion is associated with:", opts: ["Lower goal attainment","Less commitment","Increased self-confidence","More conflict"], correct: 2, explain: "High cohesion is associated with increased feelings of self-confidence, self-esteem, greater goal attainment and commitment." }
+        ],
+        mindmap: { center: "Cohesion", branches: ["Proximity","Similarity","Acceptance","Compatibility","Affiliation needs","Recognition","Security","Groupthink risk","Goal attainment"] }
+      },
+      {
+        id: "u2-culture",
+        icon: "🌍",
+        name: "Culture, Group & Development",
+        preview: "How culture shapes groups, and how groups develop through measurable stages.",
+        tag: "Development",
+        explain: {
+          summary: "Culture — values, beliefs and traditions — fundamentally shapes how group members interact. Groups themselves develop through stages, and their dynamics can be scientifically measured.",
+          keyPoints: [
+            "Culture is a combination of values, beliefs and traditions — shared by group members.",
+            "When group members meet, they explore value systems searching for common ground.",
+            "Multicultural differences are salient interpersonal factors affecting group culture.",
+            "Group processes reflect European/American values: individualism, independence, competitiveness, achievement.",
+            "Ethnic identification and social hierarchy also influence interaction.",
+            "Group leaders should be sensitive to racial/ethnic and socioeconomic differences.",
+            "Group Development (Tuckman, 1963): Forming → Storming → Norming → Performing.",
+            "Garland, Jones & Kolody (1976): Pre-affiliation → Power & control → Intimacy → Differentiation → Separation.",
+            "Measurement scales: Group Climate Questionnaire, Group Cohesiveness Scale, Group Work Engagement Measure, GMIPS.",
+            "Beginning stages: tentative interaction, norm-setting, status hierarchies form slowly."
+          ],
+          analogy: "<strong>Think of culture as the operating system of a group:</strong> Just as macOS and Windows run software differently, cultural backgrounds cause people to 'run' the same group task differently — interpreting, communicating and valuing things through distinct cultural frameworks."
+        },
+        flashcards: [
+          { front: "Tuckman's (1963) Group Development Stages", back: "Forming → Storming → Norming → Performing. Each stage has distinct characteristics from orientation to full goal-focused cohesion." },
+          { front: "Garland et al. (1976) Group Stages", back: "Pre-affiliation → Power & Control → Intimacy → Differentiation → Separation." },
+          { front: "Group Climate Questionnaire", back: "A scale by MacKenzie (1983) to measure group dynamics by assessing the climate/atmosphere within a group." },
+          { front: "Pre-affiliation stage", back: "First stage in Garland's model — members should be attracted to and affected by the group before deeper engagement occurs." },
+          { front: "Differentiation stage", back: "Members are able to differentiate their personal goals from group goals while remaining part of the group." }
+        ],
+        quiz: [
+          { q: "Which stage of Tuckman's model involves members feeling cohesion and making rational decisions?", opts: ["Forming","Storming","Norming","Performing"], correct: 3, explain: "Performing is when the group has matured, attains cohesiveness, and members make rational decisions focused on goals." },
+          { q: "In Garland's model, which stage involves closeness between members?", opts: ["Pre-affiliation","Power and control","Intimacy","Separation"], correct: 2, explain: "The Intimacy stage in Garland's model requires certain closeness and intimacy among group members." },
+          { q: "Which value system do group processes typically reflect?", opts: ["Asian collectivism","European/American individualism","African communitarianism","No particular culture"], correct: 1, explain: "Group processes have historically reflected European and American values of individualism, independence, competitiveness and achievement." }
+        ],
+        mindmap: { center: "Culture & Development", branches: ["Values & beliefs","Multicultural differences","Ethnic identification","Tuckman (1963)","Garland (1976)","Forming","Performing","Separation","Measurement scales"] }
+      }
+    ]
+  },
+  3: {
+    label: "Block 03",
+    title: "Social Identity, Crowding & Crowd Behaviour",
+    color: "#6ef8c4",
+    units: [
+      {
+        id: "u3-identity",
+        icon: "🪞",
+        name: "Social Identity Theory",
+        preview: "How we derive our sense of self from group memberships — Tajfel & Turner's framework.",
+        tag: "Identity",
+        explain: {
+          summary: "Social Identity Theory (Tajfel & Turner, 1979) explains that people develop their self-concept partly from group memberships. We have multiple social identities, and we seek positive distinction for our in-groups.",
+          keyPoints: [
+            "Social identity is derived from perceived membership of social groups (Hogg & Vaughan, 2002).",
+            "Tajfel & Turner (1979): A person has not one 'personal self' but several selves corresponding to different group memberships.",
+            "Four elements of social identity: Categorisation, Identification, Comparison, Psychological distinctiveness.",
+            "Three variables for in-group favouritism: extent of identification with in-group; grounds for comparison; perceived relevance of comparison group.",
+            "People seek group membership to affirm self-esteem but need a POSITIVE distinction from other groups.",
+            "Self-concept: organised collection of beliefs and feelings about oneself — influences how we process social information.",
+            "Ethnicity is a powerful social identity — biological origins, customs, habits, norms.",
+            "Social identity has implications for prejudice, stereotyping, negotiation and language use.",
+            "Normative influence (meeting expectations) vs Informational influence (accepting persuasive information)."
+          ],
+          analogy: "<strong>Think of identity like a layered cake:</strong> At the core is your personal self (sponge), but social identities (different cake layers) are added through group memberships — family, nationality, profession, religion. You ARE all those layers simultaneously, not just one."
+        },
+        flashcards: [
+          { front: "Social Identity Theory", back: "Developed by Tajfel & Turner (1979). People have multiple social identities derived from group memberships. They seek positive distinction from other groups to affirm self-esteem." },
+          { front: "Four elements of Social Identity", back: "1) Categorisation, 2) Identification, 3) Comparison, 4) Psychological Distinctiveness." },
+          { front: "Self-concept", back: "An organised collection of beliefs and feelings about oneself — including motives, emotional status, abilities, self-evaluation, and past/present/future selves." },
+          { front: "In-group favouritism conditions (Tajfel & Turner)", back: "1) Extent individuals identify with in-group, 2) Grounds for inter-group comparison, 3) Perceived relevance of the comparison group." }
+        ],
+        quiz: [
+          { q: "Social Identity Theory was developed by:", opts: ["Freud & Jung","Lewin & Asch","Tajfel & Turner","Mead & Cooley"], correct: 2, explain: "Social Identity Theory was developed by Tajfel and Turner in 1979, explaining how group memberships shape self-concept." },
+          { q: "How many elements make up social identity?", opts: ["Two","Three","Four","Five"], correct: 2, explain: "Social identity is composed of four elements: categorisation, identification, comparison and psychological distinctiveness." },
+          { q: "Why do people join groups according to Social Identity Theory?", opts: ["Only for economic benefit","To affirm self-esteem through positive group distinction","Because they are forced to","To reduce cognitive load"], correct: 1, explain: "People join groups to affirm self-esteem but need to believe they're in the RIGHT group — creating need for positive distinction from other groups." }
+        ],
+        mindmap: { center: "Social Identity", branches: ["Categorisation","Identification","Comparison","Distinctiveness","Multiple selves","Self-esteem","In-group bias","Out-group contrast","Tajfel & Turner 1979"] }
+      },
+      {
+        id: "u3-crowd",
+        icon: "👥",
+        name: "Definition & Types of Crowd",
+        preview: "What makes a crowd? Active vs inactive, and the four types of active crowds.",
+        tag: "Crowd Theory",
+        explain: {
+          summary: "A crowd is a physically compact, temporary and unorganized aggregation of individuals drawn together by common interest or stimuli. Crowds have distinct types and behavioral characteristics.",
+          keyPoints: [
+            "MacIver: A physically compact aggregation brought into direct, temporary and unorganised contact.",
+            "Kimball Young: A gathering of considerable people around a centre of common attraction.",
+            "Majumder: An aggregation drawn together by interest without premeditation.",
+            "Three aspects of crowd behaviour: psychological continuity, polarisation of interest, transitory character.",
+            "Crowd is the most transitory and unstable of all social groups.",
+            "Active crowd types: Aggressive (destructive, emotional), Panicky (fear-driven, irrational), Acquisitive (goal: obtain something), Expressive (manifesting demands/sentiments).",
+            "Inactive crowd resembles an audience — no crowd is completely inactive.",
+            "Crowd characteristics: no predetermined aim, motivated by emotions, uncontrolled, unorganized.",
+            "Le Bon (1895): crowd behaviour arises from anonymity, contagion and suggestibility.",
+            "Dollard (1939): frustration-aggression hypothesis explains violent crowd behaviour."
+          ],
+          analogy: "<strong>Think of a crowd like water:</strong> Individuals are water molecules — normally independent. In a crowd they combine into a powerful force that can be calm (inactive crowd), flow predictably (expressive crowd), become a tidal wave (aggressive crowd) or panic and scatter (panicky crowd)."
+        },
+        flashcards: [
+          { front: "Aggressive Crowd", back: "Crowd in a destructive and aggressive frame of mind, capable of acts of brutality and irrationality. Exhibits tremendous excitement." },
+          { front: "Panicky Crowd", back: "Fear-stricken crowd whose members are almost crazed with fear — thinking is temporarily impossible, concerned only with saving their lives." },
+          { front: "Acquisitive Crowd", back: "Members' objective is to gain or obtain something — cinema tickets, scarce resources, etc." },
+          { front: "Expressive Crowd", back: "Gathered to express or manifest demands and sentiments. Desire for violence is relatively less pronounced." },
+          { front: "Le Bon's three mechanisms of crowd behaviour", back: "Anonymity, contagion (spread of feelings/actions) and suggestibility — these cause individuals to lose self-control in crowds." }
+        ],
+        quiz: [
+          { q: "Which type of active crowd is driven primarily by FEAR?", opts: ["Aggressive crowd","Panicky crowd","Acquisitive crowd","Expressive crowd"], correct: 1, explain: "The panicky crowd is the fear-stricken crowd whose members are crazed with fear to a point of irrationality." },
+          { q: "Le Bon identified which THREE mechanisms of crowd behaviour?", opts: ["Conformity, obedience, compliance","Anonymity, contagion, suggestibility","Fear, anger, excitement","Leadership, norms, roles"], correct: 1, explain: "Le Bon (1895) identified anonymity, contagion (spread of feelings) and suggestibility as the three mechanisms causing crowd behaviour." },
+          { q: "What is the most transitory of all social groups?", opts: ["Formal organisation","Primary group","Crowd","Secondary group"], correct: 2, explain: "The crowd is described as 'the most transitory and unstable of all the social groups' — it forms and dissolves quickly." }
+        ],
+        mindmap: { center: "Crowd", branches: ["Temporary","Unorganised","Common interest","Aggressive","Panicky","Acquisitive","Expressive","Inactive","Anonymity","Contagion"] }
+      },
+      {
+        id: "u3-theories",
+        icon: "🔬",
+        name: "Theories of Crowd Behaviour",
+        preview: "Classical theory, Convergence theory and Group Mind theory — three explanations for crowds.",
+        tag: "Theories",
+        explain: {
+          summary: "Three major theories attempt to explain why and how crowd behaviour occurs — from Le Bon's classical theory to the convergence and group mind frameworks.",
+          keyPoints: [
+            "Classical Theory (Le Bon): Crowds foster anonymity and generate emotions. Individual minds merge into a collective mind with unconscious motives dominating.",
+            "In Le Bon's theory: individual conscious motivation sinks; unconscious motives become active; person becomes uninhibited.",
+            "Convergence Theory: Crowd behaviour is NOT produced by the crowd itself but carried into it by individuals. Like-minded people converge because of shared interests.",
+            "Convergence Theory: Crowds don't generate hatred — they arise from convergence of people who already oppose something.",
+            "Group Mind Theory (Le Bon, Espinas, Trotter, Durkheim, McDougall, Allport): Individual loses individuality and becomes part of crowd consciousness.",
+            "Espinas: Group mind = 'social consciousness' — self-consciousness in every group.",
+            "Trotter: Gregariousness instinct — man accepts group commands without argument.",
+            "Durkheim: Collective consciousness created by mutual exchange of ideas in groups.",
+            "McDougall: The group mind influences individual minds — thinking changes when joining a group.",
+            "Allport: Social facilitation and inter-stimulation curb reasoning and increase suggestibility.",
+            "Public vs Crowd: Public is scattered/bigger; crowd has physical contact. Crowd is more suggestible."
+          ],
+          analogy: "<strong>Convergence vs Classical Theory — imagine a concert:</strong> Classical theory says the crowd creates a magical collective mood. Convergence theory says the fans BROUGHT their excitement — the crowd just gathered people who were already excited. Both explain why the concert feels so powerful, but differently."
+        },
+        flashcards: [
+          { front: "Classical Theory (Le Bon)", back: "Crowds foster anonymity and generate emotion. Individual minds merge into a collective mind where unconscious motives dominate and conscious motivation sinks." },
+          { front: "Convergence Theory", back: "Crowd behaviour is carried INTO the crowd by individuals, not created by it. Like-minded people converge because they share interests/values — crowds express pre-existing feelings." },
+          { front: "Group Mind Theory", back: "The individual in the crowd loses individuality and becomes part of the crowd's collective consciousness. The crowd develops its own mentality (Le Bon, McDougall, Durkheim, Allport et al.)." },
+          { front: "Durkheim's view on collective consciousness", back: "When people collect in a group, mutual exchange of ideas creates a collective consciousness. Social consciousness has different qualities than individual consciousness." },
+          { front: "Allport's explanation of crowd behaviour", back: "Social facilitation and inter-stimulation curb individuals' reasoning capacity and increase their suggestibility within the crowd." }
+        ],
+        quiz: [
+          { q: "According to Convergence Theory, where does crowd behaviour originate?", opts: ["It emerges spontaneously in any crowd","It is brought INTO the crowd by individuals","It comes from the crowd's collective mind","It is generated by crowd leaders"], correct: 1, explain: "Convergence Theory states crowd behaviour is NOT a product of the crowd itself but is carried into it by particular individuals with pre-existing attitudes." },
+          { q: "Which theorist proposed the concept of 'gregariousness instinct' in crowd behaviour?", opts: ["Durkheim","Le Bon","Trotter","Allport"], correct: 2, explain: "Trotter proposed that every man possesses the instinct of gregariousness — causing him to accept group commands without argument." },
+          { q: "How does a Public differ from a Crowd?", opts: ["Public is smaller","Public has physical contact among members","Public is scattered; crowd has physical contact","There is no difference"], correct: 2, explain: "Key difference: crowd members have physical contact; public is scattered at several places. Public is also much bigger than the crowd." }
+        ],
+        mindmap: { center: "Crowd Theories", branches: ["Classical (Le Bon)","Convergence","Group Mind","Anonymity","Collective consciousness","Social facilitation","Gregariousness","Durkheim","McDougall","Allport"] }
+      },
+      {
+        id: "u3-collective",
+        icon: "🌊",
+        name: "Collective Behaviour: Mob, Audience & Fashion",
+        preview: "Mass society, audience types, mob psychology and fashion as collective action.",
+        tag: "Collective Action",
+        explain: {
+          summary: "Collective behaviour encompasses crowd, mob, audience, and broader social phenomena like fashion. These represent society at moments of change, unrest, or shared emotional states.",
+          keyPoints: [
+            "Collective behaviour: when 2+ persons behave the same way — religious congregation, protests, movements.",
+            "Features: episodic (not routine), unregulated, driven by unreasoning beliefs/fears, unpredictable.",
+            "Mass Society: rational, impersonal, extreme specialisation, loneliness despite numbers, susceptible to propaganda.",
+            "Mass society: sense of insecurity and loneliness makes individuals irrational — creating mixed rational/irrational behaviour.",
+            "Audience: polarised crowd in one place. Casual (watching street fight) vs Scheduled (lecture hall, cinema).",
+            "Mob: similarity in feelings/thoughts/actions regardless of education. Heightened emotionality (anger, fear, joy). Diminished sense of responsibility.",
+            "Mob: suggestion, imitation and sympathy are the three mechanisms of mob interaction.",
+            "Fashion: variation permissible within custom limits. Based on desire for change, conformity, social solidarity.",
+            "Social movements are collective efforts to change society — local, national or international.",
+            "Agitated crowds can develop into disciplined associations — collective behaviour can be an agent of social change."
+          ],
+          analogy: "<strong>Think of collective behaviour on a spectrum:</strong> Audience (calm, purposeful, gathered) → Crowd (temporary, mixed purposes) → Mob (emotional, loss of individual responsibility) → Social Movement (organized, sustained collective change). You can slide up or down this spectrum rapidly."
+        },
+        flashcards: [
+          { front: "Collective Behaviour (definition)", back: "When two or more persons behave in the same way, often episodic, unregulated, unpredictable, and guided by unreasoning beliefs, hopes or fears." },
+          { front: "Mass Society", back: "Characterised by rationality, impersonal relations, extreme specialisation, loneliness, and susceptibility to propaganda and suggestion (Young, 1948)." },
+          { front: "Casual vs Scheduled Audience", back: "Casual: convergence around a spontaneous event (street fight). Scheduled: assembled by plan (lecture hall, cinema hall)." },
+          { front: "Mob characteristics", back: "Similarity in feelings/thoughts/actions regardless of background; heightened emotionality; diminished sense of responsibility; mechanisms: suggestion, imitation, sympathy." },
+          { front: "Fashion (sociological definition)", back: "Variation permissible within limits of custom. Based on desire for change and novelty — also provides conformity, security and social solidarity." }
+        ],
+        quiz: [
+          { q: "What are the THREE mechanisms of interaction in mob behaviour?", opts: ["Fear, anger, joy","Anonymity, contagion, suggestibility","Suggestion, imitation, sympathy","Norms, roles, status"], correct: 2, explain: "Suggestion, imitation and sympathy are the three mechanisms of interaction observed in mob behaviour." },
+          { q: "Which statement about Collective Behaviour is CORRECT?", opts: ["It follows regular routines","It is regulated by specific rules","It is unpredictable and episodic","It always leads to violence"], correct: 2, explain: "Collective behaviour takes place in occasional episodes (not routine), is not regulated by particular rules, and is unpredictable." },
+          { q: "Fashion sociologically represents:", opts: ["Pure economic consumption","Individual self-expression only","Variation within custom limits satisfying desires for change and conformity","An irrational rejection of norms"], correct: 2, explain: "Fashion is variation permissible within custom limits — based on desire for change but also furnishing desires for conformity, security and social solidarity." }
+        ],
+        mindmap: { center: "Collective Behaviour", branches: ["Audience (casual/scheduled)","Mob","Mass Society","Fashion","Social Movements","Unpredictable","Episodic","Agent of change","Suggestion & Imitation"] }
+      }
+    ]
+  },
+  4: {
+    label: "Block 04",
+    title: "Cooperation, Competition & Conflicts",
+    color: "#f8d96e",
+    units: [
+      {
+        id: "u4-interaction",
+        icon: "🤝",
+        name: "Social Interaction & Social Process",
+        preview: "The building blocks — social contact and communication as foundations of all interaction.",
+        tag: "Foundations",
+        explain: {
+          summary: "Social interaction is the essence of social life — the reciprocal stimulation and response between individuals. It occurs through social contact and communication, producing the social processes we observe.",
+          keyPoints: [
+            "Green: Social interaction is the mutual influence affecting groups as they attempt to solve problems and strive toward goals.",
+            "Dawson & Gettys: A process whereby people interpenetrate the minds of each other.",
+            "Gish: Reciprocal influence where human beings exert on each other through inter-stimulation and response.",
+            "Two essential conditions of social interaction: 1) Social contact, 2) Communication.",
+            "Social contact: positive contact leads to cooperation, mutual understanding, assimilation; negative leads to hatred, jealousy, conflict.",
+            "Communication media: language, gestures, symbols, radio, telephone, television, newspapers.",
+            "Social process (MacIver): the manner in which relations of group members are brought together to acquire a distinctive character.",
+            "5 elements of social process: sequence, repetition, relationship, continuity, special results.",
+            "Main forms: cooperation, competition, conflict, accommodation, assimilation.",
+            "Two forms of social interaction: conjunctive and disjunctive."
+          ],
+          analogy: "<strong>Think of social interaction like electricity:</strong> Social contact provides the wire (connection), communication provides the current (information flow), and together they produce social processes — the 'light' and 'power' that runs a society."
+        },
+        flashcards: [
+          { front: "Social Interaction (Gish)", back: "The reciprocal influence which human beings exert on each other through inter-stimulation and response." },
+          { front: "Two conditions of Social Interaction", back: "1) Social Contact — the first phase, can be positive (leading to cooperation) or negative (leading to conflict). 2) Communication." },
+          { front: "Social Process (MacIver)", back: "The manner in which relations of group members are brought together to acquire a certain distinctive character." },
+          { front: "5 elements of Social Process", back: "1) Sequence of events, 2) Repetition of events, 3) Relationship between events, 4) Continuity of events, 5) Special results." },
+          { front: "Conjunctive vs Disjunctive interaction", back: "Conjunctive: interaction that brings people together (cooperation). Disjunctive: interaction that drives people apart (conflict, competition)." }
+        ],
+        quiz: [
+          { q: "What are the TWO essential conditions of social interaction?", opts: ["Norms and values","Social contact and communication","Leadership and authority","Competition and conflict"], correct: 1, explain: "The two essential conditions of social interaction are social contact and communication — both required for interaction to occur." },
+          { q: "Negative social contact leads to:", opts: ["Cooperation and assimilation","Mutual understanding","Hatred, jealousy and conflict","Communication improvement"], correct: 2, explain: "Negative social contact creates hatred, jealousy and conflict — while positive contact leads to cooperation and assimilation." },
+          { q: "Social process was defined by MacIver as:", opts: ["The same as social change","The manner in which relations of group members acquire a distinctive character","A type of conflict resolution","The structure of formal organizations"], correct: 1, explain: "MacIver defines social process as 'the manner in which the relations of the members of a group are brought together to acquire a certain distinctive character'." }
+        ],
+        mindmap: { center: "Social Interaction", branches: ["Social contact","Communication","Positive contact","Negative contact","Cooperation","Competition","Conflict","Accommodation","Assimilation"] }
+      },
+      {
+        id: "u4-cooperation",
+        icon: "🌟",
+        name: "Cooperation",
+        preview: "Working together — types, role and psychological necessity of cooperation in society.",
+        tag: "Social Process",
+        explain: {
+          summary: "Cooperation is the joint, goal-oriented activity where individuals or groups combine effort for common objectives. It is both a psychological and social necessity.",
+          keyPoints: [
+            "Etymology: 'co' (together) + 'operari' (to work) — Latin origin.",
+            "Two core elements: 1) Common end, 2) Organised effort.",
+            "Brought about by: desire for individual benefits, desire to give and share, common purpose, situational necessity, larger goals.",
+            "Direct cooperation: doing together things that can also be done separately (playing, worshiping together).",
+            "Indirect cooperation: dissimilar tasks toward a common end — each has a specialised role. Dominant in modern society due to technological specialisation.",
+            "Primary cooperation: identity of individual and group interest — found in families and peer groups.",
+            "Secondary cooperation: found in secondary groups — government, industry, church, trade unions.",
+            "Tertiary cooperation: between big and small groups for a specific purpose — attitudes are purely opportunistic.",
+            "Cooperation is a universal phenomenon — both psychological AND social necessity.",
+            "Family members cooperate in economic, emotional and social requirements — first lesson in cooperation."
+          ],
+          analogy: "<strong>Think of an orchestra:</strong> Direct cooperation = all musicians playing the same melody together. Indirect cooperation = violins, cellos, woodwinds all playing DIFFERENT parts toward the same symphony. Primary = the string section (intimate, unified). Tertiary = orchestras from rival cities temporarily joining for one concert."
+        },
+        flashcards: [
+          { front: "Cooperation (definition)", back: "A joint activity in pursuit of common goals or shared rewards. The process by which individuals or groups combine effort in an organised way to attain common objectives." },
+          { front: "Direct Cooperation", back: "People do together what they could also do separately. Performing identical functions together — e.g., playing together, worshiping together." },
+          { front: "Indirect Cooperation", back: "People perform dissimilar tasks toward a common end — each has a specialised role. Dominant in modern society due to technological changes requiring specialised skills." },
+          { front: "Tertiary Cooperation", back: "Interaction between big and small groups for a specific situation. Parties who normally compete come together temporarily — attitudes are purely opportunistic." },
+          { front: "Primary Cooperation", back: "Found in primary groups (family, peer groups). Individual interest merges with group interest. Face-to-face relations are characteristic." }
+        ],
+        quiz: [
+          { q: "Which type of cooperation is most dominant in modern technological society?", opts: ["Direct cooperation","Primary cooperation","Indirect cooperation","Tertiary cooperation"], correct: 2, explain: "Indirect cooperation is more dominant in modern society because technological changes require specialisation of skills and functions." },
+          { q: "Tertiary cooperation is characterized by:", opts: ["Deep emotional bonds","Long-term partnerships","Purely opportunistic attitudes","Family-like relationships"], correct: 2, explain: "In tertiary cooperation, parties who normally compete come together for a specific purpose — their attitudes are purely opportunistic." },
+          { q: "The word 'cooperation' etymologically means:", opts: ["Working against","Working alone","Working together","Working in secret"], correct: 2, explain: "Cooperation derives from Latin 'co' (together) + 'operari' (to work) — literally 'working together'." }
+        ],
+        mindmap: { center: "Cooperation", branches: ["Direct","Indirect","Primary","Secondary","Tertiary","Common end","Organised effort","Universal phenomenon","Psychological necessity"] }
+      },
+      {
+        id: "u4-competition",
+        icon: "🏆",
+        name: "Competition",
+        preview: "Unconscious, impersonal struggle for limited resources — its nature, characteristics and value.",
+        tag: "Social Process",
+        explain: {
+          summary: "Competition is the most important form of social struggle — an impersonal, largely unconscious, continuous contest for limited goods. It performs essential social functions while also carrying risks.",
+          keyPoints: [
+            "Anderson & Parker: Competition is striving against each other for possession/use of limited material and non-material goods.",
+            "Sutherland et al.: Impersonal, unconscious, continuous struggle because of limited supply.",
+            "Occurs whenever there is insufficient supply of anything human beings desire.",
+            "Key characteristics: impersonal, universal, conducive to progress, unconscious (except rivalry), may create emotional disturbances, innate tendency.",
+            "Park & Burgess: Competition is 'interaction without social contact'.",
+            "5 positive functions: determines status/location in hierarchy; stimulates economy/efficiency/inventiveness; enhances ego; prevents power concentration; creates respect for group rules.",
+            "Competition determines who performs what function (Ross).",
+            "Negative functions: leads to frustration, monopoly, conflict, emotional disturbances, unfriendly attitudes.",
+            "Fair competition is conducive to economic and social progress.",
+            "Unlimited competition leads to monopoly — no society is exclusively competitive or cooperative."
+          ],
+          analogy: "<strong>Think of competition like market forces:</strong> When there's plenty of food, little competition. When food is scarce, competition intensifies. This applies to everything humans desire — status, mates, resources, recognition. Competition is society's 'invisible hand' sorting people into roles."
+        },
+        flashcards: [
+          { front: "Competition (Sutherland et al.)", back: "An impersonal, unconscious, continuous struggle which, because of their limited supply, all may not have." },
+          { front: "Competition as 'interaction without social contact'", back: "Defined by Park & Burgess — competition is inter-individual struggle that is impersonal and not directed against any specific individual." },
+          { front: "5 positive functions of competition", back: "1) Determines status/location in hierarchy, 2) Stimulates economy/efficiency/inventiveness, 3) Enhances ego, 4) Prevents power concentration, 5) Creates respect for group rules." },
+          { front: "Negative effects of competition", back: "May lead to frustration, monopoly, conflict, emotional disturbances, and unfriendly/unfavourable attitudes among persons or groups." },
+          { front: "Ross on competition", back: "Competition 'performs that broad function of assigning to each individual his social world' — it is a progressive force that fulfills but doesn't necessarily destroy." }
+        ],
+        quiz: [
+          { q: "Competition is described as primarily which type of activity?", opts: ["Conscious and personal","Impersonal and unconscious","Violent and direct","Organized and structured"], correct: 1, explain: "Competition is mainly an unconscious, impersonal activity — though personal competition or rivalry can be conscious." },
+          { q: "Which function of competition helps prevent power concentration?", opts: ["Status determination","Ego enhancement","Efficiency stimulation","Preventing undue concentration of power"], correct: 3, explain: "One of competition's positive functions is preventing undue concentration of power in any individual or group." },
+          { q: "Unlimited competition tends to lead to:", opts: ["Perfect equality","Greater cooperation","Monopoly","Social harmony"], correct: 2, explain: "Unlimited competition leads to monopoly — one of its negative consequences identified in the unit." }
+        ],
+        mindmap: { center: "Competition", branches: ["Impersonal","Unconscious","Continuous","Limited supply","Status determination","Efficiency","Ego enhancement","Frustration risk","Monopoly risk"] }
+      },
+      {
+        id: "u4-conflict",
+        icon: "⚡",
+        name: "Conflict, Accommodation & Distinction",
+        preview: "Conflict vs competition, causes, effects, types and how accommodation resolves conflict.",
+        tag: "Social Process",
+        explain: {
+          summary: "Conflict is conscious, deliberate opposition — unlike competition's unconscious nature. It has causes, types, positive and negative effects. Accommodation resolves conflicts by adjusting to new environments.",
+          keyPoints: [
+            "Gillin & Gillin: Conflict is the social process where individuals/groups seek ends by directly challenging antagonists through violence or threat.",
+            "Green: Conflict is the deliberate attempt to oppose, resist and coerce the will of another.",
+            "Conflict is conscious, personal, lacks continuity — unlike competition which is unconscious, impersonal, continuous.",
+            "4 main causes: Individual differences, Cultural differences, Clash of interests, Social change.",
+            "Characteristics: universal but varies by society; leads to social change; can involve many people; expression of disequilibrium.",
+            "Types (Gillin & Gillin): Personal, Racial, Class, Political, International.",
+            "Positive effects: improves decision-making, helps form new groups, increases unity/cohesion, gains recognition.",
+            "Negative effects: increases tension, disrupts activities, weakens groups, harmful to individuals, creates bitterness.",
+            "KEY DISTINCTION — Conflict vs Competition: conflict = conscious, violent, involves contact, intermittent, disregards norms. Competition = unconscious, non-violent, no contact, continuous, cares about norms.",
+            "Accommodation: Resolution of conflict — adjusting oneself to a new environment. Described by MacIver as attaining harmony with environment."
+          ],
+          analogy: "<strong>Competition vs Conflict — like racing vs fighting:</strong> In a race (competition), runners don't touch each other, follow rules unconsciously, and it's ongoing. In a fight (conflict), participants deliberately engage physically, break rules, and it ends with a winner or resolution — then stops."
+        },
+        flashcards: [
+          { front: "Conflict (Gillin & Gillin)", back: "The social process in which individuals or groups seek their ends by directly challenging the antagonist by violence or threat of violence." },
+          { front: "4 Causes of Conflict", back: "1) Individual differences (nature, personality), 2) Cultural differences between groups, 3) Clashing interests (employer/employee), 4) Social change creating disequilibrium." },
+          { front: "Conflict vs Competition (key differences)", back: "Conflict: conscious, violent, involves contact, intermittent, disregards norms. Competition: unconscious, non-violent, no contact, continuous, cares about norms." },
+          { front: "Accommodation (MacIver)", back: "The process by which man attains a sense of harmony with his environment. Adjusting oneself to new conditions created by competition and conflict." },
+          { front: "Types of conflict (Gillin & Gillin)", back: "Personal (within group), Racial (superiority/inferiority), Class (between classes), Political (between parties), International (between nations)." }
+        ],
+        quiz: [
+          { q: "Which is a key difference between conflict and competition?", opts: ["Competition is more violent","Conflict is unconscious while competition is conscious","Conflict is conscious while competition is unconscious","They are essentially the same"], correct: 2, explain: "Conflict takes place on a CONSCIOUS level; competition is UNCONSCIOUS. This is one of the most important distinctions between them." },
+          { q: "Accommodation, as described by MacIver, refers to:", opts: ["Winning a conflict","Avoiding all interaction","Attaining harmony with one's environment through adjustment","Creating new conflicts"], correct: 2, explain: "MacIver describes accommodation as the process by which 'man attains a sense of harmony with his environment' — adjusting to changed conditions." },
+          { q: "Social change as a cause of conflict is described as:", opts: ["Cultural lag causing disequilibrium","Lack of communication","Economic inequality","Population growth"], correct: 0, explain: "Social change is described as 'cultural lag which leads to conflict' — it creates disequilibrium that manifests as conflict." }
+        ],
+        mindmap: { center: "Conflict", branches: ["Conscious","Deliberate","Personal conflict","Racial conflict","Class conflict","Political conflict","Individual differences","Accommodation","vs Competition"] }
+      }
+    ]
+  }
+};
+
+let currentBlock = null;
+let currentUnit = null;
+let currentUnitIndex = 0;
+let quizState = { qIndex: 0, score: 0, answered: false, total: 0 };
+let cardIndex = 0;
+let completedConcepts = new Set();
+
+function openBlock(blockNum) {
+  currentBlock = blockNum;
+  const block = DATA[blockNum];
+  document.getElementById('block-label').textContent = block.label;
+  document.getElementById('block-title').textContent = block.title;
+
+  // Build unit nav
+  const nav = document.getElementById('unit-nav');
+  nav.innerHTML = '';
+  block.units.forEach((unit, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'unit-nav-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = unit.name.split(':')[0].substring(0, 30);
+    btn.onclick = () => loadUnit(blockNum, i);
+    nav.appendChild(btn);
+  });
+
+  loadUnit(blockNum, 0);
+  showView('view-block');
+  updateBreadcrumb(block.label, null);
+}
+
+function loadUnit(blockNum, unitIndex) {
+  currentUnitIndex = unitIndex;
+  const block = DATA[blockNum];
+  const units = block.units;
+
+  // Update nav
+  document.querySelectorAll('.unit-nav-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === unitIndex);
+  });
+
+  // Render concepts
+  const grid = document.getElementById('concepts-grid');
+  grid.innerHTML = '';
+
+  const unit = units[unitIndex];
+  currentUnit = unit;
+
+  // Single unit display — render concept cards from the unit
+  // We treat each key point group as a sub-concept
+  // Actually we render all units as concept cards when in block view
+  // Let me re-render: show concept cards for each unit
+  units.forEach((u, idx) => {
+    const card = document.createElement('div');
+    card.className = 'concept-card' + (completedConcepts.has(u.id) ? ' done' : '');
+    card.innerHTML = `
+      <div class="completed-badge">✓</div>
+      <div class="concept-icon">${u.icon}</div>
+      <div class="concept-tag">${u.tag}</div>
+      <div class="concept-name">${u.name}</div>
+      <div class="concept-preview">${u.preview}</div>
+    `;
+    card.onclick = () => openConcept(blockNum, idx);
+    if (idx === unitIndex) {
+      card.style.borderColor = block.color;
+      card.style.boxShadow = `0 4px 20px ${block.color}22`;
+    }
+    grid.appendChild(card);
+  });
+
+  updateProgress(blockNum);
+}
+
+function updateProgress(blockNum) {
+  const units = DATA[blockNum].units;
+  const done = units.filter(u => completedConcepts.has(u.id)).length;
+  const total = units.length;
+  document.getElementById('block-progress').textContent = `${done} / ${total} concepts explored`;
+  document.getElementById('block-progress-bar').style.width = `${(done/total)*100}%`;
+}
+
+function openConcept(blockNum, unitIndex) {
+  const unit = DATA[blockNum].units[unitIndex];
+  currentUnit = unit;
+
+  completedConcepts.add(unit.id);
+  updateProgress(blockNum);
+  document.querySelectorAll('.concept-card').forEach((card, i) => {
+    if (i === unitIndex) card.classList.add('done');
+  });
+
+  // Fill modal
+  document.getElementById('modal-icon').textContent = unit.icon;
+  document.getElementById('modal-title').textContent = unit.name;
+
+  // Explain tab
+  const ep = unit.explain;
+  let html = `<div class="explain-section">`;
+  html += `<div class="summary-box">${ep.summary}</div>`;
+  html += `<h4>Key Points</h4><div class="key-points">`;
+  ep.keyPoints.forEach(kp => {
+    html += `<div class="key-point"><div class="kp-dot"></div><div>${kp}</div></div>`;
+  });
+  html += `</div>`;
+  html += `<div class="analogy-box">💡 ${ep.analogy}</div>`;
+  html += `</div>`;
+  document.getElementById('explain-content').innerHTML = html;
+
+  // Flashcards
+  cardIndex = 0;
+  renderCard();
+
+  // Quiz
+  quizState = { qIndex: 0, score: 0, answered: false, total: unit.quiz.length };
+  renderQuiz();
+
+  // Mindmap
+  renderMindmap(unit.mindmap);
+
+  // Switch to explain tab
+  switchTab('explain');
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function renderCard() {
+  const cards = currentUnit.flashcards;
+  const card = cards[cardIndex];
+  document.getElementById('fc-front-text').textContent = card.front;
+  document.getElementById('fc-back-text').textContent = card.back;
+  document.getElementById('fc-counter').textContent = `Card ${cardIndex + 1} of ${cards.length}`;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+
+function flipCard() {
+  document.getElementById('flashcard').classList.toggle('flipped');
+}
+
+function nextCard() {
+  const cards = currentUnit.flashcards;
+  cardIndex = (cardIndex + 1) % cards.length;
+  renderCard();
+}
+
+function prevCard() {
+  const cards = currentUnit.flashcards;
+  cardIndex = (cardIndex - 1 + cards.length) % cards.length;
+  renderCard();
+}
+
+function renderQuiz() {
+  const quiz = currentUnit.quiz;
+  const { qIndex, score, total } = quizState;
+
+  document.getElementById('quiz-result').classList.remove('show');
+
+  if (qIndex >= total) {
+    showQuizResult();
+    return;
+  }
+
+  const q = quiz[qIndex];
+  let html = `<div class="quiz-q">Q${qIndex+1}/${total}: ${q.q}</div>`;
+  html += `<div class="quiz-options">`;
+  q.opts.forEach((opt, i) => {
+    html += `<button class="quiz-opt" onclick="answerQuiz(${i})">${opt}</button>`;
+  });
+  html += `</div>`;
+  html += `<div class="quiz-feedback" id="quiz-feedback"></div>`;
+  html += `<div class="quiz-nav"><span class="quiz-score">Score: ${score}/${qIndex}</span>`;
+  html += `<button class="btn-primary" id="quiz-next-btn" style="display:none" onclick="nextQuestion()">Next Question →</button></div>`;
+
+  document.getElementById('quiz-content').innerHTML = html;
+}
+
+function answerQuiz(selectedIdx) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+
+  const q = currentUnit.quiz[quizState.qIndex];
+  const opts = document.querySelectorAll('.quiz-opt');
+  const feedback = document.getElementById('quiz-feedback');
+  const nextBtn = document.getElementById('quiz-next-btn');
+
+  opts.forEach((opt, i) => {
+    opt.disabled = true;
+    if (i === q.correct) opt.classList.add('correct');
+    else if (i === selectedIdx && selectedIdx !== q.correct) opt.classList.add('wrong');
+  });
+
+  if (selectedIdx === q.correct) {
+    quizState.score++;
+    feedback.className = 'quiz-feedback show correct-fb';
+    feedback.textContent = '✓ Correct! ' + q.explain;
+  } else {
+    feedback.className = 'quiz-feedback show wrong-fb';
+    feedback.textContent = '✗ Not quite. ' + q.explain;
+  }
+
+  nextBtn.style.display = 'block';
+  document.querySelector('.quiz-score').textContent = `Score: ${quizState.score}/${quizState.qIndex + 1}`;
+}
+
+function nextQuestion() {
+  quizState.qIndex++;
+  quizState.answered = false;
+  renderQuiz();
+}
+
+function showQuizResult() {
+  const { score, total } = quizState;
+  const pct = Math.round((score/total)*100);
+  document.getElementById('quiz-content').innerHTML = '';
+  document.getElementById('result-score').textContent = `${score}/${total}`;
+  document.getElementById('result-msg').textContent = pct === 100
+    ? '🎉 Perfect score! You\'ve mastered this concept.'
+    : pct >= 67
+    ? '👍 Good work! Review the explanations to strengthen any gaps.'
+    : '📖 Keep studying! Revisit the Explain and Flashcard tabs.';
+  document.getElementById('quiz-result').classList.add('show');
+}
+
+function resetQuiz() {
+  quizState = { qIndex: 0, score: 0, answered: false, total: currentUnit.quiz.length };
+  renderQuiz();
+}
+
+function renderMindmap(mm) {
+  let html = `<div class="mindmap-root">`;
+  html += `<div class="mm-center">${mm.center}</div>`;
+  html += `<div style="display:flex;flex-direction:column;gap:8px;margin-left:0">`;
+  mm.branches.forEach(b => {
+    html += `<div class="mm-branch"><div class="mm-line"></div><div class="mm-node" onclick="searchBranch('${b}')">${b}</div></div>`;
+  });
+  html += `</div></div>`;
+  document.getElementById('mindmap-content').innerHTML = html;
+}
+
+function searchBranch(term) {
+  // Visual feedback
+  event.target.style.borderColor = 'var(--accent4)';
+  event.target.style.color = 'var(--accent4)';
+  setTimeout(() => {
+    event.target.style.borderColor = '';
+    event.target.style.color = '';
+  }, 1000);
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.onclick.toString().includes(tab));
+  });
+  document.querySelectorAll('.tab-panel').forEach(panel => {
+    panel.classList.toggle('active', panel.id === `tab-${tab}`);
+  });
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function goHome() {
+  showView('view-home');
+  updateBreadcrumb(null, null);
+}
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updateBreadcrumb(block, concept) {
+  const bc = document.getElementById('breadcrumb');
+  if (!block) {
+    bc.innerHTML = '<span>Home</span>';
+  } else if (!concept) {
+    bc.innerHTML = `<span onclick="goHome()" style="cursor:pointer;color:var(--muted)">Home</span> › <span>${block}</span>`;
+  } else {
+    bc.innerHTML = `<span onclick="goHome()" style="cursor:pointer;color:var(--muted)">Home</span> › <span style="cursor:pointer;color:var(--muted)" onclick="showView('view-block')">${block}</span> › <span>${concept}</span>`;
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+</script>
+</body>
+</html>
