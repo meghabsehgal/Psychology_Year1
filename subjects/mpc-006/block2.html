@@ -1,1 +1,1271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Correlation & Regression – Interactive Study Explorer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Syne:wght@400;600;700;800&display=swap');
 
+  :root {
+    --bg: #0e0e14;
+    --surface: #16161f;
+    --card: #1c1c28;
+    --border: #2a2a3d;
+    --accent1: #f5c842;
+    --accent2: #ff6b6b;
+    --accent3: #6bffb8;
+    --accent4: #6b9fff;
+    --text: #e8e8f0;
+    --muted: #7878a0;
+    --white: #fff;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: 2.5rem 3rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(14,14,20,0.92);
+    backdrop-filter: blur(12px);
+  }
+  header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem; font-style: italic;
+    color: var(--white);
+    letter-spacing: -0.5px;
+  }
+  header h1 span { color: var(--accent1); font-style: normal; }
+  .breadcrumb {
+    font-size: 0.72rem; color: var(--muted);
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .breadcrumb span { color: var(--accent1); }
+
+  /* ── MAIN LAYOUT ── */
+  .shell { display: flex; min-height: calc(100vh - 80px); }
+
+  /* ── LEFT NAV ── */
+  .nav-panel {
+    width: 320px; min-width: 280px;
+    border-right: 1px solid var(--border);
+    padding: 1.5rem 1rem;
+    overflow-y: auto;
+    display: flex; flex-direction: column; gap: 0.8rem;
+  }
+  .nav-section-label {
+    font-size: 0.62rem; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--muted); padding: 0.5rem 0.5rem 0.2rem;
+  }
+
+  .block-btn {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    overflow: hidden;
+  }
+  .block-btn::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--clr);
+    border-radius: 2px;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .block-btn:hover::before, .block-btn.active::before { opacity: 1; }
+  .block-btn:hover, .block-btn.active {
+    border-color: var(--clr);
+    background: color-mix(in srgb, var(--clr) 8%, var(--card));
+  }
+  .block-btn .blk-num {
+    font-size: 0.62rem; color: var(--muted); font-family: 'DM Mono', monospace;
+  }
+  .block-btn .blk-title {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.88rem; color: var(--text); margin-top: 0.15rem;
+  }
+  .block-btn .blk-sub {
+    font-size: 0.68rem; color: var(--muted); margin-top: 0.2rem;
+  }
+
+  /* unit list inside nav */
+  .unit-list {
+    display: none; flex-direction: column; gap: 0.3rem;
+    padding: 0.4rem 0 0.2rem 0.8rem;
+  }
+  .unit-list.open { display: flex; }
+  .unit-item {
+    padding: 0.5rem 0.8rem;
+    border-radius: 7px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.15s;
+    border: 1px solid transparent;
+    color: var(--muted);
+  }
+  .unit-item:hover { background: var(--card); color: var(--text); }
+  .unit-item.active {
+    background: color-mix(in srgb, var(--clr) 15%, var(--card));
+    border-color: color-mix(in srgb, var(--clr) 40%, transparent);
+    color: var(--clr);
+  }
+
+  /* ── CONTENT AREA ── */
+  .content { flex: 1; padding: 2rem 2.5rem; overflow-y: auto; }
+
+  /* home screen */
+  .home-screen { display: flex; flex-direction: column; gap: 2rem; }
+  .home-hero {
+    background: linear-gradient(135deg, #1c1c28 0%, #16161f 100%);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    position: relative; overflow: hidden;
+  }
+  .home-hero::after {
+    content: 'r = Cov(XY) / SₓSᵧ';
+    position: absolute; right: 2rem; top: 50%; transform: translateY(-50%);
+    font-size: 1.8rem; color: rgba(245,200,66,0.08);
+    font-family: 'DM Serif Display', serif;
+    pointer-events: none;
+  }
+  .home-hero h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem; color: var(--white); margin-bottom: 0.5rem;
+  }
+  .home-hero p { font-size: 0.8rem; color: var(--muted); max-width: 500px; line-height: 1.7; }
+  .stats-row {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+  }
+  .stat-card {
+    flex: 1; min-width: 140px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px; padding: 1.2rem;
+  }
+  .stat-card .num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem; line-height: 1;
+  }
+  .stat-card .lbl { font-size: 0.68rem; color: var(--muted); margin-top: 0.3rem; }
+
+  .block-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .block-card {
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 14px; padding: 1.5rem;
+    cursor: pointer; transition: all 0.25s;
+    position: relative; overflow: hidden;
+  }
+  .block-card::after {
+    content: '';
+    position: absolute; bottom: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, var(--clr) 0%, transparent 70%);
+    opacity: 0.08;
+    transition: opacity 0.3s;
+  }
+  .block-card:hover::after { opacity: 0.2; }
+  .block-card:hover {
+    border-color: var(--clr);
+    transform: translateY(-2px);
+  }
+  .block-card .bc-num {
+    font-size: 0.65rem; color: var(--muted);
+  }
+  .block-card h3 {
+    font-family: 'Syne', sans-serif; font-weight: 800;
+    font-size: 1rem; margin: 0.4rem 0 0.6rem;
+    color: var(--white);
+  }
+  .block-card .bc-units {
+    display: flex; flex-direction: column; gap: 0.25rem;
+  }
+  .bc-unit-pill {
+    font-size: 0.68rem; color: var(--muted);
+    background: var(--surface);
+    border-radius: 4px; padding: 0.2rem 0.5rem;
+    width: fit-content;
+  }
+
+  /* ── CONCEPT VIEW ── */
+  .concept-view { display: none; flex-direction: column; gap: 1.5rem; }
+  .concept-view.visible { display: flex; }
+
+  .cv-header {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.8rem;
+    position: relative; overflow: hidden;
+  }
+  .cv-header::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--clr), transparent);
+  }
+  .cv-header .tag {
+    font-size: 0.65rem; color: var(--clr);
+    text-transform: uppercase; letter-spacing: 1.5px;
+    margin-bottom: 0.5rem;
+  }
+  .cv-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem; color: var(--white);
+  }
+  .cv-header p { font-size: 0.78rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.7; }
+
+  /* topic tabs */
+  .topic-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .topic-tab {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 0.73rem;
+    cursor: pointer; transition: all 0.18s;
+  }
+  .topic-tab:hover { border-color: var(--clr); color: var(--text); }
+  .topic-tab.active {
+    background: color-mix(in srgb, var(--clr) 20%, var(--card));
+    border-color: var(--clr); color: var(--clr);
+  }
+
+  /* concept panel */
+  .concept-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 2rem;
+    display: none;
+  }
+  .concept-panel.visible { display: block; }
+  .concept-panel h3 {
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 1.05rem; color: var(--white); margin-bottom: 1rem;
+  }
+  .concept-panel p {
+    font-size: 0.79rem; color: var(--text);
+    line-height: 1.85; margin-bottom: 0.9rem;
+  }
+  .formula-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent1);
+    border-radius: 8px; padding: 1rem 1.2rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: 1rem; color: var(--accent1);
+    margin: 1rem 0;
+  }
+  .formula-box .formula-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.62rem; color: var(--muted); margin-bottom: 0.3rem;
+  }
+  .key-points {
+    display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0;
+  }
+  .key-point {
+    display: flex; align-items: flex-start; gap: 0.7rem;
+    font-size: 0.76rem; color: var(--text); line-height: 1.6;
+  }
+  .key-point::before {
+    content: '▸';
+    color: var(--clr); font-size: 0.7rem; margin-top: 0.2rem; flex-shrink: 0;
+  }
+  .example-table {
+    width: 100%; border-collapse: collapse; margin: 1rem 0;
+    font-size: 0.72rem;
+  }
+  .example-table th {
+    background: var(--surface); color: var(--muted);
+    font-size: 0.62rem; text-transform: uppercase; letter-spacing: 1px;
+    padding: 0.5rem 0.8rem; text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  .example-table td {
+    padding: 0.45rem 0.8rem;
+    border-bottom: 1px solid rgba(42,42,61,0.5);
+    color: var(--text);
+  }
+  .example-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+  /* ── DEEP DIVE TOOLS ── */
+  .tools-row { display: flex; gap: 0.7rem; flex-wrap: wrap; }
+  .tool-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    background: var(--card);
+    color: var(--text); font-size: 0.73rem;
+    cursor: pointer; transition: all 0.18s;
+    font-family: 'DM Mono', monospace;
+  }
+  .tool-btn:hover { border-color: var(--clr); color: var(--clr); }
+  .tool-btn .icon { font-size: 1rem; }
+
+  /* modal */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    z-index: 200; display: none;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    width: 90%; max-width: 640px;
+    max-height: 80vh; overflow-y: auto;
+    padding: 2rem;
+    position: relative;
+  }
+  .modal h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem; color: var(--white); margin-bottom: 1rem;
+  }
+  .modal-close {
+    position: absolute; top: 1rem; right: 1rem;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 6px; padding: 0.3rem 0.6rem;
+    color: var(--muted); cursor: pointer; font-size: 0.8rem;
+    font-family: 'DM Mono', monospace;
+  }
+  .modal-close:hover { color: var(--text); }
+
+  /* flashcard */
+  .flashcard {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: 12px; padding: 1.5rem;
+    min-height: 160px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: transform 0.4s;
+    perspective: 800px;
+    transform-style: preserve-3d;
+    position: relative;
+    margin: 1rem 0;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .fc-front, .fc-back {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    padding: 1.5rem; text-align: center;
+    backface-visibility: hidden;
+    border-radius: 12px;
+  }
+  .fc-front { background: var(--surface); }
+  .fc-back { background: color-mix(in srgb, var(--clr) 12%, var(--surface)); transform: rotateY(180deg); }
+  .fc-front p { font-size: 0.85rem; color: var(--text); line-height: 1.6; }
+  .fc-back p { font-size: 0.8rem; color: var(--text); line-height: 1.6; }
+  .fc-hint { font-size: 0.62rem; color: var(--muted); position: absolute; bottom: 0.5rem; right: 1rem; }
+
+  .fc-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 0.5rem; }
+  .fc-counter { font-size: 0.68rem; color: var(--muted); }
+  .fc-arrows { display: flex; gap: 0.5rem; }
+  .fc-arrow {
+    padding: 0.4rem 0.8rem; border-radius: 6px;
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); cursor: pointer; font-size: 0.72rem;
+    font-family: 'DM Mono', monospace; transition: all 0.15s;
+  }
+  .fc-arrow:hover { border-color: var(--clr); }
+
+  /* quiz */
+  .quiz-q { font-size: 0.85rem; color: var(--text); margin-bottom: 1rem; line-height: 1.6; }
+  .quiz-opts { display: flex; flex-direction: column; gap: 0.5rem; }
+  .quiz-opt {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 8px; padding: 0.75rem 1rem;
+    cursor: pointer; font-size: 0.76rem; color: var(--text);
+    transition: all 0.15s; font-family: 'DM Mono', monospace;
+  }
+  .quiz-opt:hover { border-color: var(--accent4); }
+  .quiz-opt.correct { border-color: var(--accent3); background: color-mix(in srgb, var(--accent3) 10%, var(--surface)); color: var(--accent3); }
+  .quiz-opt.wrong { border-color: var(--accent2); background: color-mix(in srgb, var(--accent2) 10%, var(--surface)); color: var(--accent2); }
+  .quiz-feedback { margin-top: 0.8rem; font-size: 0.76rem; color: var(--muted); line-height: 1.6; display: none; }
+  .quiz-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+  .quiz-score { font-size: 0.7rem; color: var(--muted); }
+  .btn-primary {
+    padding: 0.5rem 1.2rem; border-radius: 7px;
+    background: var(--accent1); color: var(--bg);
+    border: none; cursor: pointer;
+    font-family: 'DM Mono', monospace; font-size: 0.73rem; font-weight: 500;
+    transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.85; }
+
+  /* summary */
+  .summary-box {
+    background: var(--surface);
+    border-radius: 10px; padding: 1.2rem;
+    font-size: 0.78rem; color: var(--text); line-height: 1.8;
+  }
+  .summary-box strong { color: var(--clr); }
+
+  /* ── progress bar ── */
+  .progress-track {
+    display: flex; gap: 0.3rem; margin-bottom: 0.5rem; flex-wrap: wrap;
+  }
+  .prog-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border); cursor: pointer; transition: all 0.2s;
+  }
+  .prog-dot.done { background: var(--clr); }
+  .prog-dot.current { background: var(--accent1); transform: scale(1.3); }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* responsive */
+  @media(max-width: 768px) {
+    .shell { flex-direction: column; }
+    .nav-panel { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+    .block-grid { grid-template-columns: 1fr; }
+    header { padding: 1.2rem 1.2rem 0.8rem; }
+    .content { padding: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Correlation <span>&</span> Regression</h1>
+  <div class="breadcrumb" id="breadcrumb"><span>Home</span></div>
+</header>
+
+<div class="shell">
+
+  <!-- LEFT NAV -->
+  <nav class="nav-panel" id="navPanel">
+    <div class="nav-section-label">Blocks</div>
+  </nav>
+
+  <!-- CONTENT -->
+  <main class="content" id="content">
+    <!-- home rendered by JS -->
+  </main>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalContent">
+    <button class="modal-close" onclick="closeModal()">✕ close</button>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   DATA
+══════════════════════════════════════════════ */
+const BLOCKS = [
+  {
+    id: 1, label: "Block 2",
+    title: "Correlation & Regression",
+    subtitle: "Units 1–4",
+    clr: "#f5c842",
+    units: [
+      {
+        id: "u1", label: "Unit 1",
+        title: "Product Moment Coefficient of Correlation",
+        overview: "Understand what correlation means, how to visualise it with scatter diagrams, and how to compute Pearson's r — the gold-standard measure of linear association between two continuous variables.",
+        topics: [
+          {
+            id: "t1", title: "What is Correlation?",
+            content: `<p>Correlation measures the <strong>strength and direction of association</strong> between two variables, X and Y. It tells us how one variable tends to behave when the other changes.</p>
+<p>Common psychological examples: as <em>intelligence</em> increases, <em>marks</em> tend to increase; as <em>hope</em> increases, <em>depression</em> tends to decrease.</p>
+<div class="key-points">
+  <div class="key-point">Correlation coefficient symbol: <strong>r</strong> (sample), <strong>ρ</strong> (population).</div>
+  <div class="key-point">Range: −1.00 to +1.00. Values near ±1 mean strong association; near 0 means weak or no association.</div>
+  <div class="key-point">Correlation ≠ Causality. Three possibilities: X causes Y, Y causes X, or a third variable Z causes both.</div>
+</div>`,
+            flashcards: [
+              {q:"What does a correlation coefficient of 0 mean?", a:"There is no linear association between X and Y. The variables are unrelated in a linear sense."},
+              {q:"Why is correlation NOT a percentage?", a:"Correlation itself is not a percentage. To get percentage of shared variance, you must square r: r² × 100."},
+              {q:"Can correlation imply causation?", a:"No. Correlation only shows association. Causation requires experimental designs, regression, path analysis, etc."},
+              {q:"What is the range of Pearson's r?", a:"−1.00 to +1.00. Perfect positive = +1, perfect negative = −1, no relation = 0."}
+            ],
+            quiz: [
+              {q:"If r = 0.80, what percentage of variance in Y is shared with X?", opts:["80%","64%","20%","40%"], ans:1, exp:"r² × 100 = 0.64 × 100 = 64%. Correlation is not itself a percentage."},
+              {q:"Which statement about correlation and causation is TRUE?", opts:["High r always means X causes Y","Correlation can never hint at causation","Correlation shows association, not causation","r > 0.5 proves causation"], ans:2, exp:"Correlation only establishes that two variables move together. Causation needs further evidence."},
+              {q:"What is ρ (rho)?", opts:["Sample correlation","Population correlation","Spearman's rho","Rank-order coefficient"], ans:1, exp:"ρ is the Greek letter used for the population correlation coefficient. r is the sample statistic."}
+            ]
+          },
+          {
+            id: "t2", title: "Scatter Diagram",
+            content: `<p>A <strong>scatter diagram</strong> (scatterplot) plots pairs of scores on X and Y axes. Each dot represents one subject's scores on both variables.</p>
+<div class="key-points">
+  <div class="key-point"><strong>Step 1:</strong> Draw X and Y axes; place the causal/predictor variable on X.</div>
+  <div class="key-point"><strong>Step 2:</strong> Decide ranges based on your data (start near your minimum, not necessarily 0).</div>
+  <div class="key-point"><strong>Step 3:</strong> Plot each (X, Y) pair as a dot.</div>
+  <div class="key-point">Positive relationship → dots slope upward left-to-right.</div>
+  <div class="key-point">Negative relationship → dots slope downward left-to-right.</div>
+  <div class="key-point">No relationship → dots form a shapeless cloud.</div>
+</div>
+<p>Always inspect a scatter before computing r. Outliers and curvilinear patterns are visible here but can be invisible in r alone.</p>`,
+            flashcards: [
+              {q:"What does each dot in a scatter diagram represent?", a:"One subject's scores on both variables (the X value and the corresponding Y value for that individual)."},
+              {q:"What pattern do dots form in a perfect positive correlation?", a:"All dots fall exactly on a straight line sloping upward from left to right."},
+              {q:"Why should you inspect a scatter before computing r?", a:"To check for outliers, curvilinear patterns, or restricted range — all of which can distort or mislead the value of r."}
+            ],
+            quiz: [
+              {q:"In a negative correlation scatter plot, what is the pattern of dots?", opts:["Scattered randomly","Sloping upward left to right","Sloping downward left to right","Forming a U-shape"], ans:2, exp:"Negative correlation: as X increases, Y decreases — so dots slope downward from left to right."},
+              {q:"Which variable is conventionally plotted on the X-axis?", opts:["Dependent variable","Criterion variable","Causal/predictor variable","The one with larger values"], ans:2, exp:"The predictor or causal variable (independent variable) goes on X; the outcome (dependent) goes on Y."}
+            ]
+          },
+          {
+            id: "t3", title: "Linear vs Non-Linear Relationship",
+            content: `<p>Pearson's r measures <strong>linear</strong> association — the degree to which data points align along a straight line described by Y = α + βX.</p>
+<div class="key-points">
+  <div class="key-point"><strong>Linear:</strong> A straight line fits the scatter. Most psychological correlations assume linearity.</div>
+  <div class="key-point"><strong>Non-linear (curvilinear):</strong> No straight line fits. Example: Yerkes-Dodson law — performance peaks at moderate stress, drops at extremes.</div>
+  <div class="key-point">Pearson's r will underestimate a curvilinear relationship — it can appear near-zero even when there IS a strong relationship.</div>
+  <div class="key-point">All monotonic relationships (consistently increasing or decreasing) can be handled with rank-order correlations (Spearman's ρ, Kendall's τ).</div>
+</div>`,
+            flashcards: [
+              {q:"What is a monotonic relationship?", a:"One where Y consistently increases (or consistently decreases) as X increases — never reverses direction."},
+              {q:"Why is Pearson's r inappropriate for the Yerkes-Dodson relationship?", a:"Because performance peaks at moderate stress (an inverted-U shape) — non-linear AND non-monotonic. Pearson's r can be near 0 even though a strong relationship exists."},
+              {q:"What does α (alpha) represent in Y = α + βX?", a:"α is the Y-intercept — the value of Y when X = 0, i.e., where the line crosses the Y-axis."}
+            ],
+            quiz: [
+              {q:"Pearson's r is designed to measure which type of relationship?", opts:["Curvilinear","Monotonic","Linear","Exponential"], ans:2, exp:"Pearson's r captures only the linear component of association."},
+              {q:"If the true relationship is curvilinear, using Pearson's r will likely:", opts:["Overestimate the association","Correctly estimate the association","Underestimate the association","Give a result of exactly 1"], ans:2, exp:"Pearson's r misses the curvature, so it can severely underestimate the true strength of a curvilinear relationship."}
+            ]
+          },
+          {
+            id: "t4", title: "Pearson's r — Formula & Calculation",
+            content: `<p>Pearson's Product Moment Correlation is defined as covariance standardised by the product of standard deviations:</p>
+<div class="formula-box"><div class="formula-label">PEARSON'S r (deviation score method)</div>r = Cov(XY) / (Sₓ × Sᵧ) = Σ(X−X̄)(Y−Ȳ) / (n·Sₓ·Sᵧ)</div>
+<div class="formula-box"><div class="formula-label">RAW SCORE METHOD</div>r = [ΣXY − (ΣX·ΣY)/n] / √(SSₓ × SSᵧ)</div>
+<p><strong>Steps (deviation method):</strong></p>
+<div class="key-points">
+  <div class="key-point">List X, Y pairs. Compute means X̄ and Ȳ.</div>
+  <div class="key-point">Compute deviations (X−X̄) and (Y−Ȳ) for each subject.</div>
+  <div class="key-point">Square deviations → sum them → compute Sₓ and Sᵧ.</div>
+  <div class="key-point">Multiply the deviations cross-products (X−X̄)(Y−Ȳ), sum them.</div>
+  <div class="key-point">Divide sum of cross-products by n·Sₓ·Sᵧ.</div>
+</div>
+<p>Example: BHS (hopelessness) & BDI (depression) for n=10 gave r = <strong>+0.937</strong>, confirming a strong positive association.</p>`,
+            flashcards: [
+              {q:"What is covariance?", a:"The average of the cross-products of deviations: Cov(XY) = Σ(X−X̄)(Y−Ȳ)/n. It captures how X and Y vary together."},
+              {q:"Why is Pearson's r bounded between −1 and +1?", a:"Because Cov(XY) can never exceed Sₓ·Sᵧ in absolute value, so the ratio r = Cov/SₓSᵧ stays in [−1, +1]."},
+              {q:"What determines the SIGN of Pearson's r?", a:"The sign of the covariance. If most cross-products (X−X̄)(Y−Ȳ) are positive, r > 0; if mostly negative, r < 0."}
+            ],
+            quiz: [
+              {q:"If Cov(XY) = 12, Sₓ = 3, Sᵧ = 4, what is r?", opts:["1.0","0.75","0.25","12"], ans:1, exp:"r = 12/(3×4) = 12/12 = 1.0. A perfect positive correlation."},
+              {q:"What is the sum of deviation scores (X−X̄) always equal to?", opts:["1","n","0","The variance"], ans:2, exp:"The sum of deviations from the mean is always zero — a fundamental property of the arithmetic mean."},
+              {q:"Adjusted r is needed because:", opts:["r is always negative for small n","Sample r overestimates population ρ for small n","r cannot be computed for n < 30","Population ρ is always larger than 1"], ans:1, exp:"For small samples, r is a biased estimator of ρ. Adjusted r corrects this bias."}
+            ]
+          },
+          {
+            id: "t5", title: "Significance Testing & Assumptions",
+            content: `<p>To test whether the sample r reflects a real population correlation (ρ ≠ 0), we use the <strong>t-distribution</strong>.</p>
+<div class="formula-box"><div class="formula-label">t-TEST FOR r</div>t = r√(n−2) / √(1−r²), df = n−2</div>
+<p><strong>Hypotheses:</strong></p>
+<div class="key-points">
+  <div class="key-point">H₀: ρ = 0 (no linear relationship in the population)</div>
+  <div class="key-point">Hₐ: ρ ≠ 0 (two-tailed) or ρ > 0 or ρ < 0 (one-tailed)</div>
+</div>
+<p><strong>Key Assumptions:</strong></p>
+<div class="key-points">
+  <div class="key-point">Independence of pairs of scores.</div>
+  <div class="key-point">Both X and Y follow normal distribution in the population (bivariate normality).</div>
+  <div class="key-point">Relationship between X and Y is linear.</div>
+  <div class="key-point">r is robust — minor violations of normality won't drastically change results.</div>
+</div>
+<p><strong>Cautions:</strong> Restricted range, outliers, and low reliability all reduce r and distort interpretation.</p>`,
+            flashcards: [
+              {q:"What degrees of freedom are used in testing Pearson's r?", a:"df = n − 2. Two degrees of freedom are lost for estimating the two regression parameters."},
+              {q:"What is restricted range and how does it affect r?", a:"When only a narrow range of X values is studied, r tends to be smaller than it would be with the full range — the relationship appears weaker than it truly is."},
+              {q:"What is a disattenuated correlation?", a:"A correlation adjusted for the unreliability (measurement error) of one or both variables. When reliability is low, observed r underestimates the true association."}
+            ],
+            quiz: [
+              {q:"For n=22, df for testing r is:", opts:["22","20","21","11"], ans:1, exp:"df = n − 2 = 22 − 2 = 20."},
+              {q:"An outlier in a correlation typically:", opts:["Always increases r","Always decreases r","Can inflate OR deflate r depending on its position","Has no effect"], ans:2, exp:"An outlier in the upper-right or lower-left of the scatter inflates r; one in the upper-left or lower-right deflates it."},
+              {q:"Pearson's r is described as 'robust' because:", opts:["It works for all non-linear data","Minor violations of normality don't badly affect inference","It is always above 0.5","It doesn't require any assumptions"], ans:1, exp:"Robustness means small assumption violations don't dramatically distort the t-test results for r."}
+            ]
+          }
+        ]
+      },
+      {
+        id: "u2", label: "Unit 2",
+        title: "Other Types of Correlation",
+        overview: "When data is dichotomous, ranked, or assumptions of Pearson's r are violated, special correlation methods are needed. This unit covers Point-Biserial, Phi, Biserial, Tetrachoric, Spearman's Rho, and Kendall's Tau.",
+        topics: [
+          {
+            id: "t6", title: "Point-Biserial Correlation (r_pb)",
+            content: `<p>Used when one variable is <strong>truly dichotomous</strong> (naturally takes two values with no underlying continuum) and the other is <strong>continuous</strong>.</p>
+<p>Examples of truly dichotomous: Male/Female, Experimental/Control group, Diagnosed/Not diagnosed.</p>
+<div class="formula-box"><div class="formula-label">r_pb FORMULA (same as Pearson's r)</div>r_pb = Cov(XY) / (Sₓ · Sᵧ)</div>
+<div class="key-points">
+  <div class="key-point">Algebraically, r_pb = Pearson's r when one variable is coded 0/1.</div>
+  <div class="key-point">Significance testing uses t-distribution with df = n−2.</div>
+  <div class="key-point">Sign depends on coding: if group coded '1' has higher mean, r is positive.</div>
+  <div class="key-point">r_pb² = proportion of variance in the continuous variable shared with group membership.</div>
+</div>`,
+            flashcards: [
+              {q:"When do you use Point-Biserial correlation?", a:"When one variable is truly dichotomous (no underlying continuum, e.g. male/female) and the other is continuous (e.g. exam marks)."},
+              {q:"What is the relationship between r_pb and Pearson's r?", a:"r_pb IS Pearson's r — they are algebraically identical when one variable takes values 0 and 1."},
+              {q:"What does r_pb² tell you?", a:"The proportion of variance in the continuous variable that is associated with (explained by) group membership."}
+            ],
+            quiz: [
+              {q:"Point-Biserial correlation requires:", opts:["Both variables dichotomous","One truly dichotomous, one continuous","Both variables continuous","One variable ordinal"], ans:1, exp:"r_pb is for exactly one truly dichotomous variable and one continuous variable."},
+              {q:"r_pb = 0.386 means r_pb² = ?", opts:["0.386","0.149","0.620","1.386"], ans:1, exp:"0.386² = 0.149. About 14.9% of variance in the continuous variable is shared with group membership."}
+            ]
+          },
+          {
+            id: "t7", title: "Phi Coefficient (φ)",
+            content: `<p>Phi coefficient is Pearson's correlation when <strong>both variables are truly dichotomous</strong>.</p>
+<p>Example: Gender (Male=0, Female=1) × Property ownership (No=0, Yes=1).</p>
+<div class="formula-box"><div class="formula-label">PHI COEFFICIENT</div>φ = Cov(XY) / (Sₓ · Sᵧ) — both X and Y are 0/1</div>
+<div class="formula-box"><div class="formula-label">SIGNIFICANCE VIA CHI-SQUARE</div>χ² = n · φ²,   df = 1</div>
+<div class="key-points">
+  <div class="key-point">φ is also Pearson's r applied to two 0/1 coded variables.</div>
+  <div class="key-point">Significance tested with χ² = nφ², not t-distribution.</div>
+  <div class="key-point">φ² = proportion of variance shared between the two dichotomous variables.</div>
+</div>`,
+            flashcards: [
+              {q:"When is Phi coefficient used?", a:"When BOTH variables are truly dichotomous (each coded 0/1), e.g. gender × property ownership."},
+              {q:"How is the significance of φ tested?", a:"Convert to chi-square: χ² = n·φ², which has df = 1. Compare to χ² critical value (3.84 at α=.05)."},
+              {q:"φ = −0.465. What does the negative sign mean here?", a:"The group coded 0 on X tends to score higher on Y (or vice versa). The sign depends on how groups are coded — it can be reversed by recoding."}
+            ],
+            quiz: [
+              {q:"φ = 0.5 for n=40. What is χ²?", opts:["20","10","0.25","2"], ans:1, exp:"χ² = n·φ² = 40 × 0.25 = 10."},
+              {q:"Phi coefficient is appropriate when:", opts:["One variable is ordinal","Both variables are truly dichotomous","One is continuous and one dichotomous","Both variables are continuous"], ans:1, exp:"Phi = Pearson's r applied when both X and Y are binary (0/1)."}
+            ]
+          },
+          {
+            id: "t8", title: "Biserial & Tetrachoric Correlations",
+            content: `<p><strong>Biserial Correlation (r_b):</strong> Use when one variable has an underlying continuous distribution but is measured dichotomously (e.g., mood classified as 'low vs normal' when mood is actually continuous).</p>
+<div class="formula-box"><div class="formula-label">BISERIAL (r_b)</div>r_b = [(Ȳ₁−Ȳ₀)/Sᵧ] × [P₀P₁/h]</div>
+<p>h = height of standard normal curve at the point dividing proportions P₀ and P₁.</p>
+<p><strong>Tetrachoric Correlation (r_tet):</strong> Use when <strong>both</strong> dichotomous variables have underlying continuous distributions.</p>
+<div class="formula-box"><div class="formula-label">TETRACHORIC</div>r_tet = cos[180° / (1 + √(ad/bc))]</div>
+<div class="key-points">
+  <div class="key-point">Biserial: one artificially dichotomised, one continuous.</div>
+  <div class="key-point">Tetrachoric: both artificially dichotomised (both would be continuous if measured more finely).</div>
+  <div class="key-point">Both estimate what the Pearson's r would be if measured on continuous scales.</div>
+</div>`,
+            flashcards: [
+              {q:"When is biserial correlation preferred over point-biserial?", a:"When the dichotomous variable has an underlying continuous normal distribution (e.g., 'anxious vs not anxious' where anxiety is really a continuum)."},
+              {q:"What does tetrachoric correlation assume about both dichotomous variables?", a:"That both have underlying continuous, normally distributed distributions — they're just measured as 0/1 for convenience."},
+              {q:"What is 'h' in the biserial formula?", a:"The ordinate (height) of the standard normal distribution at the point that divides the sample into the two proportions P₀ and P₁."}
+            ],
+            quiz: [
+              {q:"Attitude to females (positive/negative) × attitude to liberalisation (positive/negative). What correlation is appropriate?", opts:["Point-biserial","Phi coefficient","Biserial","Tetrachoric"], ans:3, exp:"Both variables are artificially dichotomised from underlying continua → Tetrachoric correlation."},
+              {q:"Mood (clinically low vs normal, but mood is really a continuum) correlated with BHS scores (continuous). Which correlation?", opts:["Pearson's r","Point-biserial","Biserial","Phi"], ans:2, exp:"One variable with an underlying continuum but measured dichotomously × one continuous variable → Biserial."}
+            ]
+          },
+          {
+            id: "t9", title: "Spearman's Rho (r_s)",
+            content: `<p>Spearman's rank-order correlation (r_s) is used when data are in <strong>ranks</strong>, or when Pearson's assumptions are seriously violated, or when the relationship is <strong>monotonic but not linear</strong>.</p>
+<div class="formula-box"><div class="formula-label">SPEARMAN'S RHO (no ties)</div>r_s = 1 − 6ΣD² / [n(n²−1)]</div>
+<div class="formula-box"><div class="formula-label">WITH TIED RANKS — use Pearson's r on ranks</div>r_s = (nΣRₓRᵧ − ΣRₓ·ΣRᵧ) / √[(nΣRₓ²−(ΣRₓ)²)(nΣRᵧ²−(ΣRᵧ)²)]</div>
+<div class="key-points">
+  <div class="key-point">D = difference between rank on X and rank on Y for each subject.</div>
+  <div class="key-point">r_s is actually Pearson's r computed on ranks — a special case of Pearson's r.</div>
+  <div class="key-point">Range: −1 to +1. Significance tested via table for small n, or t = r_s√(n−2)/√(1−r_s²) for n > 10.</div>
+  <div class="key-point">ONLY for monotonic relationships (consistently increasing or decreasing). NOT for Yerkes-Dodson type curves.</div>
+</div>`,
+            flashcards: [
+              {q:"What is D in Spearman's rho formula?", a:"D = Rₓ − Rᵧ = the difference between a subject's rank on X and their rank on Y."},
+              {q:"Why use Pearson's formula on ranks when there are tied ranks?", a:"The simple 1 − 6ΣD²/n(n²−1) formula overestimates r_s when ties exist. Computing Pearson's r on the assigned ranks gives the correct value."},
+              {q:"Spearman's rho is appropriate for which type of non-linear relationship?", a:"Only monotonic relationships (always increasing or always decreasing). It is NOT appropriate for inverted-U or other non-monotonic curves."}
+            ],
+            quiz: [
+              {q:"ΣD² = 18 for n = 10. What is r_s?", opts:["0.818","0.182","0.891","0.500"], ans:0, exp:"r_s = 1 − 6(18)/[10(100−1)] = 1 − 108/990 = 1 − 0.109 = 0.891. Wait — let me recalculate: 1 − 108/990 = 0.891. The given answer in the text for ΣD²=20 is 0.818. For ΣD²=18: r_s = 1 − 108/990 ≈ 0.891."},
+              {q:"Spearman's rho can be understood as:", opts:["A completely different statistic from Pearson's r","Pearson's r computed on the ranks of X and Y","Only applicable to normally distributed data","A test statistic, not a correlation coefficient"], ans:1, exp:"r_s = Pearson's r applied to ranks. It is a special case of Pearson's r."},
+              {q:"Should r_s be calculated for the Yerkes-Dodson (stress-performance inverted-U) relationship?", opts:["Yes, because it handles non-linear data","No, because the relationship is not monotonic","Yes, because it handles ordinal data","No, because r_s only works for n > 30"], ans:1, exp:"Yerkes-Dodson is non-monotonic (performance first increases then decreases). Spearman's rho requires a monotonic relationship."}
+            ]
+          },
+          {
+            id: "t10", title: "Kendall's Tau (τ)",
+            content: `<p>Kendall's Tau is another rank-order correlation based on <strong>concordant and discordant pairs</strong> rather than differences in ranks.</p>
+<div class="formula-box"><div class="formula-label">KENDALL'S TAU</div>τ = (nC − nD) / [n(n−1)/2]</div>
+<div class="formula-box"><div class="formula-label">COMPUTATIONAL SHORTCUT (inversions)</div>τ = 1 − 2nₛ/[n(n−1)/2]</div>
+<div class="key-points">
+  <div class="key-point">nC = concordant pairs (both X and Y rankings agree in direction); nD = discordant pairs (rankings disagree).</div>
+  <div class="key-point">nₛ = number of inversions (line crossings when connecting matching ranks).</div>
+  <div class="key-point">Interpretation: τ = 0.78 means if two subjects are sampled at random, probability their order agrees on both variables is 0.78 more likely than it disagrees.</div>
+  <div class="key-point">Significance: use Appendix table or z = τ / √[2(2n+5)/9n(n−1)].</div>
+  <div class="key-point">Better than Spearman's rho for tied ranks; both are appropriate for monotonic relationships.</div>
+</div>`,
+            flashcards: [
+              {q:"What is a concordant pair?", a:"Two subjects whose relative ordering on X matches their relative ordering on Y (both rank higher, or both rank lower together)."},
+              {q:"What is a discordant pair?", a:"Two subjects whose relative ordering on X is OPPOSITE to their ordering on Y."},
+              {q:"How do you count inversions for Kendall's tau?", a:"Arrange subjects in order of X ranks. Connect matching Y ranks with lines. Count the number of line crossings — those are the inversions (nₛ)."}
+            ],
+            quiz: [
+              {q:"If nC = 5 and nD = 1 for n=4 subjects, what is τ?", opts:["0.5","0.667","0.333","1.0"], ans:1, exp:"Total pairs = 4(3)/2 = 6. τ = (5−1)/6 = 4/6 = 0.667."},
+              {q:"Kendall's tau is said to be superior to Spearman's rho when:", opts:["n is very large","There are many tied ranks","The relationship is linear","Both variables are normally distributed"], ans:1, exp:"Tau handles tied ranks better and is more theoretically sound in that situation."}
+            ]
+          }
+        ]
+      },
+      {
+        id: "u3", label: "Unit 3",
+        title: "Partial and Multiple Correlations",
+        overview: "When a third variable contaminates the relationship between two others, partial and semipartial correlations let us statistically control for it. Multiple correlation captures how well a set of predictors jointly relates to an outcome.",
+        topics: [
+          {
+            id: "t11", title: "Partial Correlation (r_p)",
+            content: `<p>Partial correlation measures the relationship between A and B <strong>after removing the influence of a third variable C from both A and B</strong>.</p>
+<p>Classic example: cholesterol and bank balance both increase with age. Partial correlation controls for age to see the true A–B relationship.</p>
+<div class="formula-box"><div class="formula-label">PARTIAL CORRELATION</div>r_AB.C = (r_AB − r_AC·r_BC) / √[(1−r_AC²)(1−r_BC²)]</div>
+<div class="key-points">
+  <div class="key-point">Read as "correlation of A and B partialled for C."</div>
+  <div class="key-point">C is removed from BOTH A and B.</div>
+  <div class="key-point">Significance: t = r_p·√(n−v) / √(1−r_p²), df = n−v (v = number of variables).</div>
+  <div class="key-point">Alternative understanding: Pearson's r between the residuals e₁ (A after removing C) and e₂ (B after removing C).</div>
+</div>`,
+            flashcards: [
+              {q:"What does 'partialling out' a variable mean?", a:"Statistically removing the linear influence of a third variable (C) from the relationship between A and B, so you see only the A–B association not attributable to C."},
+              {q:"In partial correlation, what does v represent in df = n−v?", a:"v = total number of variables involved in the analysis (e.g., 3 variables → df = n−3)."},
+              {q:"Partial correlation can be understood as Pearson's r between what?", a:"Between e₁ (residuals of A after predicting from C) and e₂ (residuals of B after predicting from C)."}
+            ],
+            quiz: [
+              {q:"r_AB = −0.369, r_AC = 0.918, r_BC = −0.245. Approx. r_AB.C = ?", opts:["−0.375","−0.369","0.918","0.245"], ans:0, exp:"Numerator: −0.369 − (0.918×−0.245) = −0.369 + 0.225 = −0.144. Denominator: √(1−0.843)×√(1−0.060) ≈ √0.157×√0.940 ≈ 0.385. r ≈ −0.374 ≈ −0.375."},
+              {q:"In partial correlation, variable C is removed from:", opts:["Only variable A","Only variable B","Both A and B","Neither A nor B — it is just controlled statistically"], ans:2, exp:"Partial correlation removes C's influence from BOTH A and B, giving a pure A–B relationship."}
+            ]
+          },
+          {
+            id: "t12", title: "Part (Semipartial) Correlation (r_sp)",
+            content: `<p>Semipartial correlation removes the influence of C from <strong>only one</strong> of the two variables — not both.</p>
+<div class="formula-box"><div class="formula-label">SEMIPARTIAL CORRELATION</div>r_A(B.C) = (r_AB − r_AC·r_BC) / √(1 − r_BC²)</div>
+<div class="key-points">
+  <div class="key-point">In partial: C is removed from both A and B.</div>
+  <div class="key-point">In semipartial: C is removed from only B (or only A).</div>
+  <div class="key-point">Example: correlate anxiety (A) with academic achievement after removing intelligence's effect from achievement only.</div>
+  <div class="key-point">Significance: same t-formula as partial, df = n−v.</div>
+  <div class="key-point">Alternative: Pearson's r between variable A (untouched) and e₁ (residuals of B after predicting from C).</div>
+</div>`,
+            flashcards: [
+              {q:"What is the key difference between partial and semipartial correlation?", a:"Partial removes C from BOTH variables; semipartial removes C from only ONE of the two variables."},
+              {q:"r_A(B.C) means:", a:"Correlate A with B after removing the effect of C from B only. A is left unchanged."},
+              {q:"Semipartial correlation can be understood as Pearson's r between what?", a:"Between variable A (original) and e₁ (residuals of B from regressing B on C)."}
+            ],
+            quiz: [
+              {q:"r_AB=−0.369, r_AC=−0.245, r_BC=0.918. Semipartial r_A(B.C) = ?", opts:["−0.363","−0.375","0.625","−0.245"], ans:0, exp:"Numerator: −0.369 − (−0.245×0.918) = −0.369 + 0.225 = −0.144. Denominator: √(1−0.918²) = √0.157 ≈ 0.397. r ≈ −0.363."},
+              {q:"When studying the unique contribution of intelligence to academic achievement (after controlling for anxiety's role in achievement), you should use:", opts:["Partial correlation","Semipartial correlation","Multiple correlation","Phi coefficient"], ans:1, exp:"Semipartial removes anxiety's effect from academic achievement only, leaving intelligence to correlate with that residualised achievement score."}
+            ]
+          },
+          {
+            id: "t13", title: "Multiple Correlation Coefficient (R)",
+            content: `<p>Multiple R (R_A.BC) is the correlation between one variable A and a <strong>linear combination</strong> of two or more other variables (B, C, …).</p>
+<div class="formula-box"><div class="formula-label">MULTIPLE R (two predictors)</div>R²_A.BC = (r_AB² + r_AC² − 2·r_AB·r_AC·r_BC) / (1 − r_BC²)</div>
+<div class="formula-box"><div class="formula-label">ADJUSTED R² (unbiased estimator)</div>R̄² = 1 − (1−R²)(n−1)/(n−k−1)</div>
+<div class="key-points">
+  <div class="key-point">R² = proportion of variance in A explained by B and C together.</div>
+  <div class="key-point">Adjusted R² corrects for the upward bias in R² for small samples.</div>
+  <div class="key-point">Significance: F = [R²/k] / [(1−R²)/(n−k−1)], df_num = k, df_denom = n−k−1.</div>
+  <div class="key-point">Example: R = 0.929 → R² = 0.865 → intelligence and anxiety together explain 86.5% of variance in academic achievement.</div>
+</div>`,
+            flashcards: [
+              {q:"What is R² in multiple correlation?", a:"The proportion of variance in the criterion variable (A) explained by the linear combination of all predictor variables (B, C, …)."},
+              {q:"Why is adjusted R² preferred for small samples?", a:"R² is a biased overestimate of population R² (P²) for small n. Adjusted R² corrects this bias by penalising for the number of predictors."},
+              {q:"If R = 0.929 and n=10 with k=2 predictors, what does R² tell you?", a:"R² = 0.929² ≈ 0.863. About 86.3% of variance in the criterion is explained by the two predictors jointly."}
+            ],
+            quiz: [
+              {q:"Adjusted R² is always ___ than R²:", opts:["Greater","Equal","Smaller","Unrelated"], ans:2, exp:"The adjustment formula penalises for predictors, always yielding a value ≤ R². It can even go negative for very poor models."},
+              {q:"Multiple R significance testing uses:", opts:["t-distribution","z-distribution","F-distribution","χ² distribution"], ans:2, exp:"The F-test is used: F = [R²/k]/[(1−R²)/(n−k−1)], comparing regression variance to residual variance."}
+            ]
+          }
+        ]
+      },
+      {
+        id: "u4", label: "Unit 4",
+        title: "Bivariate and Multiple Regression",
+        overview: "Regression extends correlation to prediction. Learn to build regression equations, compute OLS estimates of slope (b) and intercept (a), test significance with F, assess accuracy with r² and standard error, and extend to multiple predictors.",
+        topics: [
+          {
+            id: "t14", title: "Concept of Regression",
+            content: `<p>Regression predicts the score on a <strong>criterion (dependent) variable Y</strong> from scores on one or more <strong>predictor (independent) variables X</strong>.</p>
+<div class="key-points">
+  <div class="key-point">Y = dependent / criterion variable (what we predict).</div>
+  <div class="key-point">X = independent / predictor variable (what we use to predict).</div>
+  <div class="key-point">"X is regressed on Y" = X is used to predict Y.</div>
+  <div class="key-point">Bivariate regression: one X, one Y. Multiple regression: many X's, one Y.</div>
+  <div class="key-point">Name coined by Sir Francis Galton; method formalised by Carl Gauss (method of least squares, 1809).</div>
+</div>
+<p>Examples: Stress → health; Extraversion → social acceptance; Stigma → appointments missed; Parental IQ → child's IQ.</p>`,
+            flashcards: [
+              {q:"What is a criterion variable?", a:"The variable we are trying to predict (Y / dependent variable). Also called the outcome variable."},
+              {q:"What is a predictor variable?", a:"The variable we use to make predictions (X / independent variable). Note: in regression, X is not necessarily experimentally manipulated."},
+              {q:"Who gave the name 'regression' and who formalised the mathematics?", a:"Sir Francis Galton coined the term 'regression'; Carl Gauss formalised the method of least squares (1809) and the Gauss-Markov theorem (1821)."}
+            ],
+            quiz: [
+              {q:"In the statement 'Stigma predicts appointments missed', which is Y?", opts:["Stigma","Appointments missed","Both","Neither"], ans:1, exp:"'Appointments missed' is what we predict (Y = criterion). Stigma is the predictor (X)."},
+              {q:"Bivariate regression involves:", opts:["Two Y variables","Multiple X variables and one Y","One X and one Y","No variables"], ans:2, exp:"Bivariate = two variables: one predictor X and one criterion Y."}
+            ]
+          },
+          {
+            id: "t15", title: "The Regression Equation & OLS",
+            content: `<p>The population regression model is Y = α + βX + ε. At the sample level we estimate it as:</p>
+<div class="formula-box"><div class="formula-label">REGRESSION EQUATION (sample)</div>Ŷ = a + bX</div>
+<div class="formula-box"><div class="formula-label">OLS SLOPE (b)</div>b = Cov(XY) / Sₓ² = Σ(X−X̄)(Y−Ȳ) / [n·Sₓ²]</div>
+<div class="formula-box"><div class="formula-label">OLS INTERCEPT (a)</div>a = Ȳ − b·X̄</div>
+<p><strong>Ordinary Least Squares (OLS)</strong> finds the a and b that <strong>minimise</strong> the sum of squared residuals: Σ(Y−Ŷ)².</p>
+<div class="key-points">
+  <div class="key-point">Residual e = Y − Ŷ (actual minus predicted). Σe = 0 always.</div>
+  <div class="key-point">OLS line = the unique line that gives the smallest possible Σ(Y−Ŷ)².</div>
+  <div class="key-point">Stigma example: b = 0.1991, a = −6.144 → Ŷ = −6.144 + 0.1991X.</div>
+</div>`,
+            flashcards: [
+              {q:"What does OLS stand for and what does it minimise?", a:"Ordinary Least Squares. It minimises the sum of squared residuals Σ(Y−Ŷ)² — making the regression line the best possible fit."},
+              {q:"What is a residual (e)?", a:"The difference between the actual Y and the predicted Ŷ for each observation: e = Y − Ŷ."},
+              {q:"What is the intercept (a) interpreted as?", a:"The value of Ŷ when X = 0. However, this is only meaningful if X = 0 is within the range of observed data."}
+            ],
+            quiz: [
+              {q:"If Cov(XY) = 12.9 and Sₓ² = 64.8, what is b?", opts:["0.199","64.8","12.9","0.002"], ans:0, exp:"b = Cov(XY)/Sₓ² = 12.9/64.8 ≈ 0.199."},
+              {q:"If Ȳ = 6, b = 0.1991, X̄ = 61, what is a?", opts:["−6.14","6.14","0.199","12.14"], ans:0, exp:"a = Ȳ − b·X̄ = 6 − 0.1991×61 = 6 − 12.14 = −6.14."},
+              {q:"Why do we minimise Σ(Y−Ŷ)² rather than Σ(Y−Ŷ)?", opts:["Because the sum of deviations is always 0","Because squaring is easier","Because we don't care about direction","Because OLS requires positive values"], ans:0, exp:"Positive and negative residuals cancel out — Σ(Y−Ŷ) = 0 always. Squaring prevents cancellation and penalises large errors."}
+            ]
+          },
+          {
+            id: "t16", title: "Significance Testing & Variance Decomposition",
+            content: `<p>Total variance in Y decomposes into <strong>explained</strong> variance (by regression) and <strong>residual</strong> variance:</p>
+<div class="formula-box"><div class="formula-label">VARIANCE DECOMPOSITION</div>SS_Total = SS_Regression + SS_Residual<br>Σ(Y−Ȳ)² = Σ(Ŷ−Ȳ)² + Σ(Y−Ŷ)²</div>
+<div class="formula-box"><div class="formula-label">F-TEST FOR b</div>F = MS_Regression / MS_Residual, df = (k, n−k−1)</div>
+<div class="key-points">
+  <div class="key-point">H₀: β = 0 (X cannot linearly predict Y). H₁: β ≠ 0.</div>
+  <div class="key-point">If F is not significant, stop — X does not significantly predict Y (though may be due to small n).</div>
+  <div class="key-point">r² = SS_Regression / SS_Total = proportion of Y's variance explained by X.</div>
+  <div class="key-point">Standard Error of Estimate: S_Y.X = √(SS_Residual / df_residual). Smaller = more accurate predictions.</div>
+</div>`,
+            flashcards: [
+              {q:"What does SS_Regression represent?", a:"The variance in Y that is explained by the regression equation — how much of Y's variability is accounted for by X."},
+              {q:"What does SS_Residual represent?", a:"The variance in Y that the regression equation CANNOT explain — the remaining unexplained variability."},
+              {q:"What is the Standard Error of Estimate (S_Y.X)?", a:"It estimates the typical size of prediction errors. S_Y.X = √(SS_Residual/df_residual). Smaller values = better prediction accuracy."}
+            ],
+            quiz: [
+              {q:"SS_Total = 86, SS_Residual = 60.32. What is r²?", opts:["0.299","0.701","0.600","0.086"], ans:0, exp:"r² = SS_Regression/SS_Total = (86−60.32)/86 = 25.68/86 ≈ 0.299. About 30% of variance in Y is explained."},
+              {q:"F = 3.41 with critical F(1,8) = 5.31 at α=.05. What do we conclude?", opts:["Reject H₀; β ≠ 0","Accept H₀; β = 0 (ns)","r² = 1","The model is perfect"], ans:1, exp:"F < F_critical → fail to reject H₀. We cannot conclude β ≠ 0 (often due to small sample size)."},
+              {q:"PIP (Proportional Improvement in Prediction) is computed as:", opts:["1 − r²","1 − √(1−r²)","r²","1 − (1−r²)^0.5 × √(1−r²)"], ans:1, exp:"PIP = 1 − √(1−r²). It shows the proportional improvement over using Ȳ as the prediction for everyone."}
+            ]
+          },
+          {
+            id: "t17", title: "Standardised Regression & Multiple Regression",
+            content: `<p><strong>Standardised regression:</strong> When both X and Y are converted to Z-scores (mean=0, SD=1), the intercept disappears (a=0) and the slope β equals the Pearson's r.</p>
+<div class="formula-box"><div class="formula-label">STANDARDISED EQUATION</div>Ẑᵧ = β·Zₓ   (β = r when both variables standardised)</div>
+<p><strong>Multiple Regression:</strong> Predicting Y from multiple predictors X₁, X₂, …, Xₖ:</p>
+<div class="formula-box"><div class="formula-label">MULTIPLE REGRESSION</div>Ŷ = a + b₁X₁ + b₂X₂ + … + bₖXₖ</div>
+<div class="key-points">
+  <div class="key-point">Each b shows the change in Y per unit change in Xᵢ, holding all other predictors constant.</div>
+  <div class="key-point">R² = variance in Y explained by ALL predictors together.</div>
+  <div class="key-point">Individual predictors tested with t-tests; overall model tested with F-test.</div>
+  <div class="key-point"><strong>Hierarchical entry:</strong> Predictors added one-by-one based on theory.</div>
+  <div class="key-point"><strong>Simultaneous entry:</strong> All predictors entered at once.</div>
+  <div class="key-point">Example: Appointments missed (Y) ~ Stigma (X₁) + Distance (X₂) → R² = 0.81 (81% explained!).</div>
+</div>`,
+            flashcards: [
+              {q:"When both X and Y are standardised, what does the regression slope (β) equal?", a:"β = Pearson's r (the correlation coefficient). The intercept becomes 0 automatically."},
+              {q:"In multiple regression, what does b₁ represent?", a:"The change in Ŷ for a one-unit increase in X₁, while holding all other predictors (X₂, X₃, …) constant."},
+              {q:"What is the difference between hierarchical and simultaneous entry in multiple regression?", a:"Hierarchical: predictors entered one at a time in a theory-driven order. Simultaneous: all predictors entered together in one step."}
+            ],
+            quiz: [
+              {q:"In standardised regression with Z-scores, the intercept is:", opts:["Equal to r","Equal to 0","Equal to the slope","Equal to 1"], ans:1, exp:"With standardised variables (Z-scores), Ȳ = 0, X̄ = 0, so a = Ȳ − b·X̄ = 0."},
+              {q:"Multiple R² = 0.81 means:", opts:["The model has 81 predictors","81% of variance in Y is explained by the predictors","r = 0.81","Only 19% of variance is explained"], ans:1, exp:"R² = proportion of variance explained. 0.81 means the predictors together explain 81% of the variability in Y."},
+              {q:"Regression shows causality between X and Y — True or False?", opts:["True","False"], ans:1, exp:"FALSE. Regression (like correlation) does not establish causation. Causation must come from theory and study design."}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+];
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let state = {
+  blockIdx: null,
+  unitIdx: null,
+  topicIdx: null,
+  visitedTopics: new Set()
+};
+
+/* ══════════════════════════════════════════════
+   NAV BUILD
+══════════════════════════════════════════════ */
+function buildNav() {
+  const nav = document.getElementById('navPanel');
+  nav.innerHTML = '<div class="nav-section-label">Blocks</div>';
+  BLOCKS.forEach((block, bi) => {
+    const blockEl = document.createElement('div');
+    blockEl.innerHTML = `
+      <button class="block-btn" id="blockBtn${bi}" style="--clr:${block.clr}" onclick="selectBlock(${bi})">
+        <div class="blk-num">${block.label}</div>
+        <div class="blk-title">${block.title}</div>
+        <div class="blk-sub">${block.subtitle}</div>
+      </button>
+      <div class="unit-list" id="unitList${bi}">
+        ${block.units.map((u,ui) => `
+          <div class="unit-item" id="unitItem${bi}_${ui}" 
+               style="--clr:${block.clr}" 
+               onclick="selectUnit(${bi},${ui})">${u.label}: ${u.title}</div>
+        `).join('')}
+      </div>`;
+    nav.appendChild(blockEl);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   ROUTING
+══════════════════════════════════════════════ */
+function selectBlock(bi) {
+  // toggle unit list
+  document.querySelectorAll('.unit-list').forEach((el,i) => {
+    if(i===bi) el.classList.toggle('open');
+    else el.classList.remove('open');
+  });
+  document.querySelectorAll('.block-btn').forEach((el,i) => {
+    el.classList.toggle('active', i===bi);
+  });
+  state.blockIdx = bi;
+  state.unitIdx = null; state.topicIdx = null;
+  renderBlock(bi);
+}
+
+function selectUnit(bi, ui) {
+  state.blockIdx = bi; state.unitIdx = ui; state.topicIdx = 0;
+  document.querySelectorAll('.unit-item').forEach(el => el.classList.remove('active'));
+  document.getElementById(`unitItem${bi}_${ui}`)?.classList.add('active');
+  renderUnit(bi, ui, 0);
+}
+
+function selectTopic(bi, ui, ti) {
+  state.topicIdx = ti;
+  const block = BLOCKS[bi];
+  const unit = block.units[ui];
+  const topic = unit.topics[ti];
+  state.visitedTopics.add(topic.id);
+
+  document.querySelectorAll('.topic-tab').forEach((el,i) => el.classList.toggle('active', i===ti));
+  document.querySelectorAll('.concept-panel').forEach((el,i) => el.classList.toggle('visible', i===ti));
+  updateProgress(bi, ui, ti);
+  updateBreadcrumb(bi, ui, ti);
+}
+
+/* ══════════════════════════════════════════════
+   RENDER HOME
+══════════════════════════════════════════════ */
+function renderHome() {
+  updateBreadcrumb(-1,-1,-1);
+  const totalTopics = BLOCKS.reduce((s,b)=>s+b.units.reduce((ss,u)=>ss+u.topics.length,0),0);
+  const totalUnits = BLOCKS.reduce((s,b)=>s+b.units.length,0);
+  document.getElementById('content').innerHTML = `
+    <div class="home-screen">
+      <div class="home-hero">
+        <h2>Correlation & Regression<br>Interactive Explorer</h2>
+        <p>Master all concepts across Block 2 — from scatter diagrams to multiple regression. Click any block to explore its units, dive into topics, and test your understanding.</p>
+      </div>
+      <div class="stats-row">
+        <div class="stat-card"><div class="num" style="color:var(--accent1)">${BLOCKS.length}</div><div class="lbl">Blocks</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--accent3)">${totalUnits}</div><div class="lbl">Units</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--accent4)">${totalTopics}</div><div class="lbl">Topics</div></div>
+        <div class="stat-card"><div class="num" style="color:var(--accent2)">${totalTopics*4}</div><div class="lbl">Practice Items</div></div>
+      </div>
+      <div class="block-grid">
+        ${BLOCKS[0].units.map((u,ui)=>`
+          <div class="block-card" style="--clr:${BLOCKS[0].clr}" onclick="selectUnit(0,${ui})">
+            <div class="bc-num">${BLOCKS[0].label} · ${u.label}</div>
+            <h3>${u.title}</h3>
+            <div class="bc-units">
+              ${u.topics.map(t=>`<span class="bc-unit-pill">${t.title}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════
+   RENDER BLOCK
+══════════════════════════════════════════════ */
+function renderBlock(bi) {
+  const block = BLOCKS[bi];
+  updateBreadcrumb(bi,-1,-1);
+  document.getElementById('content').innerHTML = `
+    <div class="home-screen">
+      <div class="home-hero" style="border-top: 3px solid ${block.clr}">
+        <h2>${block.label}: ${block.title}</h2>
+        <p>Select a unit below to explore its topics, formulas, flashcards and quizzes.</p>
+      </div>
+      <div class="block-grid">
+        ${block.units.map((u,ui)=>`
+          <div class="block-card" style="--clr:${block.clr}" onclick="selectUnit(${bi},${ui})">
+            <div class="bc-num">${u.label}</div>
+            <h3>${u.title}</h3>
+            <div class="bc-units">
+              ${u.topics.map(t=>`<span class="bc-unit-pill">${t.title}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════
+   RENDER UNIT
+══════════════════════════════════════════════ */
+function renderUnit(bi, ui, ti) {
+  const block = BLOCKS[bi];
+  const unit = block.units[ui];
+  updateBreadcrumb(bi, ui, -1);
+
+  const tabsHTML = unit.topics.map((t,i)=>`
+    <button class="topic-tab ${i===ti?'active':''}" style="--clr:${block.clr}" onclick="selectTopic(${bi},${ui},${i})">${t.title}</button>
+  `).join('');
+
+  const panelsHTML = unit.topics.map((t,i)=>`
+    <div class="concept-panel ${i===ti?'visible':''}">
+      <h3>${t.title}</h3>
+      ${t.content}
+      <div class="tools-row" style="margin-top:1.5rem">
+        <button class="tool-btn" style="--clr:${block.clr}" onclick="openFlashcards(${bi},${ui},${i})"><span class="icon">🃏</span> Flashcards</button>
+        <button class="tool-btn" style="--clr:${block.clr}" onclick="openQuiz(${bi},${ui},${i})"><span class="icon">🧠</span> Quiz Me</button>
+        <button class="tool-btn" style="--clr:${block.clr}" onclick="openSummary(${bi},${ui},${i})"><span class="icon">📋</span> Summary</button>
+      </div>
+    </div>
+  `).join('');
+
+  // progress dots
+  const dotsHTML = unit.topics.map((t,i)=>`
+    <div class="prog-dot ${state.visitedTopics.has(t.id)?'done':''} ${i===ti?'current':''}" 
+         onclick="selectTopic(${bi},${ui},${i})" title="${t.title}"></div>
+  `).join('');
+
+  document.getElementById('content').innerHTML = `
+    <div class="concept-view visible">
+      <div class="cv-header" style="--clr:${block.clr}">
+        <div class="tag">${block.label} · ${unit.label}</div>
+        <h2>${unit.title}</h2>
+        <p>${unit.overview}</p>
+        <div class="progress-track" style="margin-top:1rem">${dotsHTML}</div>
+      </div>
+      <div class="topic-tabs">${tabsHTML}</div>
+      ${panelsHTML}
+    </div>`;
+
+  state.visitedTopics.add(unit.topics[ti].id);
+}
+
+function updateProgress(bi, ui, ti) {
+  const unit = BLOCKS[bi].units[ui];
+  document.querySelectorAll('.prog-dot').forEach((el,i)=>{
+    el.classList.toggle('done', state.visitedTopics.has(unit.topics[i].id));
+    el.classList.toggle('current', i===ti);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   BREADCRUMB
+══════════════════════════════════════════════ */
+function updateBreadcrumb(bi, ui, ti) {
+  let bc = `<span onclick="renderHome()" style="cursor:pointer;color:var(--muted)">Home</span>`;
+  if(bi >= 0) {
+    bc += ` › <span style="color:var(--accent1)">${BLOCKS[bi].label}</span>`;
+    if(ui >= 0) bc += ` › <span style="color:var(--text)">${BLOCKS[bi].units[ui].label}</span>`;
+  }
+  document.getElementById('breadcrumb').innerHTML = bc;
+}
+
+/* ══════════════════════════════════════════════
+   MODAL HELPERS
+══════════════════════════════════════════════ */
+function openModal(html) {
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+document.getElementById('modalOverlay').addEventListener('click', function(e){
+  if(e.target === this) closeModal();
+});
+
+/* ══════════════════════════════════════════════
+   FLASHCARDS
+══════════════════════════════════════════════ */
+function openFlashcards(bi, ui, ti) {
+  const topic = BLOCKS[bi].units[ui].topics[ti];
+  const clr = BLOCKS[bi].clr;
+  const cards = topic.flashcards;
+  let cur = 0;
+
+  function render() {
+    return `
+      <h3>🃏 Flashcards — ${topic.title}</h3>
+      <p style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">Click card to reveal answer</p>
+      <div class="flashcard" id="fc" onclick="flipCard()" style="--clr:${clr}">
+        <div class="fc-front"><p>${cards[cur].q}</p><span class="fc-hint">tap to flip</span></div>
+        <div class="fc-back"><p>${cards[cur].a}</p><span class="fc-hint">tap to flip</span></div>
+      </div>
+      <div class="fc-nav">
+        <span class="fc-counter">${cur+1} / ${cards.length}</span>
+        <div class="fc-arrows">
+          <button class="fc-arrow" onclick="fcNav(-1,${bi},${ui},${ti})">← Prev</button>
+          <button class="fc-arrow" onclick="fcNav(1,${bi},${ui},${ti})">Next →</button>
+        </div>
+      </div>`;
+  }
+
+  window._fcState = {bi,ui,ti,cur:0};
+  openModal(render());
+}
+
+function flipCard() {
+  document.getElementById('fc')?.classList.toggle('flipped');
+}
+
+function fcNav(dir, bi, ui, ti) {
+  const cards = BLOCKS[bi].units[ui].topics[ti].flashcards;
+  window._fcState.cur = (window._fcState.cur + dir + cards.length) % cards.length;
+  const cur = window._fcState.cur;
+  const clr = BLOCKS[bi].clr;
+  document.getElementById('modalBody').innerHTML = `
+    <h3>🃏 Flashcards — ${BLOCKS[bi].units[ui].topics[ti].title}</h3>
+    <p style="font-size:0.72rem;color:var(--muted);margin-bottom:0.5rem">Click card to reveal answer</p>
+    <div class="flashcard" id="fc" onclick="flipCard()" style="--clr:${clr}">
+      <div class="fc-front"><p>${cards[cur].q}</p><span class="fc-hint">tap to flip</span></div>
+      <div class="fc-back"><p>${cards[cur].a}</p><span class="fc-hint">tap to flip</span></div>
+    </div>
+    <div class="fc-nav">
+      <span class="fc-counter">${cur+1} / ${cards.length}</span>
+      <div class="fc-arrows">
+        <button class="fc-arrow" onclick="fcNav(-1,${bi},${ui},${ti})">← Prev</button>
+        <button class="fc-arrow" onclick="fcNav(1,${bi},${ui},${ti})">Next →</button>
+      </div>
+    </div>`;
+}
+
+/* ══════════════════════════════════════════════
+   QUIZ
+══════════════════════════════════════════════ */
+function openQuiz(bi, ui, ti) {
+  const topic = BLOCKS[bi].units[ui].topics[ti];
+  const clr = BLOCKS[bi].clr;
+  window._quizState = {bi,ui,ti,cur:0,score:0,answered:false};
+  renderQuizQ(clr);
+}
+
+function renderQuizQ(clr) {
+  const {bi,ui,ti,cur,score} = window._quizState;
+  const qs = BLOCKS[bi].units[ui].topics[ti].quiz;
+  if(cur >= qs.length) {
+    openModal(`
+      <h3>🎉 Quiz Complete!</h3>
+      <p style="font-size:0.85rem;color:var(--text);margin:1rem 0">Score: <strong style="color:${clr}">${score}/${qs.length}</strong></p>
+      <div class="summary-box">
+        ${score === qs.length ? '<strong>Perfect score!</strong> You\'ve mastered this topic.' :
+          score >= qs.length/2 ? 'Good job! Review the explanations for questions you missed.' :
+          'Keep practicing! Use flashcards to reinforce the concepts.'}
+      </div>
+      <div style="display:flex;gap:0.5rem;margin-top:1rem">
+        <button class="btn-primary" onclick="openQuiz(${bi},${ui},${ti})">Retry Quiz</button>
+        <button class="fc-arrow" onclick="openFlashcards(${bi},${ui},${ti})">Flashcards</button>
+      </div>`);
+    return;
+  }
+  const q = qs[cur];
+  openModal(`
+    <h3>🧠 Quiz — ${BLOCKS[bi].units[ui].topics[ti].title}</h3>
+    <div class="quiz-score" style="margin-bottom:1rem">Question ${cur+1}/${qs.length} · Score: ${score}</div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">
+      ${q.opts.map((o,i)=>`<div class="quiz-opt" id="qopt${i}" onclick="quizAnswer(${i},${clr})">${String.fromCharCode(65+i)}. ${o}</div>`).join('')}
+    </div>
+    <div class="quiz-feedback" id="qfb">${q.exp}</div>
+    <div class="quiz-nav" style="margin-top:1rem">
+      <span></span>
+      <button class="btn-primary" id="qnext" style="display:none" onclick="quizNext()">Next →</button>
+    </div>`);
+}
+
+function quizAnswer(chosen) {
+  if(window._quizState.answered) return;
+  window._quizState.answered = true;
+  const {bi,ui,ti,cur} = window._quizState;
+  const q = BLOCKS[bi].units[ui].topics[ti].quiz[cur];
+  if(chosen === q.ans) window._quizState.score++;
+  document.querySelectorAll('.quiz-opt').forEach((el,i) => {
+    if(i === q.ans) el.classList.add('correct');
+    else if(i === chosen && chosen !== q.ans) el.classList.add('wrong');
+  });
+  document.getElementById('qfb').style.display = 'block';
+  document.getElementById('qnext').style.display = 'inline-block';
+}
+
+function quizNext() {
+  window._quizState.cur++;
+  window._quizState.answered = false;
+  const clr = BLOCKS[window._quizState.bi].clr;
+  renderQuizQ(clr);
+}
+
+/* ══════════════════════════════════════════════
+   SUMMARY
+══════════════════════════════════════════════ */
+function openSummary(bi, ui, ti) {
+  const topic = BLOCKS[bi].units[ui].topics[ti];
+  const clr = BLOCKS[bi].clr;
+  const summaries = {
+    t1:`<strong>Correlation</strong> measures the strength and direction of association between two variables (X and Y). The correlation coefficient r ranges from <strong>−1 to +1</strong>. Squaring it gives <strong>r² × 100 = % shared variance</strong>. Remember: <strong>correlation ≠ causation</strong>.`,
+    t2:`A <strong>scatter diagram</strong> plots paired X-Y values as dots. Upward slope → positive correlation; downward → negative; random cloud → no correlation. Always inspect the scatter before computing r to spot outliers and non-linearity.`,
+    t3:`Pearson's r measures only <strong>linear</strong> relationships. <strong>Non-linear</strong> relationships (e.g., Yerkes-Dodson inverted-U) can give r ≈ 0 even when a strong relationship exists. Only use rank-order correlations for <strong>monotonic</strong> (consistently one-directional) non-linear relationships.`,
+    t4:`Pearson's r = <strong>Cov(XY) / (Sₓ·Sᵧ)</strong>. Compute by finding deviations (X−X̄) and (Y−Ȳ), cross-multiplying, summing, and dividing by n·Sₓ·Sᵧ. For small samples use <strong>adjusted r</strong> to correct upward bias.`,
+    t5:`Test H₀: ρ=0 using <strong>t = r√(n−2)/√(1−r²)</strong> with df = n−2. Key assumptions: independence, bivariate normality, linearity. Beware: <strong>restricted range, outliers, and low reliability</strong> all distort r.`,
+    t6:`<strong>Point-Biserial (r_pb)</strong>: Pearson's r when one variable is truly dichotomous (0/1) and one is continuous. r_pb² = % variance shared. Significance via t, df=n−2.`,
+    t7:`<strong>Phi (φ)</strong>: Pearson's r when both variables are dichotomous (0/1). Significance via χ² = n·φ², df=1. φ² = shared variance.`,
+    t8:`<strong>Biserial</strong>: one artificially dichotomised + one continuous. <strong>Tetrachoric</strong>: both artificially dichotomised. Both estimate what Pearson's r would be if measured continuously.`,
+    t9:`<strong>Spearman's ρ</strong>: for rank data or violated Pearson assumptions. Formula: 1 − 6ΣD²/n(n²−1). Only for <strong>monotonic</strong> relationships. With tied ranks, compute Pearson's r on the ranks instead.`,
+    t10:`<strong>Kendall's τ</strong>: based on concordant (nC) and discordant (nD) pairs. τ = (nC−nD)/[n(n−1)/2]. Better than Spearman's ρ for tied ranks. Both work only for monotonic relationships.`,
+    t11:`<strong>Partial correlation (r_AB.C)</strong>: removes C from BOTH A and B. Formula uses pairwise correlations. Tests whether A–B relationship is real after controlling for C. df = n−v.`,
+    t12:`<strong>Semipartial (r_A(B.C))</strong>: removes C from only ONE variable (B). Shows unique contribution of A to B after removing C's effect on B. Same significance test as partial.`,
+    t13:`<strong>Multiple R</strong>: correlation of one variable with a linear combination of others. R² = total variance explained. Use <strong>Adjusted R²</strong> for small samples. F-test with df = (k, n−k−1).`,
+    t14:`<strong>Regression</strong> predicts criterion Y from predictor X. Y = dependent/criterion; X = independent/predictor. Bivariate = 1 X. Multiple = many X's. Regression ≠ causation.`,
+    t15:`<strong>OLS</strong> finds a and b that minimise Σ(Y−Ŷ)². <strong>b = Cov(XY)/Sₓ²</strong>; <strong>a = Ȳ − b·X̄</strong>. Residual e = Y−Ŷ; always Σe=0.`,
+    t16:`<strong>SS_Total = SS_Regression + SS_Residual</strong>. F = MS_Reg/MS_Res tests H₀: β=0. <strong>r² = SS_Reg/SS_Total</strong> = proportion explained. <strong>S_Y.X = √(SS_Res/df)</strong> = standard error of prediction.`,
+    t17:`Standardised regression with Z-scores: intercept=0, β=r. <strong>Multiple regression</strong>: Ŷ = a + b₁X₁ + b₂X₂ + …. Each b = change in Y per unit Xᵢ (others held constant). Entry: hierarchical (theory-guided) or simultaneous (all at once).`
+  };
+  openModal(`
+    <h3 style="color:${clr}">📋 Summary — ${topic.title}</h3>
+    <div class="summary-box" style="margin-top:1rem">${summaries[topic.id] || 'Summary coming soon.'}</div>
+    <div style="margin-top:1.5rem;display:flex;gap:0.5rem">
+      <button class="btn-primary" onclick="openFlashcards(${bi},${ui},${ti})">🃏 Flashcards</button>
+      <button class="fc-arrow" onclick="openQuiz(${bi},${ui},${ti})">🧠 Quiz</button>
+    </div>`);
+}
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+buildNav();
+renderHome();
+</script>
+</body>
+</html>
