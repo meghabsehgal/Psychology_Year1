@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MPC-004 | Exam Mastery</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; }
+    .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+    .topic-item { transition: all 0.2s; }
+    .content-section { display: none; }
+    .active { display: block; }
+  </style>
+</head>
+<body class="bg-[#f8f4f0] text-gray-800">
+
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="w-72 bg-white border-r border-gray-200 flex flex-col">
+      <div class="p-6 border-b bg-[#2c2520] text-white">
+        <h1 class="text-2xl font-bold">MPC-004</h1>
+        <p class="text-amber-200 text-sm mt-1">Advanced Social Psychology</p>
+        <p class="text-xs text-amber-300/70 mt-4">IGNOU Exam Mastery • 2026</p>
+      </div>
+      
+      <div class="p-4 flex-1 overflow-auto">
+        <div onclick="selectBlock(1)" class="block-btn cursor-pointer px-4 py-3 rounded-xl mb-2 flex items-center gap-3 hover:bg-amber-50 transition-colors active-block" id="block1">
+          <span class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center font-bold text-sm">1</span>
+          <div>
+            <div class="font-semibold">Block 1</div>
+            <div class="text-sm text-gray-500">Social Cognition & Attribution</div>
+          </div>
+        </div>
+        
+        <div onclick="selectBlock(2)" class="block-btn cursor-pointer px-4 py-3 rounded-xl mb-2 flex items-center gap-3 hover:bg-amber-50 transition-colors" id="block2">
+          <span class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center font-bold text-sm">2</span>
+          <div>
+            <div class="font-semibold">Block 2</div>
+            <div class="text-sm text-gray-500">Attitudes & Persuasion</div>
+          </div>
+        </div>
+        
+        <div onclick="selectBlock(3)" class="block-btn cursor-pointer px-4 py-3 rounded-xl mb-2 flex items-center gap-3 hover:bg-amber-50 transition-colors" id="block3">
+          <span class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center font-bold text-sm">3</span>
+          <div>
+            <div class="font-semibold">Block 3</div>
+            <div class="text-sm text-gray-500">Group Dynamics</div>
+          </div>
+        </div>
+        
+        <div onclick="selectBlock(4)" class="block-btn cursor-pointer px-4 py-3 rounded-xl mb-2 flex items-center gap-3 hover:bg-amber-50 transition-colors" id="block4">
+          <span class="w-8 h-8 bg-amber-100 text-amber-700 rounded-lg flex items-center justify-center font-bold text-sm">4</span>
+          <div>
+            <div class="font-semibold">Block 4</div>
+            <div class="text-sm text-gray-500">Social Problems & Aggression</div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="p-4 border-t text-xs text-gray-500">
+        Click topics → Active Recall Mode<br>
+        Built for 10-mark & 6-mark answers
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <div class="bg-white border-b px-8 py-5 flex items-center justify-between">
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-800" id="block-title">Block 1: Social Cognition & Attribution</h2>
+          <p class="text-gray-500 text-sm" id="block-desc">How we perceive, interpret, and explain social behavior</p>
+        </div>
+        <div class="text-sm bg-amber-100 text-amber-700 px-4 py-2 rounded-2xl font-medium">
+          <i class="fas fa-brain mr-2"></i> Active Recall Enabled
+        </div>
+      </div>
+
+      <!-- Topics Grid -->
+      <div class="flex-1 overflow-auto p-8" id="topics-container">
+        <!-- Dynamically populated by JS -->
+      </div>
+    </div>
+
+    <!-- Detail Panel -->
+    <div class="w-2/5 bg-white border-l shadow-2xl flex flex-col" id="detail-panel" style="display: none;">
+      <div class="p-6 border-b flex items-center justify-between bg-gray-50">
+        <h3 class="font-bold text-xl" id="detail-title"></h3>
+        <button onclick="closeDetail()" class="text-gray-400 hover:text-gray-600">
+          <i class="fas fa-times text-2xl"></i>
+        </button>
+      </div>
+      
+      <div class="flex-1 overflow-auto p-6 space-y-10" id="detail-content">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+<script>
+// Data Structure
+const blocks = {
+  1: {
+    title: "Block 1: Social Cognition & Attribution",
+    desc: "How we perceive, interpret, and explain social behavior",
+    topics: [
+      {
+        id: "schemas",
+        title: "Schemas",
+        essentials: "Mental frameworks that organize knowledge about people, objects, and events. Types: Person, Role, Event schemas. Functions: Assimilation, Accommodation, Speed up processing. Can lead to stereotyping.",
+        hook: "Imagine your brain as a highly organized library. Schemas are the pre-labeled shelves that help you instantly find and file new information. Without them, every social encounter would require building a new shelf from scratch.",
+        example: "When you meet someone wearing a white coat in a hospital, your 'Doctor Schema' activates automatically — you expect competence and authority without conscious thought."
+      },
+      {
+        id: "heuristics",
+        title: "Heuristics",
+        essentials: "Mental shortcuts: Availability (ease of recall), Representativeness (prototypes), Anchoring & Adjustment. Useful but lead to systematic biases.",
+        hook: "Your brain is a frugal accountant trying to make quick financial decisions with limited time and energy. Heuristics are its quick calculation tricks.",
+        example: "After watching news about plane crashes, you overestimate the risk of flying (Availability Heuristic) despite statistics showing car travel is far riskier."
+      },
+      {
+        id: "heider",
+        title: "Heider’s Naive Psychology / Balance Theory",
+        essentials: "P-O-X model. People seek cognitive balance. Attribution: Internal (dispositional) vs External (situational).",
+        hook: "Think of social relationships as a three-legged stool (Person-Other-Object). If one leg is unstable, the whole stool feels uncomfortable until balance is restored.",
+        example: "If you like Amit and Amit likes classical music, you will tend to like classical music too to maintain balance."
+      },
+      {
+        id: "jones-davis",
+        title: "Jones & Davis - Correspondent Inference Theory",
+        essentials: "We infer disposition when behavior is: freely chosen, unexpected (low social desirability), has low hedonic relevance, and has high personalism.",
+        hook: "Like a detective looking for clues that someone's action truly reflects their character rather than the situation.",
+        example: "If a normally quiet student publicly criticizes the professor (unexpected, low desirability), we infer they are genuinely brave or angry."
+      },
+      {
+        id: "kelley",
+        title: "Kelley’s Covariation Model",
+        essentials: "Three dimensions: Consensus, Consistency, Distinctiveness. High on all three → External attribution. Low consistency → Internal.",
+        hook: "Like a scientist using three different lights to examine a specimen from multiple angles before deciding what it really is.",
+        example: "Everyone fails the test (high consensus), Ravi always fails this subject (high consistency), but passes others (high distinctiveness) → We attribute failure to the difficult test."
+      },
+      {
+        id: "attribution-errors",
+        title: "Attribution Errors",
+        essentials: "Fundamental Attribution Error (FAE), Actor-Observer Bias, Self-Serving Bias, Ultimate Attribution Error.",
+        hook: "Camera Lens Metaphor: When we are the actor, we see through a wide-angle lens (situation is clear). When judging others, we use a zoom lens focused only on the person.",
+        example: "You trip because the floor was wet (situational), but you think your friend tripped because they are clumsy (dispositional) — Actor-Observer Bias."
+      }
+    ]
+  },
+  2: {
+    title: "Block 2: Attitudes & Persuasion",
+    desc: "Formation, change, and resistance of attitudes",
+    topics: [
+      {
+        id: "abc-model",
+        title: "ABC Model of Attitudes",
+        essentials: "Affect (emotional), Behavior (action tendency), Cognition (beliefs). Tri-component model.",
+        hook: "Attitude is like a three-legged chair. If any leg is weak, the whole attitude becomes unstable.",
+        example: "You feel fear (Affect) about dogs, believe they are dangerous (Cognition), and avoid them (Behavior)."
+      },
+      {
+        id: "cognitive-dissonance",
+        title: "Cognitive Dissonance (Festinger)",
+        essentials: "Psychological discomfort when holding contradictory cognitions. Ways to reduce: Change attitude, add new cognitions, trivialize, or change behavior.",
+        hook: "Mental friction like two gears grinding. The brain hates the grinding sound and will do anything to make them mesh smoothly again.",
+        example: "A person who values health continues smoking → reduces dissonance by saying 'I’ll quit after this stressful period' or 'Smoking isn’t that bad'."
+      },
+      {
+        id: "elm",
+        title: "Elaboration Likelihood Model (Petty & Cacioppo)",
+        essentials: "Two routes: Central (deep processing, strong arguments) vs Peripheral (superficial cues: attractiveness, emotions). Depends on motivation & ability.",
+        hook: "Central route = thoughtful judge studying case files. Peripheral route = audience swayed by the lawyer’s dramatic voice and expensive suit.",
+        example: "Buying a car: Central route (reading specs, reviews) vs Peripheral route (attracted by celebrity endorsement)."
+      },
+      {
+        id: "prejudice-discrimination",
+        title: "Prejudice vs Discrimination",
+        essentials: "Prejudice = negative attitude (cognitive/affective). Discrimination = negative behavior. Can exist independently.",
+        hook: "Prejudice is the storm cloud in the mind. Discrimination is the rain that actually falls on people.",
+        example: "Disliking a community (prejudice) but not acting on it vs refusing to hire someone from that community (discrimination)."
+      }
+    ]
+  },
+  3: {
+    title: "Block 3: Group Dynamics",
+    desc: "How groups influence individual behavior",
+    topics: [
+      {
+        id: "facilitation-loafing",
+        title: "Social Facilitation vs Social Loafing",
+        essentials: "Facilitation: Performance improves with audience on simple tasks. Loafing: Reduced effort in group on additive tasks.",
+        hook: "Social Facilitation = stage fright making you run faster. Social Loafing = being in a group tug-of-war where you pull less hard.",
+        example: "Running faster when people are watching (facilitation) vs contributing less in a group project (loafing)."
+      },
+      {
+        id: "asch-conformity",
+        title: "Asch’s Conformity Experiments",
+        essentials: "Line judgment task. 32% conformity rate. Factors: Group size, unanimity, task difficulty.",
+        hook: "Like standing in a room where everyone points up but you see a bird on the ground.",
+        example: "Participants gave clearly wrong answers because everyone else did."
+      },
+      {
+        id: "milgram",
+        title: "Milgram’s Obedience Study",
+        essentials: "65% went to 450V. Factors: Proximity, Authority presence, Legitimacy, Gradual escalation.",
+        hook: "The slow boiling frog experiment applied to human morality under authority.",
+        example: "Ordinary people delivering what they believed were lethal shocks when instructed by an experimenter."
+      },
+      {
+        id: "groupthink",
+        title: "Groupthink (Janis)",
+        essentials: "Excessive desire for harmony leading to poor decisions. Symptoms: Illusion of invulnerability, self-censorship, mindguards.",
+        hook: "The group becomes a warm, cozy echo chamber where dissenting voices are shut out.",
+        example: "Bay of Pigs invasion planning under Kennedy."
+      },
+      {
+        id: "group-polarization",
+        title: "Group Polarization",
+        essentials: "Group discussion leads to more extreme positions than individual pre-discussion views.",
+        hook: "Like a group of friends planning a trip — starting mild but ending up booking an extreme adventure.",
+        example: "Mildly conservative group becomes strongly conservative after discussion."
+      }
+    ]
+  },
+  4: {
+    title: "Block 4: Social Problems & Aggression",
+    desc: "Understanding and addressing negative social phenomena",
+    topics: [
+      {
+        id: "bandura",
+        title: "Bandura’s Social Learning Theory",
+        essentials: "Learning through observation, imitation, modeling. Bobo doll experiment. Requires attention, retention, reproduction, motivation.",
+        hook: "Children are like tiny video recorders copying the behaviors they see on the 'social screen'.",
+        example: "Children who saw adults hitting the Bobo doll were more aggressive."
+      },
+      {
+        id: "frustration-aggression",
+        title: "Frustration-Aggression Hypothesis (Dollard)",
+        essentials: "Frustration leads to aggression. Displacement, catharsis. Modified by Berkowitz (negative affect).",
+        hook: "A pressure cooker: Frustration builds steam. If not released safely, it explodes as aggression.",
+        example: "A person stuck in traffic (frustration) snaps at their family member at home (displaced aggression)."
+      },
+      {
+        id: "bystander",
+        title: "Bystander Effect",
+        essentials: "Diffusion of responsibility. More people = less likely to help. Kitty Genovese case.",
+        hook: "Everyone thinks 'someone else will do it' — creating collective inaction.",
+        example: "A person collapses in a crowded metro but no one helps because everyone assumes another will."
+      },
+      {
+        id: "crowding",
+        title: "Crowding & Its Effects",
+        essentials: "High density leads to stress, aggression, withdrawal. Density vs Crowding (perceived).",
+        hook: "Like too many files open on a computer — system starts slowing down and glitching.",
+        example: "Elevated aggression and reduced helping behavior in densely populated urban slums."
+      }
+    ]
+  }
+};
+
+let currentBlock = 1;
+
+function selectBlock(blockNum) {
+  currentBlock = blockNum;
+  document.querySelectorAll('.block-btn').forEach(el => el.classList.remove('active-block'));
+  document.getElementById(`block${blockNum}`).classList.add('active-block');
+  
+  const block = blocks[blockNum];
+  document.getElementById('block-title').textContent = block.title;
+  document.getElementById('block-desc').textContent = block.desc;
+  
+  renderTopics(block.topics);
+  closeDetail();
+}
+
+function renderTopics(topics) {
+  const container = document.getElementById('topics-container');
+  let html = `<div class="grid grid-cols-2 gap-4">`;
+  
+  topics.forEach(topic => {
+    html += `
+      <div onclick="showDetail('${topic.id}')" class="bg-white p-6 rounded-3xl border border-gray-100 card-hover cursor-pointer">
+        <div class="font-semibold text-lg mb-2">${topic.title}</div>
+        <div class="text-sm text-gray-500 line-clamp-2">${topic.essentials.substring(0, 120)}...</div>
+        <div class="mt-4 text-amber-600 text-xs font-medium flex items-center gap-1">
+          <i class="fas fa-arrow-right"></i> EXPLORE CONCEPT
+        </div>
+      </div>`;
+  });
+  
+  html += `</div>`;
+  container.innerHTML = html;
+}
+
+function showDetail(topicId) {
+  const block = blocks[currentBlock];
+  const topic = block.topics.find(t => t.id === topicId);
+  if (!topic) return;
+  
+  document.getElementById('detail-title').textContent = topic.title;
+  
+  let contentHTML = `
+    <div class="space-y-10">
+      <!-- Exam Essentials -->
+      <div>
+        <div class="flex items-center gap-2 text-emerald-600 mb-3">
+          <i class="fas fa-graduation-cap"></i>
+          <span class="font-bold uppercase tracking-widest text-sm">Exam Essentials (10/6 marks)</span>
+        </div>
+        <div class="prose prose-gray bg-emerald-50 p-5 rounded-2xl text-[15px] leading-relaxed">
+          ${topic.essentials}
+        </div>
+      </div>
+      
+      <!-- Retention Hook -->
+      <div>
+        <div class="flex items-center gap-2 text-violet-600 mb-3">
+          <i class="fas fa-lightbulb"></i>
+          <span class="font-bold uppercase tracking-widest text-sm">Memory Anchor</span>
+        </div>
+        <div class="italic bg-violet-50 p-6 rounded-3xl border border-violet-100 text-[15.2px]">
+          ${topic.hook}
+        </div>
+      </div>
+      
+      <!-- Real World Example -->
+      <div>
+        <div class="flex items-center gap-2 text-rose-600 mb-3">
+          <i class="fas fa-users"></i>
+          <span class="font-bold uppercase tracking-widest text-sm">Real-World Application</span>
+        </div>
+        <div class="bg-rose-50 p-6 rounded-3xl border border-rose-100 text-[15px]">
+          ${topic.example}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('detail-content').innerHTML = contentHTML;
+  document.getElementById('detail-panel').style.display = 'flex';
+}
+
+function closeDetail() {
+  document.getElementById('detail-panel').style.display = 'none';
+}
+
+// Initialize
+selectBlock(1);
+</script>
+</body>
+</html>
