@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGNOU MPC-003 Exam Prep Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-[#fcfbf9] text-slate-800 font-sans antialiased selection:bg-stone-200">
+
+    <header class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="bg-stone-800 text-stone-100 p-2 rounded text-xs font-bold tracking-wider">MPC-003</div>
+            <div>
+                <h1 class="text-lg font-serif font-semibold text-stone-900">Personality: Theories and Assessment</h1>
+                <p class="text-xs text-stone-500">Master of Arts in Psychology (MAPC) • Active Recall Dashboard</p>
+            </div>
+        </div>
+        <div class="text-right hidden sm:block">
+            <span class="text-xs font-mono uppercase bg-stone-100 text-stone-600 px-2 py-1 rounded border border-stone-200">IGNOU Exam Prep Standard</span>
+        </div>
+    </header>
+
+    <div class="flex h-[calc(100vh-73px)] overflow-hidden">
+        
+        <aside class="w-80 border-r border-stone-200 bg-stone-50/50 flex flex-col h-full">
+            <div class="p-4 border-b border-stone-200 bg-white">
+                <span class="text-xs font-semibold uppercase tracking-wider text-stone-400">Syllabus Structure</span>
+                <p class="text-xs text-stone-500 mt-0.5">Select a topic to test your active recall.</p>
+            </div>
+            
+            <nav class="flex-1 overflow-y-auto custom-scrollbar p-3 space-y-4">
+                <div>
+                    <h3 class="text-xs font-bold text-stone-500 uppercase tracking-wider px-2 mb-1">Block 1: Personality Introduction</h3>
+                    <div class="space-y-0.5" id="block1-menu"></div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xs font-bold text-stone-500 uppercase tracking-wider px-2 mb-1">Block 2: Psychodynamic & Humanistic</h3>
+                    <div class="space-y-0.5" id="block2-menu"></div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xs font-bold text-stone-500 uppercase tracking-wider px-2 mb-1">Block 3: Trait, Type & Behavioral</h3>
+                    <div class="space-y-0.5" id="block3-menu"></div>
+                </div>
+                
+                <div>
+                    <h3 class="text-xs font-bold text-stone-500 uppercase tracking-wider px-2 mb-1">Block 4: Assessment & Testing</h3>
+                    <div class="space-y-0.5" id="block4-menu"></div>
+                </div>
+            </nav>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto custom-scrollbar bg-[#fcfbf9] p-8 md:p-12 relative">
+            
+            <div id="welcome-state" class="max-w-2xl mx-auto text-center my-16 space-y-6">
+                <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto border border-stone-200">
+                    <span class="text-xl text-stone-600">📖</span>
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-serif text-stone-900 font-medium">Progressive Disclosure Learning Panel</h2>
+                    <p class="text-stone-600 text-sm leading-relaxed max-w-md mx-auto">
+                        To maximize cognitive retention, descriptions are hidden by default. Review the topic titles in the sidebar, try to mentally retrieve the core arguments, and click to reveal full text details.
+                    </p>
+                </div>
+                <div class="grid grid-cols-3 gap-3 text-left max-w-md mx-auto pt-4 text-xs text-stone-500">
+                    <div class="p-3 bg-white border border-stone-200 rounded shadow-xs">
+                        <strong class="block text-stone-700 mb-1">1. Exam Essentials</strong> Score-critical technical criteria, definitions, and core models.
+                    </div>
+                    <div class="p-3 bg-white border border-stone-200 rounded shadow-xs">
+                        <strong class="block text-stone-700 mb-1">2. Retention Hooks</strong> Replaces wordy mnemonics with spatial and physical analogies.
+                    </div>
+                    <div class="p-3 bg-white border border-stone-200 rounded shadow-xs">
+                        <strong class="block text-stone-700 mb-1">3. Real Examples</strong> Grounded real-world scenarios showing the concept in dynamic action.
+                    </div>
+                </div>
+            </div>
+
+            <div id="content-display" class="max-w-3xl mx-auto hidden space-y-8 animate-fade-in">
+                
+                <div class="border-b border-stone-200 pb-6">
+                    <div class="flex items-center space-x-2 text-xs font-mono uppercase tracking-wider text-stone-400 mb-2">
+                        <span id="display-block-id">Block X</span>
+                        <span>/</span>
+                        <span id="display-unit-id">Unit Y</span>
+                    </div>
+                    <h2 id="display-title" class="text-3xl font-serif font-medium text-stone-900 tracking-tight">Topic Title Placeholder</h2>
+                </div>
+
+                <section class="bg-white border border-stone-200 rounded-xl p-6 shadow-xs space-y-4">
+                    <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
+                        <span class="text-emerald-700 font-bold font-mono text-sm">PART 01</span>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-stone-700">Exam Essentials (10 / 6 Mark Rubric Criteria)</h3>
+                    </div>
+                    <div id="display-essentials" class="text-stone-700 text-sm leading-relaxed space-y-3">
+                        </div>
+                </section>
+
+                <section id="chart-container-block" class="bg-white border border-stone-200 rounded-xl p-6 shadow-xs space-y-4 hidden">
+                    <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
+                        <span class="text-blue-700 font-bold font-mono text-sm">VISUAL DATA</span>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-stone-700">Theoretical Matrix Data Model</h3>
+                    </div>
+                    <div class="w-full max-h-[300px] flex justify-center items-center">
+                        <canvas id="topic-interactive-canvas"></canvas>
+                    </div>
+                </section>
+
+                <section class="bg-amber-50/40 border border-amber-200/70 rounded-xl p-6 space-y-3">
+                    <div class="flex items-center space-x-2 border-b border-amber-200/40 pb-3">
+                        <span class="text-amber-800 font-bold font-mono text-sm">PART 02</span>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-amber-800">Retention Hook (The Spatial/Physical Analogy)</h3>
+                    </div>
+                    <div id="display-hook" class="text-stone-700 text-sm leading-relaxed italic">
+                        </div>
+                </section>
+
+                <section class="bg-white border border-stone-200 rounded-xl p-6 shadow-xs space-y-3">
+                    <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
+                        <span class="text-indigo-700 font-bold font-mono text-sm">PART 03</span>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-stone-700">Real-World Case Scenario</h3>
+                    </div>
+                    <div id="display-example" class="text-stone-700 text-sm leading-relaxed">
+                        </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Database structured around the 4 core blocks of MPC-003 Curriculum Syllabus
+        const mpc003Dataset = [
+            // ================= BLOCK 1 =================
+            {
+                id: "t1",
+                block: "Block 1",
+                unit: "Unit 1",
+                title: "Allport's Dynamic Psychology & Definition of Personality",
+                essentials: `
+                    <p><strong>Gordon Allport (1961) Definition:</strong> "Personality is the dynamic organization within the individual of those psychophysical systems that determine his characteristic behavior and thought."</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Dynamic Organization:</strong> Constantly evolving, integrative pattern; not static.</li>
+                        <li><strong>Psychophysical Systems:</strong> Mind and body inextricably linked as an operational unit.</li>
+                        <li><strong>Determine:</strong> Personality acts as an activating, causal agent driving real-world behaviors.</li>
+                        <li><strong>Functional Autonomy:</strong> Adult motives become independent of their historical origins (e.g., a craft started for money becomes an intrinsic, autonomous lifelong hobby).</li>
+                    </ul>
+                `,
+                hook: "<strong>The Kinetic Mobile Sculpture:</strong> Imagine a complex decorative hanging sculpture spinning in a breeze. It changes position and shapes dynamically based on changing wind currents (dynamic organization), but its structural wires and strings physically hold it together as one whole system (psychophysical unity).",
+                example: "A corporate manager works out intensely every single morning. He originally started the routine years ago solely to rehabilitate a broken leg (extrinsic biological origin), but now he runs simply because it forms a foundational element of his daily mental equilibrium and identity (Functional Autonomy).",
+                chartConfig: null
+            },
+            {
+                id: "t2",
+                block: "Block 1",
+                unit: "Unit 3",
+                title: "Epigenetic Principle & Psychosocial Stages (Erikson)",
+                essentials: `
+                    <p><strong>The Epigenetic Blueprint:</strong> Erik Erikson posited that personality develops through a predetermined sequence of 8 stages across the human lifespan. Each stage presents a distinct psychological conflict/crisis that must be resolved to develop a corresponding ego strength.</p>
+                    <table class="w-full text-xs text-left border border-stone-200 mt-2">
+                        <thead class="bg-stone-100">
+                            <tr><th class="p-2 border border-stone-200">Stage / Core Conflict</th><th class="p-2 border border-stone-200">Ego Virtue</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr><td class="p-2 border border-stone-200">1. Trust vs. Mistrust (0-1 yr)</td><td class="p-2 border border-stone-200">Hope</td></tr>
+                            <tr><td class="p-2 border border-stone-200">4. Industry vs. Inferiority (6-12 yrs)</td><td class="p-2 border border-stone-200">Competence</td></tr>
+                            <tr><td class="p-2 border border-stone-200">5. Identity vs. Role Confusion (12-18 yrs)</td><td class="p-2 border border-stone-200">Fidelity</td></tr>
+                            <tr><td class="p-2 border border-stone-200">7. Generativity vs. Stagnation (Middle Adulthood)</td><td class="p-2 border border-stone-200">Care</td></tr>
+                        </tbody>
+                    </table>
+                `,
+                hook: "<strong>The Skyscraper Blueprint:</strong> Ground level structural pilings must be poured correctly before framework engineers can mount structural iron girders for the middle levels. If an early floor structural pour is left weak or incomplete, every single succeeding higher floor built over it remains unstable.",
+                example: "An adolescent refuses to join a legacy family law firm, spending months experimenting with photography, changing social circles, and trying out diverse lifestyles to resolve the identity-seeking stage and find their independent place in the world.",
+                chartConfig: null
+            },
+            {
+                id: "t3",
+                block: "Block 1",
+                unit: "Unit 4",
+                title: "Factors Elements Influencing Personality Structure",
+                essentials: `
+                    <p>To score high marks, organize environmental and constitutional traits into three distinct domains of influence:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-1">
+                        <li><strong>Biological Determinants:</strong> Genetic heritability coefficients (roughly 40-50% variance as verified via twin studies), neurochemical dopamine systems, and nervous system reactivity.</li>
+                        <li><strong>Social Determinants:</strong> Explicit parenting dynamics, socioeconomic constraints, and primary attachment style formatting.</li>
+                        <li><strong>Cultural Factors:</strong> Individualistic paradigms (prioritizing independent agency and self-expression) versus Collectivistic paradigms (valuing group harmony, role-based obligation, and systemic conformity).</li>
+                    </ul>
+                `,
+                hook: "<strong>The Artisan Pottery Wheel:</strong> The raw natural clay grade determines the baseline strength and texture limit of what can be sculpted (Biological Baseline), but the potter’s hand pressure (Social upbringing) and the traditional kiln firing style (Culture) ultimately dictate the shape and utility of the vase.",
+                example: "An individual born with a highly reactive nervous system (high biological neuroticism) is raised in a culture that values meditative silence, learning to channel that arousal into focus, rather than developing anxiety.",
+                chartConfig: null
+            },
+
+            // ================= BLOCK 2 =================
+            {
+                id: "t4",
+                block: "Block 2",
+                unit: "Unit 1",
+                title: "Freud’s Structural & Topographical Architecture",
+                essentials: `
+                    <p><strong>Topographical Model:</strong> Conscious (current awareness), Preconscious (easily accessible memory storage), and Unconscious (repressed base desires and raw instincts).</p>
+                    <p class="mt-2"><strong>Structural Tripartite Model:</strong></p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Id:</strong> Governed by the Pleasure Principle; irrational, amoral, seeking immediate tension discharge.</li>
+                        <li><strong>Ego:</strong> Governed by the Reality Principle; realistic, rational coordinator using defense mechanisms.</li>
+                        <li><strong>Superego:</strong> Governed by the Moral Imperative; internalized parental values and societal ethical rules.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Horse, Rider, and Judge:</strong> The Id is a powerful wild stallion providing raw forward kinetic energy. The Ego is the human rider balancing on top, desperately pulling reins to steer safely. The Superego is a strict, judgmental track official sitting in a tower scoring and criticizing every move.",
+                example: "You feel an immediate urge to yell at a client during a stressful presentation (Id). Your moral values say it is unprofessional (Superego). You compromise by responding with firm, logical project numbers (Ego).",
+                chartConfig: {
+                    type: 'pie',
+                    data: {
+                        labels: ['Id (Pleasure Instincts)', 'Ego (Reality Control)', 'Superego (Internalized Rules)'],
+                        datasets: [{
+                            data: [45, 35, 20],
+                            backgroundColor: ['#f87171', '#60a5fa', '#34d399']
+                        }]
+                    },
+                    options: { plugins: { title: { display: true, text: 'Theoretical Tripartite Energy Balance' } } }
+                }
+            },
+            {
+                id: "t5",
+                block: "Block 2",
+                unit: "Unit 2",
+                title: "Analytical Psychology: Archetypes & Shadow (Jung)",
+                essentials: `
+                    <p><strong>Carl Jung’s Model Architecture:</strong> The psyche consists of the Ego (Conscious mind), Personal Unconscious, and the <strong>Collective Unconscious</strong> (universal structures shared by all humans across evolutionary time).</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Archetypes:</strong> Primordial mental patterns inherited from ancestors (e.g., Anima, Animus, The Wise Old Man).</li>
+                        <li><strong>Persona:</strong> The public mask worn to adapt to social demands.</li>
+                        <li><strong>The Shadow:</strong> The primitive, unaccepted, or repressed darker side of personality.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Historic Theater:</strong> The stage actor is the Persona (the public character). The dark space underneath the stage traps hidden props and dangerous machinery that the director tries to hide from view (The Shadow). The ancient script being performed, which has been handed down for generations, represents the Collective Unconscious.",
+                example: "A quiet accountant who avoids any conflict has vivid dreams of being a warrior, revealing their repressed Shadow archetype trying to integrate with the conscious mind.",
+                chartConfig: null
+            },
+            {
+                id: "t6",
+                block: "Block 2",
+                unit: "Unit 4",
+                title: "Humanistic Theory: Self-Actualization (Rogers & Maslow)",
+                essentials: `
+                    <p><strong>Carl Rogers' Person-Centered Concept:</strong> Personality centers around the alignment between the <strong>Real Self</strong> (who we actually are) and the <strong>Ideal Self</strong> (who we wish to be).</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Incongruence:</strong> A wide gap between the Real and Ideal self, leading to anxiety and defensive thinking.</li>
+                        <li><strong>Unconditional Positive Regard (UPR):</strong> Pervasive acceptance from others without conditions, necessary to become a fully functioning person.</li>
+                        <li><strong>Maslow's Hierarchy:</strong> Motivation progresses through deficit needs (physiological, safety) toward growth needs (Self-Actualization).</li>
+                    </ul>
+                `,
+                hook: "<strong>The Garden Greenhouse:</strong> An organic plant has an innate tendency to grow into its ideal form. It doesn't need to be forced; it simply requires the correct conditions—like healthy soil and sunlight (Unconditional Positive Regard)—to thrive.",
+                example: "A person leaves a prestigious corporate career to teach painting. They choose to close the gap between their daily life (Real Self) and their creative calling (Ideal Self) to achieve congruence.",
+                chartConfig: null
+            },
+
+            // ================= BLOCK 3 =================
+            {
+                id: "t7",
+                block: "Block 3",
+                unit: "Unit 1",
+                title: "Cattell’s 16PF & Factor Analytic Methodology",
+                essentials: `
+                    <p><strong>Raymond Cattell's Trait Hierarchy:</strong> Used advanced statistical factor analysis to boil down thousands of personality words into foundational structural traits.</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Surface Traits:</strong> Visible behavior patterns observable by anyone (e.g., public speaking comfort).</li>
+                        <li><strong>Source Traits:</strong> Underlying, hidden structural variables that create surface traits (e.g., Outgoingness/Warmth).</li>
+                        <li><strong>16 Personality Factor Questionnaire (16PF):</strong> An objective assessment tool designed to measure these foundational traits across continuums.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Chemical Element Table:</strong> Surface traits are like complex chemical reactions happening on a lab table. Source traits are the underlying pure elements (like Oxygen or Hydrogen) on the periodic table that combine to create those reactions.",
+                example: "An HR manager uses a 16PF test profile to check an applicant's scores on factors like 'Emotional Stability' and 'Rule-Consciousness' to see if they fit a high-stress role.",
+                chartConfig: {
+                    type: 'bar',
+                    data: {
+                        labels: ['Warmth', 'Reasoning', 'Stability', 'Dominance', 'Liveliness'],
+                        datasets: [{
+                            label: 'Sample Candidate Profile Scale (1-10)',
+                            data: [8, 5, 9, 4, 7],
+                            backgroundColor: '#878681'
+                        }]
+                    },
+                    options: { indexAxis: 'y', scales: { x: { max: 10 } } }
+                }
+            },
+            {
+                id: "t8",
+                block: "Block 3",
+                unit: "Unit 2",
+                title: "Eysenck’s PEN Biological Model Architecture",
+                essentials: `
+                    <p>Hans Eysenck proposed a biological framework for personality, focusing on three major dimensions and their underlying brain mechanisms:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Psychoticism (P):</strong> Linked to testosterone levels; measures impulsivity, coldness, and anti-social tendencies.</li>
+                        <li><strong>Extraversion-Introversion (E):</strong> Tied to the <strong>Ascending Reticular Activating System (ARAS)</strong>. Introverts have high baseline cortical arousal and avoid extra stimulation; extraverts have low baseline arousal and seek it out.</li>
+                        <li><strong>Neuroticism-Stability (N):</strong> Tied to the limbic system and sympathetic nervous system sensitivity.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Radio Amplifier Volume Dial:</strong> An Introvert's internal amplifier is turned all the way up by default. Even a small amount of outside noise can feel overwhelming. An Extravert's internal amplifier is turned way down, so they require loud, engaging external input just to feel a baseline level of stimulation.",
+                example: "At a busy conference, an introverted engineer feels drained after an hour due to their sensitive ARAS, while an extraverted sales rep gains energy from the loud environment.",
+                chartConfig: null
+            },
+            {
+                id: "t9",
+                block: "Block 3",
+                unit: "Unit 4",
+                title: "Social Learning & Locus of Control (Rotter & Bandura)",
+                essentials: `
+                    <p><strong>Albert Bandura's Triadic Reciprocal Causation:</strong> Personality develops through continuous, three-way interaction between behavior, cognitive/internal factors, and the environment.</p>
+                    <p class="mt-2"><strong>Julian Rotter's Locus of Control:</strong></p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Internal Locus:</strong> The firm belief that outcome achievements are driven by personal effort and decisions.</li>
+                        <li><strong>External Locus:</strong> Believing outcomes are determined by outside luck, fate, or structural circumstances.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Boat Steering System:</strong> An internal locus of control is like holding a structural wooden rudder to actively steer your boat. An external locus of control is like letting go of the rudder and believing the ocean currents alone decide where you end up.",
+                example: "After failing an exam, an internal student adjusts their study plan to improve, while an external student blames a confusing test or bad luck.",
+                chartConfig: null
+            },
+
+            // ================= BLOCK 4 =================
+            {
+                id: "t10",
+                block: "Block 4",
+                unit: "Unit 1",
+                title: "Objectivity vs. Projection: MMPI vs. Rorschach Test",
+                essentials: `
+                    <p><strong>Objective Inventories (e.g., MMPI-2):</strong> Standardized, structured instruments using true/false questions. They include built-in validity scales to spot lying or exaggeration, offering high reliability but limited depth.</p>
+                    <p class="mt-2"><strong>Projective Techniques (e.g., Rorschach Inkblot, TAT):</strong> Use ambiguous stimuli based on the <strong>Projection Hypothesis</strong>: when presented with a vague image, individuals naturally project their hidden, unconscious conflicts onto it. These offer rich qualitative insights but lower reliability.</p>
+                `,
+                hook: "<strong>The Security Camera vs. The Cloud Silhouette:</strong> An objective inventory is like a clear security camera—it records structured, countable actions. A projective test is like asking someone what shapes they see in clouds, letting their internal feelings color what they perceive.",
+                example: "A clinical psychologist uses the structured MMPI-2 to screen for depression traits, then follows up with a Rorschach test to explore hidden emotional blocks.",
+                chartConfig: {
+                    type: 'radar',
+                    data: {
+                        labels: ['Standardization', 'Unconscious Depth', 'Inter-rater Reliability', 'Insight Scope', 'Resistance to Faking'],
+                        datasets: [
+                            { label: 'Objective (MMPI)', data: [10, 3, 10, 5, 8], borderColor: '#3b82f6', fill: false },
+                            { label: 'Projective (Rorschach)', data: [3, 10, 4, 9, 4], borderColor: '#f59e0b', fill: false }
+                        ]
+                    },
+                    options: { scales: { r: { max: 10, min: 0 } } }
+                }
+            },
+            {
+                id: "t11",
+                block: "Block 4",
+                unit: "Unit 2",
+                title: "Kelley's Attribution Model: Covariation Logic Matrix",
+                essentials: `
+                    <p>Harold Kelley stated that individuals decide if an action is caused by internal traits or external situations by analyzing three main factors:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Consensus:</strong> Do other people act the same way in this exact situation?</li>
+                        <li><strong>Distinctiveness:</strong> Does this person act this way in other, different situations?</li>
+                        <li><strong>Consistency:</strong> Does this person always act this way in this situation over time?</li>
+                    </ul>
+                    <p class="mt-2 font-semibold">High Consensus + High Distinctiveness + High Consistency = External Situational Attribution.</p>
+                `,
+                hook: "<strong>The Diagnostic Flowchart Matrix:</strong> Think of a technical support flowchart with three logic switches. By tracking whether an issue happens across all machines or just one, you can isolate if the bug is in the software code (Internal) or the specific hardware setup (External).",
+                example: "A student screams during a chemistry lab. If everyone else is screaming too (High Consensus), and they don't scream in other classes (High Distinctiveness), we assume it is due to an external factor, like a chemical fire.",
+                chartConfig: {
+                    type: 'bar',
+                    data: {
+                        labels: ['Consensus', 'Distinctiveness', 'Consistency'],
+                        datasets: [
+                            { label: 'Situational (External)', data: [9, 9, 9], backgroundColor: '#10b981' },
+                            { label: 'Dispositional (Internal)', data: [2, 1, 9], backgroundColor: '#ef4444' }
+                        ]
+                    },
+                    options: { scales: { y: { max: 10 } } }
+                }
+            },
+            {
+                id: "t12",
+                block: "Block 4",
+                unit: "Unit 3",
+                title: "Behavioral Assessment: Behavioral Metrics & Observation",
+                essentials: `
+                    <p>Behavioral assessment rejects hidden intrapsychic conflicts, focusing instead on directly observing and measuring actions. Key methods include:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Functional Analysis (ABC Model):</strong> Analyzing <b>A</b>ntecedents (triggers), <b>B</b>ehaviors (actions), and <b>C</b>onsequences (reinforcers).</li>
+                        <li><strong>Controlled Situational Tests:</strong> Placing individuals in structured settings to observe their real-time responses.</li>
+                        <li><strong>Reactivity Effect Risk:</strong> The tendency for people to change their normal behavior simply because they know they are being watched.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Airplane Flight Data Recorder:</strong> Instead of guessing why an engine operates a certain way based on old design concepts, technicians plug in a data monitor to log fuel intake triggers (Antecedents) and thrust levels (Behaviors) in real time.",
+                example: "To assess a child's temper tantrums at school, a specialist tracks what happens right before the tantrum (e.g., receiving a math worksheet) and right after (e.g., being sent out of class).",
+                chartConfig: null
+            }
+        ];
+
+        let activeChartInstance = null;
+
+        // UI Management Engine
+        function initApp() {
+            const menus = {
+                "Block 1": document.getElementById("block1-menu"),
+                "Block 2": document.getElementById("block2-menu"),
+                "Block 3": document.getElementById("block3-menu"),
+                "Block 4": document.getElementById("block4-menu")
+            };
+
+            mpc003Dataset.forEach(item => {
+                const button = document.createElement("button");
+                button.className = "w-full text-left text-xs px-2.5 py-2 rounded-md transition-all text-stone-600 hover:bg-stone-200/60 hover:text-stone-900 font-medium flex justify-between items-center group border border-transparent";
+                button.innerHTML = `
+                    <span class="truncate pr-1">${item.unit}: ${item.title.split(':')[0]}</span>
+                    <span class="text-[10px] font-mono text-stone-400 group-hover:text-stone-600">Reveal →</span>
+                `;
+                button.onclick = () => renderTopic(item.id, button);
+                if (menus[item.block]) {
+                    menus[item.block].appendChild(button);
+                }
+            });
+        }
+
+        function renderTopic(topicId, activeElement) {
+            // Update selected sidebar styling
+            document.querySelectorAll("#block1-menu button, #block2-menu button, #block3-menu button, #block4-menu button").forEach(btn => {
+                btn.classList.remove("bg-stone-800", "text-white", "hover:bg-stone-800", "shadow-xs");
+                btn.classList.add("text-stone-600", "hover:bg-stone-200/60");
+                btn.querySelector("span:last-child").innerText = "Reveal →";
+            });
+            
+            activeElement.classList.remove("text-stone-600", "hover:bg-stone-200/60");
+            activeElement.classList.add("bg-stone-800", "text-white", "hover:bg-stone-800", "shadow-xs");
+            activeElement.querySelector("span:last-child").innerText = "Active";
+
+            const item = mpc003Dataset.find(t => t.id === topicId);
+            if (!item) return;
+
+            // Toggle active visibility states
+            document.getElementById("welcome-state").classList.add("hidden");
+            const coreContainer = document.getElementById("content-display");
+            coreContainer.classList.remove("hidden");
+            
+            // Populate text elements
+            document.getElementById("display-block-id").innerText = item.block;
+            document.getElementById("display-unit-id").innerText = item.unit;
+            document.getElementById("display-title").innerText = item.title;
+            document.getElementById("display-essentials").innerHTML = item.essentials;
+            document.getElementById("display-hook").innerHTML = item.hook;
+            document.getElementById("display-example").innerHTML = item.example;
+
+            // Handle data visualization rendering
+            const chartBlock = document.getElementById("chart-container-block");
+            if (activeChartInstance) {
+                activeChartInstance.destroy();
+                activeChartInstance = null;
+            }
+
+            if (item.chartConfig) {
+                chartBlock.classList.remove("hidden");
+                const ctx = document.getElementById("topic-interactive-canvas").getContext("2d");
+                activeChartInstance = new Chart(ctx, Object.assign({}, item.chartConfig, {
+                    options: Object.assign({}, item.chartConfig.options || {}, {
+                        responsive: true,
+                        maintainAspectRatio: false
+                    })
+                }));
+            } else {
+                chartBlock.classList.add("hidden");
+            }
+            
+            // Smooth view reset scroll
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
