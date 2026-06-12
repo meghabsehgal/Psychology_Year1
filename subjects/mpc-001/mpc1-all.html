@@ -1,1 +1,518 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MPC-001 Exam Booster Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,400&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .serif-title { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-[#F9F6F0] text-[#2C2A29] min-h-screen flex flex-col">
+
+    <header class="bg-[#2D4030] text-[#F9F6F0] py-6 px-8 shadow-md border-b-4 border-[#C8B195]">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 class="serif-title text-3xl font-bold tracking-wide">MPC-001: Cognitive Psychology, Learning and Memory</h1>
+                <p class="text-[#C8B195] text-sm mt-1 font-medium tracking-wider uppercase">IGNOU MA Psychology Exam Preparation Master Deck</p>
+            </div>
+            <div class="bg-[#1E2B20] px-4 py-2 rounded-md border border-[#405D45] text-center">
+                <span class="text-xs block text-[#C8B195] font-semibold uppercase">Study Mode</span>
+                <span class="text-sm font-bold text-white">Active Recall & Drill-Down Enabled</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="flex-1 max-w-7xl w-full mx-auto flex flex-col md:flex-row gap-6 p-6">
+        
+        <aside class="w-full md:w-80 flex flex-col gap-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-[#E6DFD3]">
+                <h2 class="font-bold text-sm text-[#706452] uppercase tracking-wider mb-3">Syllabus Architecture</h2>
+                
+                <div class="space-y-2" id="block-menu">
+                    <button onclick="toggleBlock('block1')" id="btn-block1" class="w-full text-left px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 bg-[#2D4030] text-white shadow-sm flex justify-between items-center">
+                        <span>Block 1: Cognitive Psych</span>
+                        <span class="text-xs bg-[#405D45] px-2 py-0.5 rounded">B1</span>
+                    </button>
+                    <div id="list-block1" class="pl-3 space-y-1 mt-1 block">
+                        <button onclick="loadTopic('sternberg')" id="nav-sternberg" class="w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors text-[#2D4030] bg-[#EAE3D2] border-l-4 border-[#2D4030]">Sternberg's Triarchic Theory</button>
+                        <button onclick="loadTopic('pas')" id="nav-pas" class="w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors text-[#544E44] hover:bg-[#F2ECE1] border-l-4 border-transparent">Das, Naglieri & Kirby PAS Model</button>
+                    </div>
+
+                    <button onclick="toggleBlock('block2')" id="btn-block2" class="w-full text-left px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-[#544E44] hover:bg-[#F2ECE1] border border-[#E6DFD3] flex justify-between items-center">
+                        <span>Block 2: Information Proc.</span>
+                        <span class="text-xs bg-[#E6DFD3] text-[#544E44] px-2 py-0.5 rounded">B2</span>
+                    </button>
+                    <div id="list-block2" class="pl-3 space-y-1 mt-1 hidden">
+                        <button onclick="loadTopic('atkinson')" id="nav-atkinson" class="w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors text-[#544E44] hover:bg-[#F2ECE1] border-l-4 border-transparent">Atkinson & Shiffrin Stage Model</button>
+                        <button onclick="loadTopic('craik')" id="nav-craik" class="w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors text-[#544E44] hover:bg-[#F2ECE1] border-l-4 border-transparent">Craik & Lockhart Levels of Proc.</button>
+                    </div>
+
+                    <button onclick="toggleBlock('block3')" id="btn-block3" class="w-full text-left px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-[#544E44] hover:bg-[#F2ECE1] border border-[#E6DFD3] flex justify-between items-center">
+                        <span>Block 3: Intelligence & Creativity</span>
+                        <span class="text-xs bg-[#E6DFD3] text-[#544E44] px-2 py-0.5 rounded">B3</span>
+                    </button>
+                    <div id="list-block3" class="pl-3 space-y-1 mt-1 hidden">
+                        <button onclick="loadTopic('gardner')" id="nav-gardner" class="w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors text-[#544E44] hover:bg-[#F2ECE1] border-l-4 border-transparent">Gardner's Multiple Intelligences</button>
+                        <button onclick="loadTopic('wallas')" id="nav-wallas" class="w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors text-[#544E44] hover:bg-[#F2ECE1] border-l-4 border-transparent">Wallas' Creative Process</button>
+                    </div>
+
+                    <button onclick="toggleBlock('block4')" id="btn-block4" class="w-full text-left px-4 py-3 rounded-lg font-semibold text-sm transition-all duration-200 bg-white text-[#544E44] hover:bg-[#F2ECE1] border border-[#E6DFD3] flex justify-between items-center">
+                        <span>Block 4: Language & Problem Solving</span>
+                        <span class="text-xs bg-[#E6DFD3] text-[#544E44] px-2 py-0.5 rounded">B4</span>
+                    </button>
+                    <div id="list-block4" class="pl-3 space-y-1 mt-1 hidden">
+                        <button onclick="loadTopic('chomsky')" id="nav-chomsky" class="w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors text-[#544E44] hover:bg-[#F2ECE1] border-l-4 border-transparent">Chomsky's Nativist Theory</button>
+                        <button onclick="loadTopic('bransford')" id="nav-bransford" class="w-full text-left px-3 py-2 text-xs font-medium rounded transition-colors text-[#544E44] hover:bg-[#F2ECE1] border-l-4 border-transparent">Bransford IDEAL Framework</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quick-metric-card" class="bg-gradient-to-br from-[#2D4030] to-[#1E2B20] text-white p-5 rounded-xl shadow-md border border-[#405D45]">
+                <h4 class="text-xs font-bold uppercase tracking-wider text-[#C8B195] mb-1">Core Theoretical Accent</h4>
+                <div id="metric-title" class="serif-title text-lg font-bold">Information Processing</div>
+                <p id="metric-desc" class="text-xs text-[#E6DFD3] mt-2 leading-relaxed">Focuses on how sensory input is transformed, reduced, elaborated, stored, recovered, and used.</p>
+            </div>
+        </aside>
+
+        <main class="flex-1 flex flex-col gap-6">
+            
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-[#E6DFD3]">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span id="topic-block-badge" class="bg-[#F2ECE1] text-[#706452] px-2.5 py-1 rounded-md text-xs font-bold uppercase tracking-wider border border-[#E6DFD3]">Block 1: Cognitive Psychology</span>
+                        <h2 id="topic-main-title" class="serif-title text-3xl font-bold text-[#2D4030] mt-3">Robert Sternberg's Triarchic Theory of Intelligence</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div id="active-recall-gate" class="bg-white border-2 border-dashed border-[#C8B195] rounded-xl p-10 text-center flex flex-col items-center justify-center min-h-[350px]">
+                <div class="w-16 h-16 bg-[#F2ECE1] text-[#2D4030] rounded-full flex items-center justify-center text-2xl mb-4 font-bold">?</div>
+                <h3 class="serif-title text-xl font-bold text-[#544E44]">Active Recall Verification</h3>
+                <p class="text-sm text-[#706452] max-w-md mt-2 mb-6">Before exposing the core exam criteria, pause and try to explain the basic premise of this theory mentally.</p>
+                <button onclick="revealContent()" class="bg-[#2D4030] text-white hover:bg-[#405D45] transition-all duration-150 px-6 py-3 rounded-lg text-sm font-semibold tracking-wide shadow-md">
+                    Reveal System Data & Analytics
+                </button>
+            </div>
+
+            <div id="main-content-display" class="hidden space-y-6">
+                
+                <section class="bg-white p-6 rounded-xl shadow-sm border border-[#E6DFD3]">
+                    <div class="flex items-center gap-2 mb-4 border-b border-[#F2ECE1] pb-3">
+                        <span class="w-2.5 h-6 bg-[#2D4030] rounded-sm"></span>
+                        <h3 class="font-bold text-lg text-[#2D4030] uppercase tracking-wide">Exam Essentials (10 / 6 Mark Content Structure)</h3>
+                    </div>
+                    <div id="exam-essentials-content" class="text-sm leading-relaxed text-[#544E44] space-y-4">
+                        </div>
+                </section>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <section class="bg-white p-6 rounded-xl shadow-sm border border-[#E6DFD3] flex flex-col">
+                        <div class="flex items-center gap-2 mb-4 border-b border-[#F2ECE1] pb-3">
+                            <span class="w-2.5 h-6 bg-[#C8B195] rounded-sm"></span>
+                            <h3 class="font-bold text-lg text-[#2D4030] uppercase tracking-wide">Structural Retention Hook</h3>
+                        </div>
+                        <div class="bg-[#F9F6F0] p-4 rounded-lg border border-[#E6DFD3] flex-1 flex flex-col justify-center">
+                            <div id="retention-title" class="font-bold text-[#2D4030] text-base mb-2">The Architectural Blueprint Metaphor</div>
+                            <p id="retention-body" class="text-xs text-[#544E44] leading-relaxed italic">
+                                </p>
+                        </div>
+                    </section>
+
+                    <section class="bg-white p-6 rounded-xl shadow-sm border border-[#E6DFD3] flex flex-col">
+                        <div class="flex items-center gap-2 mb-4 border-b border-[#F2ECE1] pb-3">
+                            <span class="w-2.5 h-6 bg-[#706452] rounded-sm"></span>
+                            <h3 class="font-bold text-lg text-[#2D4030] uppercase tracking-wide">Functional Data Projection</h3>
+                        </div>
+                        <div class="w-full h-48 relative flex items-center justify-center">
+                            <canvas id="topicChart"></canvas>
+                        </div>
+                    </section>
+                </div>
+
+                <section class="bg-[#2D4030] text-white p-6 rounded-xl shadow-md">
+                    <div class="flex items-center gap-2 mb-3 border-b border-[#405D45] pb-2">
+                        <h3 class="font-bold text-sm text-[#C8B195] uppercase tracking-wider">Applied Psychological Scenario</h3>
+                    </div>
+                    <p id="real-world-case" class="text-sm leading-relaxed text-[#E6DFD3]">
+                        </p>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const syllabusDatabase = {
+            sternberg: {
+                title: "Robert Sternberg's Triarchic Theory of Intelligence",
+                block: "Block 1: Cognitive Psychology",
+                accentTitle: "Information Processing Architecture",
+                accentDesc: "Rejects the static 'g' factor view of intelligence, evaluating internal components, context, and operational experience.",
+                essentials: `
+                    <p><strong>Theoretical Architecture:</strong> Sternberg defines intelligence as a mental activity directed toward purposive adaptation to, selection, and shaping of real-world environments relevant to one's life. It details three distinct sub-theories:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Componential / Analytical Sub-theory:</strong> Focuses on internal mental mechanisms. Comprises:
+                            <br>&bull; <em>Meta-components:</em> Executive operations that plan, monitor, and evaluate problem-solving strategies.
+                            <br>&bull; <em>Performance Components:</em> Execute the instructions provided by meta-components.
+                            <br>&bull; <em>Knowledge-Acquisition Components:</em> Learn new info, separate relevant from irrelevant details.
+                        </li>
+                        <li><strong>Experiential / Creative Sub-theory:</strong> Examines processing across two dimensions:
+                            <br>&bull; <em>Novelty:</em> Ability to deal with a completely unique problem or scenario.
+                            <br>&bull; <em>Automatization:</em> Efficiency in turning recurring processes into effortless habits.
+                        </li>
+                        <li><strong>Contextual / Practical Sub-theory:</strong> Focuses on street smarts and real-world adaptation:
+                            <br>&bull; <em>Adaptation:</em> Changing internal behavior to match environments.
+                            <br>&bull; <em>Shaping:</em> Modifying the surrounding environment to fit personal needs.
+                            <br>&bull; <em>Selection:</em> Choosing a brand new environment when the old one is unworkable.
+                        </li>
+                    </ul>
+                `,
+                retentionTitle: "The Corporate Executive Office Metaphor",
+                retentionBody: "Imagine a modern corporate headquarters. The <strong>Componential sub-theory</strong> represents the inner corporate staff: the CEO Planning Room (Meta-components), the Production Assembly Line (Performance), and the R&D Training Lab (Knowledge Acquisition). The <strong>Experiential sub-theory</strong> is the Startup Incubator room, turning highly volatile, novel ideas into routine, automated production lines. The <strong>Contextual sub-theory</strong> is the External Sales Force executing tactical decisions out on the street—figuring out how to survive in a difficult market (Adaptation), altering market dynamics (Shaping), or liquidating assets to move to a new region entirely (Selection).",
+                realWorld: "Consider an operational IT Architect. When running statistical debug algorithms on raw code, she utilizes analytical intelligence. When she designs a totally unique software schema that mixes legacy architectures with new cloud functions, she showcases creative intelligence. Finally, when she realizes her non-technical stakeholders are confused, and pivots her presentation style mid-meeting to gain their buy-in, she exhibits practical contextual intelligence.",
+                chartType: "bar",
+                chartData: {
+                    labels: ['Analytical (Componential)', 'Creative (Experiential)', 'Practical (Contextual)'],
+                    datasets: [{
+                        label: 'Triarchic Dimension Profile Value',
+                        data: [85, 60, 95],
+                        backgroundColor: ['#2D4030', '#C8B195', '#706452'],
+                        borderWidth: 0
+                    }]
+                }
+            },
+            pas: {
+                title: "Das, Naglieri & Kirby PAS Model of Intelligence",
+                block: "Block 1: Cognitive Psychology",
+                accentTitle: "Neuropsychological Processing",
+                accentDesc: "Directly rooted in Luria's neuropsychological formulations tracking localized functional brain structures.",
+                essentials: `
+                    <p><strong>Core Structural Tenet:</strong> The PAS (Planning, Attention-Arousal, Simultaneous, and Successive) model views cognitive functioning as an interactive web of processing systems distributed across three major functional brain units:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Planning (First Unit - Prefrontal Cortex):</strong> The ultimate executive controller. Responsible for formulating conscious strategies, monitoring efficiency, self-correcting mistakes, and driving goal-directed behavior.</li>
+                        <li><strong>Attention-Arousal (Second Unit - Brainstem & Reticular Activating System):</strong> Maintains cortical alertness and focus. Ensures the organism remains vigilant to specific stimuli while actively suppressing background noise.</li>
+                        <li><strong>Simultaneous Processing (Third Unit - Occipital-Parietal-Temporal regions):</strong> Integrates independent incoming sensory pieces into a single unified whole. Essential for spatial relationships, geometry, matrices, and holistic sentence comprehension.</li>
+                        <li><strong>Successive Processing (Third Unit - Frontal-Temporal tracks):</strong> Organizes incoming information into strict, linearly dependent chronological sequences. Essential for syntactic parsing, spelling strings, historical dates, and step-by-step algorithms.</li>
+                    </ul>
+                `,
+                retentionTitle: "The Air Traffic Control Center Analogy",
+                retentionBody: "Think of a high-stress international airport runway system. <strong>Attention-Arousal</strong> is the perimeter radar and flashing beacons, keeping the operators awake and filtering out static interference. <strong>Simultaneous Processing</strong> represents the 3D spatial radar screen layout showing all aircraft positions concurrently relative to each other. <strong>Successive Processing</strong> represents the strict sequence of takeoff logs—Plane A must clear the tarmac before Plane B accelerates, tracking a strict linear order. Finally, <strong>Planning</strong> represents the Tower Director, resolving schedule conflicts, modifying emergency routes, and managing the overall operation.",
+                realWorld: "A child learning long division utilizes the complete PAS sequence. First, the child needs <strong>Attention</strong> to focus on the numbers on the worksheet. They use <strong>Simultaneous processing</strong> to visually group the divisor, dividend, and remainder positions on the page. They use <strong>Successive processing</strong> to execute the mandatory sequence of math steps: Divide, Multiply, Subtract, Bring Down. Throughout the entire process, they use <strong>Planning</strong> to verify their answers and catch subtraction errors.",
+                chartType: "radar",
+                chartData: {
+                    labels: ['Planning', 'Attention-Arousal', 'Simultaneous', 'Successive'],
+                    datasets: [{
+                        label: 'Functional Load Weighting',
+                        data: [90, 75, 80, 85],
+                        backgroundColor: 'rgba(200, 177, 149, 0.4)',
+                        borderColor: '#2D4030',
+                        pointBackgroundColor: '#2D4030'
+                    }]
+                }
+            },
+            atkinson: {
+                title: "Atkinson & Shiffrin Stage Model of Memory",
+                block: "Block 2: Information Processing Models",
+                accentTitle: "Structural Storage Buffers",
+                accentDesc: "Proposes memory structures are fixed containers, while control processes run dynamically within them.",
+                essentials: `
+                    <p><strong>System Infrastructure:</strong> Proposes that incoming information passes through three separate sequential hardware vaults:</p>
+                    <table class="w-full text-left text-xs border border-[#E6DFD3] my-3">
+                        <tr class="bg-[#F2ECE1] font-bold"><th class="p-2">Store</th><th class="p-2">Capacity</th><th class="p-2">Duration Limits</th><th class="p-2">Loss Mechanism</th></tr>
+                        <tr><td class="p-2 font-semibold">Sensory Register</td><td class="p-2">Extremely Vast</td><td class="p-2">Iconic: 0.5s | Echoic: 3-4s</td><td class="p-2">Rapid Decay</td></tr>
+                        <tr><td class="p-2 font-semibold">Short-Term Memory (STM)</td><td class="p-2">7 &plusmn; 2 chunks</td><td class="p-2">15 to 30 Seconds</td><td class="p-2">Displacement / Decay</td></tr>
+                        <tr><td class="p-2 font-semibold">Long-Term Memory (LTM)</td><td class="p-2">Virtually Infinite</td><td class="p-2">Indefinite / Permanent</td><td class="p-2">Retrieval Failure</td></tr>
+                    </table>
+                    <p><strong>Control Processes:</strong> Transfer from Sensory to STM requires <em>Attention</em>. Retention in STM requires <em>Maintenance Rehearsal</em>. Transfer from STM to LTM requires <em>Elaborative Rehearsal</em>.</p>
+                `,
+                retentionTitle: "The Corporate Data Supply Pipeline",
+                retentionBody: "Visualize a high-volume email intake ecosystem. The <strong>Sensory Memory</strong> store is the global server firewall: thousands of unread data packets hit it every second, but vanish instantly unless sorted. <strong>Short-Term Memory</strong> is your desktop inbox preview panel. It can show only about 7 items clearly before older ones slide off screen. If you keep hitting 'refresh' (Maintenance Rehearsal), the items stay visible. <strong>Long-Term Memory</strong> is the secure archival server array down in the basement. Items are categorized into permanent folders with tags (Elaborative Rehearsal), meaning they can be retrieved years later with the right search query.",
+                realWorld: "When a delivery driver quickly reads out a one-time OTP code ('8-3-9-1-4-2'), the numbers flash into your <strong>Sensory register</strong>. By focusing your attention, you hold them in your <strong>STM</strong>. You mutter them repeatedly while typing to prevent the memory from fading. Later, if you link that specific code sequence to a familiar date (e.g., 'my mother's birthday month digits'), you store it in your <strong>LTM</strong> via semantic integration.",
+                chartType: "bar",
+                chartData: {
+                    labels: ['Sensory (Iconic)', 'Short-Term Store', 'Long-Term Archive'],
+                    datasets: [{
+                        label: 'Duration Metric in Seconds (Log Base Scale Approximation)',
+                        data: [0.5, 30, 3600],
+                        backgroundColor: ['#706452', '#C8B195', '#2D4030']
+                    }]
+                }
+            },
+            craik: {
+                title: "Craik & Lockhart Levels of Processing Framework",
+                block: "Block 2: Information Processing Models",
+                accentTitle: "Non-Structural Processing Depth",
+                accentDesc: "Rejects rigid structural boxes; argues that memory durability is a direct product of cognitive analysis depth.",
+                essentials: `
+                    <p><strong>Core Theoretical Premise:</strong> Rejects the idea of memory as a sequence of storage boxes. Instead, it argues that retention depends on the <strong>depth of cognitive processing</strong> applied to information. Memory traces are a byproduct of information analysis:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Shallow / Structural Processing:</strong> Focuses on physical, visual, and structural characteristics (e.g., assessing font geometry, uppercase vs. lowercase layout). Yields fragile, fast-decaying memory traces.</li>
+                        <li><strong>Intermediate / Phonemic Processing:</strong> Focuses on acoustic properties and sound profiles (e.g., rhyming evaluation, phonetic cadence analysis). Leads to moderate retention.</li>
+                        <li><strong>Deep / Semantic Processing:</strong> Evaluates meaning, contextual relationships, and personal relevance. Involves active elaboration and schema mapping. Produces durable, robust memory traces resistant to interference.</li>
+                    </ul>
+                `,
+                retentionTitle: "The Geological Drilling Sample Analogy",
+                retentionBody: "Picture drilling into dry earth. <strong>Structural processing</strong> is skimming the dusty topsoil layer; it blows away in the first gust of wind. <strong>Phonemic processing</strong> is drilling down into the middle clay stratum; it holds its shape better but remains vulnerable to moisture. <strong>Semantic processing</strong> is anchoring your foundation deep into solid bedrock. Because you anchored it so deeply into pre-existing rock layers, it can support structural weight for a long time.",
+                realWorld: "Imagine preparing for an exam definition like 'Anomie'. Reading the word simply to check if it's written in bold font is <strong>Structural processing</strong>. Saying the word aloud to notice it rhymes with 'economy' is <strong>Phonemic processing</strong>. Defining its connection to social instability and linking it to a real-world protest movement you saw on television is <strong>Semantic processing</strong>, which makes the term easy to recall during a final exam.",
+                chartType: "pie",
+                chartData: {
+                    labels: ['Shallow (Structural) Trace Stability', 'Intermediate (Phonemic) Trace Stability', 'Deep (Semantic) Trace Stability'],
+                    datasets: [{
+                        data: [10, 30, 60],
+                        backgroundColor: ['#E6DFD3', '#C8B195', '#2D4030']
+                    }]
+                }
+            },
+            gardner: {
+                title: "Howard Gardner's Multiple Intelligences Theory",
+                block: "Block 3: Intelligence & Creativity",
+                accentTitle: "Modular Psychometric View",
+                accentDesc: "Rejects single intelligence scores. Argues for separate, modular cognitive systems based on neurobiological evidence.",
+                essentials: `
+                    <p><strong>System Parameters:</strong> Gardner argues that intelligence is not a single, general mental capability ($g$). Instead, he outlines 8 distinct, autonomous modular competencies that have unique neurobiological roots and developmental trajectories:</p>
+                    <ol class="list-decimal pl-5 space-y-1.5 mt-2 text-xs">
+                        <li><strong>Linguistic-Verbal:</strong> Sensitivity to word meanings, syntax rules, and language structure.</li>
+                        <li><strong>Logical-Mathematical:</strong> Capacity to analyze arguments logically, detect patterns, and calculate equations.</li>
+                        <li><strong>Spatial-Visual:</strong> Ability to accurately perceive and mentally manipulate the 3D visual world.</li>
+                        <li><strong>Bodily-Kinesthetic:</strong> Core physical coordination skills used to manipulate tools or control bodily movements.</li>
+                        <li><strong>Musical-Rhythmic:</strong> Skill in creating, performing, and appreciating pitch, rhythm, and timber.</li>
+                        <li><strong>Interpersonal:</strong> Ability to detect and respond to the moods, motivations, and hidden desires of others.</li>
+                        <li><strong>Intrapersonal:</strong> Deep self-awareness, including understanding one's own emotional state, boundaries, and motivations.</li>
+                        <li><strong>Naturalistic:</strong> Expertise in recognizing, categorizing, and working with flora, fauna, and ecological systems.</li>
+                    </ol>
+                `,
+                retentionTitle: "The Swiss Army Knife Metaphor",
+                retentionBody: "Traditional testing treats intelligence like a single large carving knife—evaluating only how sharp it is. Gardner envisions the human mind as a <strong>Swiss Army Knife</strong>. It features completely separate tools housed in one casing: a scissor blade (Linguistic), a magnifying lens (Logical), a compass dial (Spatial), a steady plier arm (Kinesthetic), a tuning fork fork (Musical), a mirror reflect (Intrapersonal), and a magnifying glass tool to inspect forest trails (Naturalistic). One tool's performance does not depend on the others.",
+                realWorld: "Consider an eco-resort development project. The architect mapping the terrain grid uses <strong>Spatial intelligence</strong>. The engineer calculating load stress uses <strong>Logical intelligence</strong>. The mediator resolving community land disputes showcases <strong>Interpersonal intelligence</strong>, while the field biologist tracking local plant life relies on <strong>Naturalistic intelligence</strong>.",
+                chartType: "bar",
+                chartData: {
+                    labels: ['Ling', 'Log-Math', 'Spatial', 'Body-Kin', 'Musical', 'Inter-person', 'Intra-person', 'Natural'],
+                    datasets: [{
+                        label: 'Modular Autonomy Independent Matrix Profile',
+                        data: [90, 45, 80, 55, 30, 95, 75, 40],
+                        backgroundColor: '#706452'
+                    }]
+                }
+            },
+            wallas: {
+                title: "Graham Wallas' Stages of the Creative Process",
+                block: "Block 3: Intelligence & Creativity",
+                accentTitle: "Temporal Progression Logic",
+                accentDesc: "Tracks the four chronological steps of creative thought, from initial preparation to final objective validation.",
+                essentials: `
+                    <p><strong>Syllabus Sequential Stages:</strong> Wallas breaks the creative process down into four distinct, non-linear phases:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>1. Preparation:</strong> The initial research phase. The individual defines the problem, gathers resources, reviews existing data, and tests early solutions.</li>
+                        <li><strong>2. Incubation:</strong> The problem is stepped away from and handed over to the subconscious mind. No voluntary, conscious work is done on the issue during this stage.</li>
+                        <li><strong>3. Illumination (The 'Aha!' moment):</strong> A sudden breakthrough. The solution flashes into conscious awareness, often when the person is doing something unrelated.</li>
+                        <li><strong>4. Verification:</strong> The raw insight is tested, evaluated, and refined to ensure it works under real-world constraints.</li>
+                    </ul>
+                `,
+                retentionTitle: "The Agricultural Farming Cycle Metaphor",
+                retentionBody: "Think of <strong>Preparation</strong> as tilling the soil, spreading fertilizer, and planting seeds; it is labor-intensive and deliberate. <strong>Incubation</strong> is leaving the field alone during winter, letting subterranean processes happen out of sight. <strong>Illumination</strong> is the sudden green shoot breaking through the soil line in morning light. <strong>Verification</strong> is harvesting the crop, inspecting it for quality, and processing it for use.",
+                realWorld: "An advertising director needs a new campaign slogan. He spends two days reading market reports and product data sheet summaries (<strong>Preparation</strong>). Stuck for ideas, he leaves the office to work on an unrelated woodwork project over the weekend (<strong>Incubation</strong>). While shaving on Monday morning, the perfect tag-line suddenly comes to mind (<strong>Illumination</strong>). He then drafts the slogan and shares it with a focus group to test consumer response (<strong>Verification</strong>).",
+                chartType: "line",
+                chartData: {
+                    labels: ['Preparation', 'Incubation', 'Illumination', 'Verification'],
+                    datasets: [{
+                        label: 'Conscious Cognitive Effort Level',
+                        data: [95, 5, 40, 85],
+                        borderColor: '#2D4030',
+                        backgroundColor: 'transparent',
+                        tension: 0.3
+                    }]
+                }
+            },
+            chomsky: {
+                title: "Noam Chomsky's Nativist Theory of Language Acquisition",
+                block: "Block 4: Language & Problem Solving",
+                accentTitle: "Biological Language Innatism",
+                accentDesc: "Rejects B.F. Skinner's behaviorist learning model. Proposes language is an innate, biological capacity.",
+                essentials: `
+                    <p><strong>Core Exam Criteria Foundations:</strong> Chomsky argues that language acquisition is driven by internal biological programming, countering behaviorist theories. Key pillars include:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>Language Acquisition Device (LAD):</strong> An innate neurobiological brain module pre-programmed with a universal grammar template. It allows children to quickly decipher incoming language patterns.</li>
+                        <li><strong>Universal Grammar:</strong> An underlying blueprint of syntactic rules shared by all human languages, regardless of culture.</li>
+                        <li><strong>Poverty of the Stimulus Argument:</strong> Points out that children hear highly imperfect, fragmented language around them, yet successfully generate grammatically correct sentences they have never heard before.</li>
+                        <li><strong>Surface vs. Deep Structure:</strong> <em>Surface Structure</em> refers to the specific spoken words and word order used. <em>Deep Structure</em> refers to the underlying semantic meaning of the sentence.</li>
+                    </ul>
+                `,
+                retentionTitle: "The Pre-Installed Operating System Analogy",
+                retentionBody: "Think of a new computer. Chomsky argues human infants are not blank hard drives waiting for environmental inputs to write every line of code. Instead, the brain comes with a <strong>Pre-Installed Language Operating System (LAD)</strong> out of the box. Environmental exposure to a specific language acts like plugging in a localized keyboard layout modifier (e.g., French or Hindi); the core operating system architecture remains unchanged.",
+                realWorld: "A three-year-old child says, 'The mouses runned away.' This phrase demonstrates Chomsky's theory in action. The child has never heard an adult say 'mouses runned,' so they aren't copying behavior. Instead, their innate <strong>LAD</strong> has figured out plural and past-tense rules, and is applying them logically before learning the language's specific exceptions.",
+                chartType: "pie",
+                chartData: {
+                    labels: ['Innate Bioprogramming (LAD/UG)', 'Environmental Input Stimulation'],
+                    datasets: [{
+                        data: [80, 20],
+                        backgroundColor: ['#2D4030', '#E6DFD3']
+                    }]
+                }
+            },
+            bransford: {
+                title: "Bransford's IDEAL Problem Solving Framework",
+                block: "Block 4: Language & Problem Solving",
+                accentTitle: "Systematic Cognitive Toolkit",
+                accentDesc: "A structured, 5-stage conceptual workflow used to break down complex problems and evaluate solutions.",
+                essentials: `
+                    <p><strong>The Five Core Structural Mechanics:</strong> Bransford and Stein organize effective problem-solving into a five-stage progression:</p>
+                    <ul class="list-disc pl-5 space-y-2 mt-2">
+                        <li><strong>I - Identify the Problem:</strong> Actively spotting a problem early, rather than ignoring it or missing its presence.</li>
+                        <li><strong>D - Define and Represent:</strong> Defining the problem's scope, setting boundaries, and organizing goals to understand its constraints clearly.</li>
+                        <li><strong>E - Explore Possible Strategies:</strong> Brainstorming options, such as using algorithms, sub-goal analysis, or heuristics.</li>
+                        <li><strong>A - Act on Strategies:</strong> Implementing the chosen strategy and executing the steps to solve the issue.</li>
+                        <li><strong>L - Look back and Evaluate:</strong> Looking back at the outcome, evaluating results, and self-correcting based on real-world performance.</li>
+                    </ul>
+                `,
+                retentionTitle: "The Wilderness Survival Search Tracker Metaphor",
+                retentionBody: "Picture a wilderness search and rescue mission. <strong>I</strong>dentify is noticing the emergency distress signal flare in the distance. <strong>D</strong>efine is drawing a specific grid map boundary around the search area. <strong>E</strong>xplore is weighing rescue options: helicopter flyover vs. ground tracking teams. <strong>A</strong>ct is deploying the ground team into the grid. <strong>L</strong>ook back is analyzing the mission's success afterward to adjust future search plans.",
+                realWorld: "An operations manager notices a drop in factory output (<strong>Identify</strong>). She isolates the issue to a bottleneck on Assembly Line 3 caused by old machinery (<strong>Define</strong>). She builds two plans: completely replacing the machines vs. servicing existing parts (<strong>Explore</strong>). She implements the machine service plan over the weekend (<strong>Act</strong>). Finally, she tracks weekly output metrics to ensure production rates have stabilized (<strong>Look back</strong>).",
+                chartType: "radar",
+                chartData: {
+                    labels: ['Identify', 'Define', 'Explore', 'Act', 'Look Back'],
+                    datasets: [{
+                        label: 'Execution Quality Index',
+                        data: [95, 90, 85, 75, 90],
+                        backgroundColor: 'rgba(112, 100, 82, 0.3)',
+                        borderColor: '#706452',
+                        pointBackgroundColor: '#2D4030'
+                    }]
+                }
+            }
+        };
+
+        let currentChartInstance = null;
+        let selectedTopicKey = "sternberg";
+
+        // Navigation Menu Block Coordinator
+        function toggleBlock(blockId) {
+            const listIds = ['list-block1', 'list-block2', 'list-block3', 'list-block4'];
+            const btnIds = ['btn-block1', 'btn-block2', 'btn-block3', 'btn-block4'];
+            
+            listIds.forEach((id) => {
+                const element = document.getElementById(id);
+                if (id === 'list-' + blockId) {
+                    element.classList.toggle('hidden');
+                } else {
+                    element.classList.add('hidden');
+                }
+            });
+
+            btnIds.forEach((id) => {
+                const btn = document.getElementById(id);
+                if (id === 'btn-' + blockId) {
+                    btn.classList.add('bg-[#2D4030]', 'text-white');
+                    btn.classList.remove('bg-white', 'text-[#544E44]');
+                } else {
+                    btn.classList.remove('bg-[#2D4030]', 'text-white');
+                    btn.classList.add('bg-white', 'text-[#544E44]');
+                }
+            });
+        }
+
+        // Topic Engine Loader
+        function loadTopic(topicKey) {
+            selectedTopicKey = topicKey;
+            const data = syllabusDatabase[topicKey];
+
+            // Update Navigation Highlighting Bars
+            document.querySelectorAll('#block-menu button[id^="nav-"]').forEach(btn => {
+                btn.classList.remove('text-[#2D4030]', 'bg-[#EAE3D2]', 'border-[#2D4030]');
+                btn.classList.add('text-[#544E44]', 'hover:bg-[#F2ECE1]', 'border-transparent');
+            });
+            const activeNav = document.getElementById('nav-' + topicKey);
+            if (activeNav) {
+                activeNav.classList.add('text-[#2D4030]', 'bg-[#EAE3D2]', 'border-[#2D4030]');
+                activeNav.classList.remove('text-[#544E44]', 'hover:bg-[#F2ECE1]', 'border-transparent');
+            }
+
+            // Update Header Meta Data fields
+            document.getElementById('topic-block-badge').innerText = data.block;
+            document.getElementById('topic-main-title').innerText = data.title;
+            document.getElementById('metric-title').innerText = data.accentTitle;
+            document.getElementById('metric-desc').innerText = data.accentDesc;
+
+            // Trigger Active Recall Overlay
+            document.getElementById('main-content-display').classList.add('hidden');
+            document.getElementById('active-recall-gate').classList.remove('hidden');
+        }
+
+        // Active Recall Content Reveal Mechanism
+        function revealContent() {
+            const data = syllabusDatabase[selectedTopicKey];
+
+            // Inject Content Elements
+            document.getElementById('exam-essentials-content').innerHTML = data.essentials;
+            document.getElementById('retention-title').innerText = data.retentionTitle;
+            document.getElementById('retention-body').innerText = data.retentionBody;
+            document.getElementById('real-world-case').innerText = data.realWorld;
+
+            // Re-render Data Visualization Chart
+            renderChart(data.chartType, data.chartData);
+
+            // Toggle Layout Visibility state
+            document.getElementById('active-recall-gate').classList.add('hidden');
+            document.getElementById('main-content-display').classList.remove('hidden');
+        }
+
+        // Chart.js Re-initialization Driver
+        function renderChart(type, data) {
+            if (currentChartInstance) {
+                currentChartInstance.destroy();
+            }
+
+            const ctx = document.getElementById('topicChart').getContext('2d');
+            
+            // Add global academic theme coloring adjustments to options
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            font: { size: 10, family: 'Inter' },
+                            color: '#544E44'
+                        },
+                        position: 'bottom'
+                    }
+                },
+                scales: type === 'bar' || type === 'line' ? {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: '#F2ECE1' },
+                        ticks: { font: { size: 9 }, color: '#706452' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { font: { size: 9 }, color: '#706452' }
+                    }
+                } : type === 'radar' ? {
+                    r: {
+                        angleLines: { color: '#F2ECE1' },
+                        grid: { color: '#F2ECE1' },
+                        pointLabels: { font: { size: 9 }, color: '#706452' },
+                        ticks: { display: false }
+                    }
+                } : {}
+            };
+
+            currentChartInstance = new Chart(ctx, {
+                type: type,
+                data: data,
+                options: options
+            });
+        }
+
+        // Boot-Up Run Initializer
+        window.onload = function() {
+            loadTopic('sternberg');
+        };
+    </script>
+</body>
+</html>
