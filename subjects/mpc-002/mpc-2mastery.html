@@ -3,1671 +3,468 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IGNOU MPC-002 (Life Span Psychology) AI revision Suite</title>
-    <!-- Tailwind CSS for modern, stress-reducing warm academic aesthetics -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Font: Inter & Playfair Display for classic authoritative academic layout -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- Chart.js for dynamic developmental representations -->
+    <title>IGNOU MPC-002 Exam Preparation Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #FAF8F5; /* Warm neutral Ivory minimizing visual glare */
-        }
-        .serif-title {
-            font-family: 'Playfair Display', serif;
-        }
-        /* Custom scrollbar to keep layout clean */
-        ::-webkit-scrollbar {
+        /* Custom scrollbar and subtle transitions for a premium academic feel */
+        .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
-            height: 6px;
         }
-        ::-webkit-scrollbar-track {
-            background: #F1ECE4;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
-        ::-webkit-scrollbar-thumb {
-            background: #CBD5E1;
-            border-radius: 3px;
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
         }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94A3B8;
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
         }
     </style>
 </head>
-<body class="text-slate-800 min-h-screen flex flex-col antialiased">
+<body class="bg-stone-50 text-stone-800 font-sans antialiased min-h-screen flex flex-col">
 
-    <!-- Top premium academic header containing user meta-controls and active metrics -->
-    <header class="border-b border-orange-100 bg-white/80 backdrop-blur sticky top-0 z-40 px-4 py-3 sm:px-6 shadow-sm">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50 px-6 py-4 shadow-sm">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
-                <span class="text-xs font-bold tracking-widest text-emerald-700 uppercase bg-emerald-50 px-2.5 py-1 rounded-full">IGNOU MPC-002 Exam Suite</span>
-                <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 serif-title mt-1">Life Span Psychology AI revision Suite</h1>
+                <span class="text-xs font-bold tracking-widest text-amber-700 uppercase">IGNOU MPC-002 Mastery</span>
+                <h1 class="text-2xl font-serif font-bold text-stone-950">Life Span Psychology Drill-Down Portal</h1>
             </div>
-            
-            <!-- Global Dashboard Performance Tracker -->
-            <div class="flex items-center gap-4 flex-wrap">
-                <!-- API Key Config (subtle setting) -->
-                <div class="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200/80 transition p-1.5 rounded-lg border border-slate-200">
-                    <span class="text-[10px] uppercase tracking-wider font-semibold text-slate-500 pl-1">🔑 Key:</span>
-                    <input type="password" id="api-key-input" placeholder="Canvas Auto-Injected" class="bg-white border border-slate-300 text-xs px-2 py-1 rounded focus:outline-none focus:ring-1 focus:ring-emerald-500 w-36">
-                </div>
-
-                <div class="bg-amber-50/80 border border-amber-200/50 rounded-xl p-2.5 flex items-center gap-3">
-                    <div class="text-right">
-                        <p class="text-[10px] uppercase tracking-wider font-semibold text-amber-800">Syllabus Mastered</p>
-                        <p class="text-xs text-slate-600 font-medium"><span id="mastery-count" class="font-bold text-emerald-700">0</span> / 17 Topics Active</p>
-                    </div>
-                    <div class="w-16 bg-slate-200 h-2 rounded-full overflow-hidden">
-                        <div id="mastery-progress-bar" class="bg-emerald-600 h-full transition-all duration-500" style="width: 0%"></div>
-                    </div>
-                </div>
-                
-                <!-- Master Toggle for Active Recall Mode -->
-                <button id="global-reveal-btn" class="px-3.5 py-2 text-xs font-semibold rounded-lg border border-slate-300 bg-white hover:bg-slate-50 transition active:scale-95 shadow-sm flex items-center gap-1.5">
-                    <span>💡 Force Reveal All</span>
-                </button>
+            <div class="flex items-center gap-2 bg-stone-100 p-1.5 rounded-lg border border-stone-200">
+                <button onclick="switchBlock('all')" id="btn-all" class="px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 bg-white text-stone-900 shadow-xs border border-stone-200/50">All Blocks</button>
+                <button onclick="switchBlock('b1')" id="btn-b1" class="px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-stone-600 hover:text-stone-900">Block 1</button>
+                <button onclick="switchBlock('b2')" id="btn-b2" class="px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-stone-600 hover:text-stone-900">Block 2</button>
+                <button onclick="switchBlock('b3')" id="btn-b3" class="px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-stone-600 hover:text-stone-900">Block 3</button>
+                <button onclick="switchBlock('b4')" id="btn-b4" class="px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-stone-600 hover:text-stone-900">Block 4</button>
             </div>
         </div>
     </header>
 
-    <!-- Non-blocking custom toast notification area -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-50 space-y-2"></div>
-
-    <!-- Grid System layout: Left Index Navigation Tree, Right Central Focus Workspace -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+    <main class="flex-1 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6 p-4 md:p-6 overflow-hidden">
         
-        <!-- Left Side Syllabus Navigation (lg:col-span-4) -->
-        <aside class="lg:col-span-4 bg-white rounded-2xl border border-stone-200 shadow-md p-4 max-h-[82vh] overflow-y-auto sticky top-24">
-            <div class="flex items-center justify-between mb-4 px-1">
-                <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500">Curriculum Navigation</h2>
-                <span class="text-[10px] text-emerald-800 bg-emerald-50 px-2 py-0.5 rounded-full font-bold">4 Blocks</span>
+        <section class="w-full lg:w-80 flex flex-col gap-4 shrink-0">
+            <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-xs">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-1">Active Recall Interface</h2>
+                <p class="text-xs text-stone-600 leading-relaxed">Select a high-yield exam topic below to deploy its deep structural analysis framework.</p>
             </div>
             
-            <!-- Syllabus Accordion Container -->
-            <div class="space-y-3" id="syllabus-accordion">
-                <!-- Data will be dynamically mapped here by JS -->
-            </div>
-            
-            <div class="mt-4 p-3 bg-stone-50 rounded-xl border border-stone-100 text-[11px] text-slate-500">
-                <p class="font-medium text-slate-700 mb-1 font-semibold">Active Study Indicators:</p>
-                <div class="grid grid-cols-2 gap-2 mt-2">
-                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 block"></span> Mastered (Easy)</div>
-                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-amber-500 block"></span> Reviewing (Hard)</div>
-                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 block"></span> Unstudied (Fail)</div>
-                    <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-stone-300 block"></span> Untested</div>
+            <div id="topic-menu" class="flex-1 overflow-y-auto max-h-[calc(100vh-240px)] custom-scrollbar space-y-3 pr-2">
                 </div>
-            </div>
-        </aside>
-
-        <!-- Right Active Study Focus Space (lg:col-span-8) -->
-        <section class="lg:col-span-8 space-y-6">
-            
-            <!-- Intro Card showing Active Recall Guidelines if no topic selected -->
-            <div id="welcome-card" class="bg-white rounded-2xl border border-amber-200/75 p-6 sm:p-8 shadow-sm space-y-4 text-center">
-                <div class="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto text-2xl">🧠</div>
-                <h3 class="text-xl font-bold serif-title text-slate-900 font-bold">Life Span Psychology AI revision Suite</h3>
-                <p class="text-slate-600 text-sm max-w-lg mx-auto leading-relaxed">
-                    Passive reading creates an illusion of competency. Select a topic from the left sidebar to activate the **Progressive Disclosure Flashcards** and interact with **Gemini AI Evaluators** built precisely on the IGNOU MPC-002 syllabus.
-                </p>
-                <div class="pt-2">
-                    <button onclick="document.querySelector('[data-topic-id]').click()" class="bg-slate-900 text-white font-semibold text-xs px-5 py-2.5 rounded-xl hover:bg-slate-800 transition active:scale-95 shadow-md">
-                        Get Started with Block 1, Topic 1
-                    </button>
-                </div>
-            </div>
-
-            <!-- Focus Workspace Container (Hidden until topic is chosen) -->
-            <div id="workspace-card" class="hidden space-y-6">
-                
-                <!-- Dynamic Header and Exam Prompt -->
-                <div class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm relative overflow-hidden">
-                    <div class="absolute top-0 left-0 w-1.5 h-full bg-slate-900" id="block-indicator-stripe"></div>
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div>
-                            <span id="workspace-block-title" class="text-xs uppercase tracking-wider font-bold text-slate-500">Block 1</span>
-                            <h2 id="workspace-topic-title" class="text-2xl font-bold text-slate-900 serif-title mt-0.5">Topic Title</h2>
-                        </div>
-                        <!-- Leitner Card Actions -->
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs font-semibold text-slate-500">Mark Status:</span>
-                            <button onclick="markStatus('easy')" class="px-2.5 py-1 text-xs font-medium rounded-md bg-emerald-50 text-emerald-800 border border-emerald-200/50 hover:bg-emerald-100 transition">Mastered</button>
-                            <button onclick="markStatus('hard')" class="px-2.5 py-1 text-xs font-medium rounded-md bg-amber-50 text-amber-800 border border-amber-200/50 hover:bg-amber-100 transition">Review</button>
-                            <button onclick="markStatus('fail')" class="px-2.5 py-1 text-xs font-medium rounded-md bg-rose-50 text-rose-800 border border-rose-200/50 hover:bg-rose-100 transition">Flagged</button>
-                        </div>
-                    </div>
-                    
-                    <!-- Dynamic Exam Generator Action Box -->
-                    <div class="mt-4 pt-4 border-t border-stone-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-stone-50/50 p-3 rounded-xl">
-                        <div class="flex-grow">
-                            <p class="text-[11px] font-bold uppercase tracking-wider text-emerald-800">Simulated IGNOU Question Scenario</p>
-                            <p id="exam-prompt-text" class="text-xs italic text-slate-600 mt-0.5">How would you approach this in a 10-Mark essay?</p>
-                        </div>
-                        <button id="generate-exam-btn" class="text-[11px] font-bold text-white bg-emerald-700 hover:bg-emerald-800 px-3 py-1.5 rounded-lg shrink-0 transition shadow-sm">
-                            Generate Exam Question
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Dynamic Graphic / Graph Block (Shown only for relevant topics, managed via JS) -->
-                <div id="chart-visualization-container" class="bg-white rounded-2xl border border-stone-200 p-6 shadow-sm hidden">
-                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4" id="chart-title-text">Cognitive Framework Diagram</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-                        <div class="md:col-span-7 flex justify-center items-center min-h-[250px]">
-                            <!-- Chart Canvas Elements -->
-                            <canvas id="stageChart" class="max-w-full max-h-[260px]"></canvas>
-                        </div>
-                        
-                        <!-- Interactive Controllers for Dynamic Mapping -->
-                        <div class="md:col-span-5 space-y-4" id="chart-controls">
-                            <!-- Custom Interactive Inputs loaded dynamically by JS -->
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Revision Mode Selection Tabs -->
-                <div class="border-b border-stone-200 flex space-x-1">
-                    <button onclick="switchStudyTab('manual')" id="tab-btn-manual" class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 border-slate-900 text-slate-900 transition">
-                        📖 Static Study Guide
-                    </button>
-                    <button onclick="switchStudyTab('viva')" id="tab-btn-viva" class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition flex items-center gap-1.5">
-                        ✨ AI Viva Coach
-                    </button>
-                    <button onclick="switchStudyTab('grader')" id="tab-btn-grader" class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition flex items-center gap-1.5">
-                        📝 AI Essay Grader
-                    </button>
-                    <button onclick="switchStudyTab('memory')" id="tab-btn-memory" class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider border-b-2 border-transparent text-slate-500 hover:text-slate-900 transition flex items-center gap-1.5">
-                        🧠 AI Custom Metaphors
-                    </button>
-                </div>
-
-                <!-- STUDY TAB PANES -->
-
-                <!-- 1. MANUAL REVISION STUDY PANE -->
-                <div id="pane-manual" class="space-y-6">
-                    <!-- Three Pillar Active Recall Matrix (Disclosed progressively) -->
-                    <div class="grid grid-cols-1 gap-6">
-                        
-                        <!-- 1. EXAM ESSENTIALS CARD -->
-                        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden group">
-                            <div class="bg-stone-50 border-b border-stone-100 px-5 py-4 flex items-center justify-between">
-                                <div class="flex items-center gap-2.5">
-                                    <span class="text-lg">📋</span>
-                                    <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800">1. Exam Essentials (The Answer Scheme)</h3>
-                                </div>
-                                <span class="text-xs text-slate-400 font-medium">Earn up to 10 Marks</span>
-                            </div>
-                            
-                            <div class="relative min-h-[140px]">
-                                <!-- Reveal Cover Layer -->
-                                <div id="cover-essentials" class="absolute inset-0 bg-stone-950/5 backdrop-blur-[5px] flex flex-col items-center justify-center p-6 text-center transition-all duration-300 z-10">
-                                    <p class="text-xs text-slate-700 font-semibold mb-2 font-semibold">Think: What are the absolute researcher names, age groups, & criteria for full marks?</p>
-                                    <button onclick="revealField('essentials')" class="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl shadow-md hover:bg-slate-800 transition active:scale-95">
-                                        Reveal Scheme
-                                    </button>
-                                </div>
-                                <!-- Core Educational Text Content -->
-                                <div class="p-5 sm:p-6 text-sm text-slate-700 leading-relaxed max-h-[400px] overflow-y-auto" id="content-essentials">
-                                    <!-- Dynamic content -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 2. RETENTION HOOK CARD -->
-                        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-                            <div class="bg-amber-50/50 border-b border-amber-100/50 px-5 py-4 flex items-center justify-between">
-                                <div class="flex items-center gap-2.5">
-                                    <span class="text-lg">⚓</span>
-                                    <h3 class="text-sm font-bold uppercase tracking-wider text-amber-900">2. Retention Hook (Physical Metaphor)</h3>
-                                </div>
-                                <span class="text-xs text-amber-700 font-semibold font-semibold">Visual Schema Anchor</span>
-                            </div>
-                            
-                            <div class="relative min-h-[110px]">
-                                <!-- Reveal Cover Layer -->
-                                <div id="cover-hook" class="absolute inset-0 bg-stone-950/5 backdrop-blur-[5px] flex flex-col items-center justify-center p-6 text-center transition-all duration-300 z-10">
-                                    <p class="text-xs text-slate-700 font-semibold mb-2 font-semibold">Recall the physical shape or scene mapped to this theory...</p>
-                                    <button onclick="revealField('hook')" class="px-4 py-2 bg-amber-700 text-white font-bold text-xs rounded-xl shadow-md hover:bg-amber-800 transition active:scale-95">
-                                        Reveal Memory Anchor
-                                    </button>
-                                </div>
-                                <!-- Core Educational Text Content -->
-                                <div class="p-5 sm:p-6 bg-amber-50/10" id="content-hook">
-                                    <!-- Dynamic content -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3. REAL-WORLD CASE STUDIES -->
-                        <div class="bg-white rounded-2xl border border-stone-200 shadow-sm overflow-hidden">
-                            <div class="bg-teal-50/30 border-b border-teal-100/40 px-5 py-4 flex items-center justify-between">
-                                <div class="flex items-center gap-2.5">
-                                    <span class="text-lg">🌿</span>
-                                    <h3 class="text-sm font-bold uppercase tracking-wider text-teal-950">3. Applied Case Study (In Action)</h3>
-                                </div>
-                                <span class="text-xs text-teal-800 font-semibold font-semibold">Real-World Narrative</span>
-                            </div>
-                            
-                            <div class="relative min-h-[110px]">
-                                <!-- Reveal Cover Layer -->
-                                <div id="cover-example" class="absolute inset-0 bg-stone-950/5 backdrop-blur-[5px] flex flex-col items-center justify-center p-6 text-center transition-all duration-300 z-10">
-                                    <p class="text-xs text-slate-700 font-semibold mb-2 font-semibold">Think of a practical behavioral scene describing this...</p>
-                                    <button onclick="revealField('example')" class="px-4 py-2 bg-teal-800 text-white font-bold text-xs rounded-xl shadow-md hover:bg-teal-900 transition active:scale-95">
-                                        Reveal Case Scenario
-                                    </button>
-                                </div>
-                                <!-- Core Educational Text Content -->
-                                <div class="p-5 sm:p-6 text-sm text-slate-700 leading-relaxed italic" id="content-example">
-                                    <!-- Dynamic content -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 2. AI VIVA STUDY PANE -->
-                <div id="pane-viva" class="hidden bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-base font-bold text-slate-900 serif-title">AI Interactive Viva Practice</h3>
-                            <p class="text-xs text-slate-500">Test your spontaneous recall against rigorous evaluators.</p>
-                        </div>
-                        <span class="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[10px] font-bold rounded-full">Gemini Model Live</span>
-                    </div>
-
-                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 min-h-[80px]" id="viva-question-box">
-                        <p class="text-xs text-slate-500 italic">Click the button below to generate a challenging oral exam question based on this topic...</p>
-                    </div>
-
-                    <div id="viva-answer-section" class="hidden space-y-3">
-                        <label class="block text-xs font-bold uppercase text-slate-500">Your Spoken/Written Assessment Answer:</label>
-                        <textarea id="viva-user-answer" rows="3" placeholder="Type your core response. Try to include key researchers, ages, stages, or characteristics..." class="w-full text-xs p-3 border border-stone-300 rounded-xl focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
-                        
-                        <div class="flex justify-end">
-                            <button id="viva-submit-btn" onclick="submitVivaAnswer()" class="px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition shadow-sm">
-                                Submit Answer for Evaluation
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-start">
-                        <button id="viva-generate-btn" onclick="generateVivaQuestion()" class="px-4 py-2 bg-emerald-700 text-white font-bold text-xs rounded-xl hover:bg-emerald-800 transition shadow-sm">
-                            Generate Oral Question
-                        </button>
-                    </div>
-
-                    <!-- AI Evaluation Result Box -->
-                    <div id="viva-feedback-box" class="hidden bg-emerald-50/50 border border-emerald-100 p-4 rounded-xl space-y-3">
-                        <div class="flex items-center justify-between">
-                            <h4 class="text-xs font-bold text-emerald-900 uppercase">Interactive Evaluation Result</h4>
-                            <span id="viva-score-tag" class="text-sm font-extrabold text-emerald-800">Score: 0 / 10 Marks</span>
-                        </div>
-                        <div class="text-xs text-slate-700 leading-relaxed" id="viva-feedback-text"></div>
-                        <div class="p-3 bg-white rounded-lg border border-slate-100 space-y-1">
-                            <p class="text-[10px] font-bold text-amber-800 uppercase">Key Missing Concept Elements:</p>
-                            <ul id="viva-missing-list" class="list-disc pl-4 text-[11px] text-slate-600 space-y-1"></ul>
-                        </div>
-                        <div class="text-[11px] text-slate-500 bg-stone-100/50 p-2.5 rounded-lg border border-stone-200">
-                            <p class="font-bold mb-1">Exemplary Model Answer Model:</p>
-                            <p id="viva-model-answer-text" class="italic"></p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 3. AI GRADER STUDY PANE -->
-                <div id="pane-grader" class="hidden bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h3 class="text-base font-bold text-slate-900 serif-title">Full 10-Mark Essay Grader</h3>
-                            <p class="text-xs text-slate-500">Submit a complete answer outline to see if you qualify for a score of 10/10.</p>
-                        </div>
-                        <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-[10px] font-bold rounded-full">IGNOU Rubric Evaluator</span>
-                    </div>
-
-                    <div class="space-y-2">
-                        <label class="block text-xs font-bold uppercase text-slate-500">Draft Your Complete Essay Response:</label>
-                        <textarea id="essay-text-area" rows="8" placeholder="Paste your essay here (Recommended: 300 to 500 words). Incorporate foundational definitions, researchers, sub-stages, visual model descriptions, and case studies..." class="w-full text-xs p-3 border border-stone-300 rounded-xl focus:ring-1 focus:ring-blue-500 focus:outline-none font-mono"></textarea>
-                    </div>
-
-                    <div class="flex justify-between items-center">
-                        <span id="essay-word-count" class="text-[11px] text-slate-400 font-semibold">0 Words (Suggested: 300+)</span>
-                        <button onclick="gradeFullEssay()" id="grade-essay-btn" class="px-4 py-2 bg-blue-700 text-white font-bold text-xs rounded-xl hover:bg-blue-800 transition shadow-sm">
-                            Analyze & Grade Essay
-                        </button>
-                    </div>
-
-                    <!-- AI Grading Feedback Output -->
-                    <div id="grader-feedback-box" class="hidden border border-blue-100 rounded-xl overflow-hidden shadow-sm">
-                        <div class="bg-blue-50 px-4 py-3 flex items-center justify-between border-b border-blue-100">
-                            <span class="text-xs font-bold uppercase text-blue-900">Comprehensive Score Sheet</span>
-                            <span id="essay-total-score" class="text-sm font-black text-blue-800">0 / 10 MARKS</span>
-                        </div>
-                        <div class="p-4 space-y-4 bg-white text-xs">
-                            <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-center">
-                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                    <p class="text-[9px] text-slate-500 uppercase font-bold">1. Key Terms Definition</p>
-                                    <p id="grade-def-score" class="text-sm font-bold text-slate-700">0/2.5</p>
-                                </div>
-                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                    <p class="text-[9px] text-slate-500 uppercase font-bold">2. Theoretical Consistency</p>
-                                    <p id="grade-theory-score" class="text-sm font-bold text-slate-700">0/2.5</p>
-                                </div>
-                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                    <p class="text-[9px] text-slate-500 uppercase font-bold">3. Structure & Models</p>
-                                    <p id="grade-struct-score" class="text-sm font-bold text-slate-700">0/2.5</p>
-                                </div>
-                                <div class="bg-slate-50 p-2 rounded-lg border border-slate-200">
-                                    <p class="text-[9px] text-slate-500 uppercase font-bold">4. Application Case</p>
-                                    <p id="grade-case-score" class="text-sm font-bold text-slate-700">0/2.5</p>
-                                </div>
-                            </div>
-
-                            <div class="space-y-1 bg-stone-50 p-3 rounded-lg border border-stone-200">
-                                <p class="font-bold text-slate-800">General Clinical Evaluation:</p>
-                                <p id="grade-feedback-summary" class="text-slate-600 leading-relaxed"></p>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
-                                    <p class="font-bold text-emerald-900 uppercase text-[10px] mb-1">Strengths to Highlight:</p>
-                                    <ul id="grade-strengths" class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]"></ul>
-                                </div>
-                                <div class="p-3 bg-rose-50 rounded-lg border border-rose-100">
-                                    <p class="font-bold text-rose-900 uppercase text-[10px] mb-1">Key Actionable Improvements:</p>
-                                    <ul id="grade-weaknesses" class="list-disc pl-4 space-y-1 text-slate-600 text-[11px]"></ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 4. AI MEMORY ANCHOR STUDIO -->
-                <div id="pane-memory" class="hidden bg-white rounded-2xl border border-stone-200 p-6 shadow-sm space-y-4">
-                    <div>
-                        <h3 class="text-base font-bold text-slate-900 serif-title">Personalized Metaphor Generator</h3>
-                        <p class="text-xs text-slate-500">Create memory triggers tailored to your favorite hobbies, sports, or environments.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center bg-stone-50 p-4 rounded-xl border border-stone-200">
-                        <div class="space-y-1">
-                            <label class="block text-[11px] font-bold text-slate-600 uppercase">Pick Your Creative Metaphor Base:</label>
-                            <select id="metaphor-theme-select" class="w-full text-xs p-2 border border-slate-300 rounded-lg bg-white focus:outline-none focus:ring-1 focus:ring-indigo-500">
-                                <option value="cooking">Gastronomy & Fine Cooking</option>
-                                <option value="gaming">Tactical RPGs & Gaming Mechanics</option>
-                                <option value="engineering">Electrical/Mechanical Engineering</option>
-                                <option value="aviation">Aviation & Flight Cockpit controls</option>
-                                <option value="sports">Athletic Sports & Gym Workouts</option>
-                                <option value="nature">Ecosystems & Nature Survival</option>
-                            </select>
-                        </div>
-                        <div class="text-center sm:text-right">
-                            <button onclick="generateCustomMemoryHook()" id="generate-custom-hook-btn" class="px-5 py-2.5 bg-indigo-700 text-white font-bold text-xs rounded-xl hover:bg-indigo-800 transition shadow-md">
-                                Build Memory Metaphor
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- AI Custom Metaphor Display Output -->
-                    <div id="custom-hook-box" class="hidden bg-indigo-50/50 border border-indigo-100 p-5 rounded-2xl space-y-3">
-                        <div class="flex items-center gap-2">
-                            <span class="text-2xl">⚡</span>
-                            <h4 id="custom-hook-title" class="text-xs font-bold uppercase text-indigo-900 tracking-wider">Concept Alignment Blueprint</h4>
-                        </div>
-                        <p id="custom-hook-analogy" class="text-xs italic text-indigo-950 font-medium leading-relaxed"></p>
-                        <div class="bg-white border border-indigo-100/50 p-4 rounded-xl text-xs text-slate-700 leading-relaxed" id="custom-hook-explanation"></div>
-                    </div>
-                </div>
-
-            </div>
-
         </section>
 
+        <section class="flex-1 bg-white rounded-xl border border-stone-200 shadow-xs p-6 md:p-8 overflow-y-auto max-h-[calc(100vh-140px)] custom-scrollbar">
+            <div id="empty-state" class="h-full flex flex-col items-center justify-center text-center py-20">
+                <div class="w-16 h-16 bg-amber-50 text-amber-700 rounded-full flex items-center justify-center mb-4 border border-amber-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" /></svg>
+                </div>
+                <h3 class="text-xl font-serif font-bold text-stone-900 mb-2">Select an Exam Topic</h3>
+                <p class="text-stone-500 max-w-md text-sm">Click any clinical theory or developmental paradigm on the left panel to display high-scoring response definitions, structural visualizations, and experiential analogies.</p>
+            </div>
+
+            <div id="content-display" class="hidden space-y-8 animate-fadeIn">
+                <div class="border-b border-stone-200 pb-4">
+                    <span id="display-block" class="text-xs font-bold text-amber-800 bg-amber-50 border border-amber-200/60 px-2.5 py-1 rounded-full uppercase tracking-wider"></span>
+                    <h2 id="display-title" class="text-3xl font-serif font-bold text-stone-950 mt-3 tracking-tight"></h2>
+                </div>
+
+                <div class="bg-stone-50/50 p-6 rounded-xl border border-stone-200/80">
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-stone-400 flex items-center gap-2 mb-4">
+                        <span class="w-1.5 h-4 bg-amber-700 rounded-full"></span> 1. Exam Essentials (10 / 6 Mark Architecture)
+                    </h3>
+                    <div id="display-essentials" class="prose max-w-none text-stone-700 text-sm leading-relaxed space-y-4"></div>
+                </div>
+
+                <div id="chart-container-wrapper" class="hidden bg-white p-6 rounded-xl border border-stone-200 shadow-xs flex flex-col items-center">
+                    <h3 class="text-sm font-bold uppercase tracking-widest text-stone-400 flex items-center gap-2 mb-4 self-start">
+                        <span class="w-1.5 h-4 bg-blue-700 rounded-full"></span> Data-Heavy Conceptual Map
+                    </h3>
+                    <div class="w-full max-w-xl aspect-video relative flex items-center justify-center">
+                        <canvas id="conceptual-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-amber-50/40 p-6 rounded-xl border border-amber-200/50 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold uppercase tracking-widest text-amber-800/80 flex items-center gap-2 mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-amber-700"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 9.152c.582.448 1.148.89 1.676 1.345m-1.676-1.345c-.528-.407-1.074-.82-1.621-1.24m1.621 1.24a33.111 33.111 0 013.435 3.323m-3.435-3.323c-.382.261-.767.514-1.154.757m-3.921-2.98c.582.448 1.148.89 1.676 1.345m-1.676-1.345c-.528-.407-1.074-.82-1.621-1.24m1.621 1.24a33.111 33.111 0 013.435 3.323M9.042 9.152c-.382.261-.767.514-1.154.757m0 0a33.076 33.076 0 00-3.397 3.12M7.888 9.91c-.528.307-1.05.632-1.564.972m-.182.126a32.68 32.68 0 00-2.478 2.515m3.224-3.613c-.504.419-.997.85-1.48 1.294m1.48-1.294c-.528-.407-1.074-.82-1.621-1.24M3.89 12.44a33.21 33.21 0 00-1.83 2.503M3.89 12.44c-.283.332-.556.671-.82 1.018m0 0a33.12 33.12 0 00-1.01 1.76" /></svg>
+                                2. Structural Retention Hook
+                            </h3>
+                            <div id="display-hook" class="text-stone-700 text-sm leading-relaxed italic"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-stone-50/80 p-6 rounded-xl border border-stone-200 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-sm font-bold uppercase tracking-widest text-stone-500 flex items-center gap-2 mb-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 text-stone-600"><path stroke-linecap="round" stroke-linejoin="round" d="M2.025 8.511c.884.284 1.748.716 2.54 1.27.81.565 1.504 1.3 2.033 2.147a11.902 11.902 0 011.668 5.437c.074.552.1 1.107.077 1.661m1.118-12.78c-.283.884-.716 1.748-1.27 2.54-.565.81-1.3 1.504-2.147 2.033a11.902 11.902 0 01-5.437 1.668 11.916 11.916 0 01-1.661.077m14.053-8.484a11.914 11.914 0 011.661-.077c.552.074 1.107.1 1.661.077m-13.784 11.18c.884-.283 1.748-.716 2.54-1.27.81-.565 1.504-1.3 2.033-2.147a11.902 11.902 0 011.668-5.437c.074-.552.1-1.107.077-1.661" /></svg>
+                                3. Real-World Application
+                            </h3>
+                            <div id="display-example" class="text-stone-700 text-sm leading-relaxed"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
     </main>
 
-    <!-- Custom non-blocking interactive modal for generated exam question schemas -->
-    <div id="exam-modal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-lg rounded-2xl border border-stone-200 p-6 shadow-xl space-y-4">
-            <div class="flex justify-between items-center pb-2 border-b border-stone-100">
-                <span class="text-xs font-bold uppercase tracking-widest text-emerald-800 bg-emerald-50 px-2 py-1 rounded">IGNOU Exam Simulator</span>
-                <button onclick="closeExamModal()" class="text-slate-400 hover:text-slate-600 font-bold text-lg leading-none">&times;</button>
-            </div>
-            <h4 class="text-base font-bold text-slate-900 leading-snug" id="modal-question-title">Sample Question Context</h4>
-            <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs space-y-2">
-                <p class="font-semibold text-slate-700">Recommended Structuring Points to Score 10/10:</p>
-                <ul class="list-disc pl-4 space-y-1.5 text-slate-600" id="modal-points-list">
-                    <!-- Points injected dynamically -->
-                </ul>
-            </div>
-            <div class="flex justify-end gap-2 pt-2">
-                <button onclick="closeExamModal()" class="px-4 py-2 text-xs font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-lg transition">Close</button>
-                <button onclick="copyQuestionToClipboard()" class="px-4 py-2 text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition">Copy Question Text</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Persistent Global Footer -->
-    <footer class="border-t border-stone-200 bg-white/70 py-4 mt-12 text-center text-xs text-slate-500">
-        <p>© 2026 IGNOU MPC-002 Clinical & Lifespan Revision System with Gemini Flash AI Core.</p>
-    </footer>
-
     <script>
-        // Full curriculum database mapping directly to IGNOU MPC-002 Life Span Psychology syllabus
-        const CURRICULUM_DATA = [
-            {
-                blockId: "b1",
-                blockTitle: "Block 1: Prenatal, Infancy & Early Childhood",
-                color: "emerald",
-                topics: [
-                    {
-                        id: "growth-vs-dev",
-                        title: "Growth vs. Development",
-                        prompt: "Differentiate between growth and development. Critically analyze the primary continuous and discontinuous elements with age milestones.",
-                        essentials: `
-                            <p class="mb-2"><strong>Core Distinction:</strong> <em>Growth</em> is purely quantitative, referring to the anatomical increase in cellular mass, stature, and weight (measurable via hyperplasia and hypertrophy). <em>Development</em> is a holistic, qualitative framework indicating systematic, progressive, and organized shifts in functioning, adaptation, and complex behaviors.</p>
-                            <h4 class="font-bold text-slate-800 mt-3 mb-1">Theoretical Pillars for a 10-Mark Answer:</h4>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Directional Laws:</strong> Development progresses <em>Cephalocaudally</em> (head-to-toe progression) and <em>Proximodistally</em> (inner torso outwards to hands/feet).</li>
-                                <li><strong>Quantitative vs Qualitative Matrix:</strong> Growth stops at physical maturity (circa late teens), whereas development persists from conception through the developmental continuum to senescent decline (Life Span Perspective).</li>
-                                <li><strong>Interconnectivity:</strong> Development incorporates both physical growth, motor capacities, structural cognitive transitions, and social integration.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🧱</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Pile of Bricks vs. The Constructed Cathedral</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Growth is simply adding more raw bricks to a massive pile (increasing physical quantity, weight, and volume). Development is organizing those structural bricks systematically into arches, towers, and functional rooms—creating design, purpose, and utility from the physical material.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A neonate's hand grows physically in volume, bone count, and weight (Growth). However, the progression from involuntary reflex swatting to a coordinated intentional pincer grasp to hold a crayon is Development."
-                    },
-                    {
-                        id: "critical-vs-sensitive",
-                        title: "Critical vs. Sensitive Periods",
-                        prompt: "Define and contrast critical and sensitive developmental periods, illustrating your answer with relevant research findings.",
-                        essentials: `
-                            <p class="mb-2"><strong>Critical Period:</strong> A rigid, developmentally constrained, biologically determined temporal window. The environment must present specific sensory input or hormonal triggers during this phase. Failing this, normal maturation is permanently compromised.</p>
-                            <p class="mb-2"><strong>Sensitive Period:</strong> A highly plastic, optimal window where the neural architecture is deeply receptive to specific experiences. Deficits can still be remediated or recovered in subsequent developmental stages, though at a significantly higher expenditure of cognitive energy.</p>
-                            <h4 class="font-bold text-slate-800 mt-3 mb-1">Key Empirical Research:</h4>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Lorenz (1935) Imprinting Study:</strong> Identified a critical timeline post-hatching in precocial birds; if exposure to a mother figure did not occur, social attachment failed permanently.</li>
-                                <li><strong>Language Acquisition (Lenneberg's Hypothesis):</strong> Argued language learning has a sensitive period closing around puberty, heavily supported by clinical studies of isolated children (e.g., Genie).</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🏺</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">Setting Concrete vs. Sculpting Soft Modeling Clay</h4>
-                                    <p class="text-xs text-amber-800 mt-1">A critical period is like pouring concrete into a frame; if you do not stamp the pattern during the chemical curing window, it hardens permanently and cannot be re-molded. A sensitive period is like wet clay: it is easiest to sculpt now, but even if it dries slightly, adding heat and direct pressure can still alter its shape.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "An embryo exposed to the drug Thalidomide between days 20 to 35 post-conception experiences anatomical limb deformities (critical period disruption). In contrast, a child lacking social contact may catch up on syntax through therapy in later childhood (sensitive period learning)."
-                    },
-                    {
-                        id: "research-methods",
-                        title: "Cross-Sectional vs. Longitudinal",
-                        prompt: "Compare and contrast longitudinal and cross-sectional research designs in lifespan developmental psychology.",
-                        essentials: `
-                            <p class="mb-2"><strong>Cross-Sectional Design:</strong> Investigates cohorts of different age groups simultaneously at a single point in time. It is highly cost-effective, rapid, and eliminates attrition, but is structurally vulnerable to <em>cohort effects</em> (differences driven by distinct cultural-generational experiences rather than aging).</p>
-                            <p class="mb-2"><strong>Longitudinal Design:</strong> Tracks and repeatedly tests the exact same cohort over an extended time. Isolates true individual development, but suffers from high attrition, high cost, practice effects (familiarity with test materials), and potential historical confounding events.</p>
-                            <h4 class="font-bold text-slate-800 mt-3 mb-1">Methodological Balance:</h4>
-                            <p class="text-xs">Advanced designs use a <em>Sequential Method</em> (cross-sequential), combining cross-sectional and longitudinal elements to structurally control for cohort effects.</p>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">📸</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">A Panorama Photo vs. A Feature Film Document</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Cross-sectional is a widescreen panoramic photo capturing children, parents, and grandparents all holding hands in the same instant. Longitudinal is a long cinematic movie following one single individual as they age from childhood to senior citizen on camera.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A study measuring internet literacy in cohorts of 20, 50, and 80-year-olds finds lower tech performance in the elderly, which is likely a cohort effect of educational history, not natural cognitive decay."
-                    },
-                    {
-                        id: "prenatal-teratogens",
-                        title: "Prenatal Stages & Teratogens",
-                        prompt: "Outline the three stages of prenatal development and detail the specific developmental impact of primary teratogenic hazards.",
-                        essentials: `
-                            <h4 class="font-bold text-slate-800 mb-1">1. Three Prenatal Epochs:</h4>
-                            <ul class="list-disc pl-5 space-y-1 text-xs mb-3">
-                                <li><strong>Germinal (0-2 Weeks):</strong> Zygotic cleavage, blastocyst formation, implantation on uterine wall.</li>
-                                <li><strong>Embryonic (3-8 Weeks):</strong> Rapid organogenesis, development of three germ layers (ectoderm, mesoderm, endoderm). High developmental vulnerability.</li>
-                                <li><strong>Fetal (9 Weeks - Birth):</strong> Cell specialization, structural growth, sensory integration, and neurological maturation.</li>
-                            </ul>
-                            <h4 class="font-bold text-slate-800 mb-1">2. Teratogens:</h4>
-                            <p class="mb-1">Environmental hazards (chemical, biological, physical) disrupting morphogenesis during organogenesis:</p>
-                            <ul class="list-disc pl-5 space-y-1 text-xs">
-                                <li><strong>Alcohol:</strong> Causes Fetal Alcohol Syndrome (FAS) - marked by facial dysmorphology, microcephaly, and cognitive deficits.</li>
-                                <li><strong>Rubella (German Measles):</strong> Triggers prenatal blindness, cardiac defects, and sensorineural hearing loss.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🏗️</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Structural Blueprint vs. Assembly Stage</h4>
-                                    <p class="text-xs text-amber-800 mt-1">The embryonic stage is when the structural steel frame of a skyscraper is welded together. If structural engineers make major errors (Teratogenic exposure) during frame assembly, the entire building collapses. During the fetal stage, structural steel is complete; errors now only affect interior decor.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "An expectant mother contracts Rubella during week 5 (embryonic period), disrupting the structural formation of the child's sensory organs and heart valves."
-                    },
-                    {
-                        id: "attachment-types",
-                        title: "Ainsworth's Attachment Types",
-                        prompt: "Describe Mary Ainsworth's Strange Situation procedure. Explain the behavioral characteristics of secure, avoidant, resistant, and disorganized attachment styles.",
-                        essentials: `
-                            <p class="mb-2"><strong>Mary Ainsworth (1978):</strong> Formulated the <em>Strange Situation Protocol</em> to evaluate how infants regulate anxiety under stress, observing separation distress, exploration, and reunion responses.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Four Attachment Classifications:</h4>
-                            <ul class="list-disc pl-5 space-y-1.5 text-xs">
-                                <li><strong>Secure (60-65%):</strong> Uses parent as a safe home base. Distressed by separation; seeks physical proximity upon reunion and is easily comforted.</li>
-                                <li><strong>Insecure-Avoidant (20%):</strong> Exhibits emotional distance. Minimally distressed by separation; actively avoids or ignores parent during reunion.</li>
-                                <li><strong>Insecure-Resistant/Ambivalent (10-15%):</strong> Highly anxious and clingy. Intensely distressed by separation; seeks contact on return but resists comfort angrily.</li>
-                                <li><strong>Disorganized/Disoriented (5%):</strong> Conflicted, fearful, or frozen responses. Strongly linked to trauma or chaotic caregiving.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🪂</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Secure Elastic Bungee vs. Broken Tethers</h4>
-                                    <p class="text-xs text-amber-800 mt-1">A secure child has an elastic bungee cord attached to the caregiver; they leap out into the world to play, knowing they will snap back safely. The avoidant child has severed the tether entirely, wandering disconnected. The resistant child's cord is tangled, keeping them stuck too close and crying in fear of falling.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A secured infant explores a room full of toys, making eye contact with their mother. When she steps out, the baby cries, but runs to her arms and calms down within 30 seconds of her return."
-                    }
-                ]
+        // Core IGNOU MPC-002 Syllabus Data Engine
+        const syllabusData = {
+            // BLOCK 1 DATA
+            b1_t1: {
+                id: "b1_t1",
+                block: "b1",
+                blockTitle: "Block 1: Introduction to Life Span Development",
+                title: "Lifespan Development: Issues & Dynamics",
+                essentials: `
+                    <p class="font-bold text-stone-900 mb-1">Theoretical Pillars (Paul Baltes):</p>
+                    <ul class="list-disc pl-5 space-y-1 mb-3">
+                        <li><strong>Lifespan Perspective:</strong> Development is continuous, lifelong, multidirectional, multidimensional, plastic, and contextually embedded.</li>
+                        <li><strong>Nature vs. Nurture Core:</strong> Analytical evaluation of genetic predisposition (nature) interacting with environmental variables (nurture).</li>
+                        <li><strong>Continuity vs. Discontinuity:</strong> Gradual, quantitative shifts (e.g., vocabulary expansion) vs. sudden, qualitative stage shifts (e.g., Piaget's conservation milestones).</li>
+                        <li><strong>Stability vs. Change:</strong> Assessment of whether baseline personality traits persist through the lifetime or reshape via neuroplasticity and environmental shifts.</li>
+                    </ul>
+                    <p class="font-bold text-stone-900 mb-1">Chronological Development Divisions Table:</p>
+                    <div class="overflow-x-auto my-2">
+                        <table class="min-w-full divide-y divide-stone-200 border text-xs bg-white">
+                            <thead class="bg-stone-100">
+                                <tr><th class="px-3 py-2 text-left font-semibold">Stage</th><th class="px-3 py-2 text-left font-semibold">Age Span</th><th class="px-3 py-2 text-left font-semibold">Primary Focus Area</th></tr>
+                            </thead>
+                            <tbody class="divide-y divide-stone-100">
+                                <tr><td class="px-3 py-2 font-medium">Prenatal Period</td><td class="px-3 py-2">Conception to Birth</td><td class="px-3 py-2">Rapid physical morphogenesis, organogenesis</td></tr>
+                                <tr><td class="px-3 py-2 font-medium">Infancy & Toddlerhood</td><td class="px-3 py-2">Birth to 2 Years</td><td class="px-3 py-2">Sensorimotor coordination, primitive language attachment</td></tr>
+                                <tr><td class="px-3 py-2 font-medium">Early Childhood</td><td class="px-3 py-2">2 to 6 Years</td><td class="px-3 py-2">Preoperational thought, peer socialization, play</td></tr>
+                                <tr><td class="px-3 py-2 font-medium">Middle Childhood</td><td class="px-3 py-2">6 to 11 Years</td><td class="px-3 py-2">Concrete logic, academic acculturation, industry</td></tr>
+                                <tr><td class="px-3 py-2 font-medium">Adolescence</td><td class="px-3 py-2">11 to 20 Years</td><td class="px-3 py-2">Pubescent biology, identity crises, abstract logic</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                `,
+                hook: "<strong>The River of Braided Currents:</strong> Picture a complex river system where some channels run straight and unchanging from source to ocean (Stability), while other channels branch out wildly or dry up over time (Multidirectional Change). Rocks in the riverbed represent hard genetic limits (Nature), while shifting rainfall dynamics and environmental banks dictate how the water flows around those rocks (Nurture).",
+                example: "A child born with an musical genetic predisposition (Nature) only displays concert-level virtuosity if provided a piano and targeted instructions during early neural developmental windows (Nurture).",
+                hasChart: false
             },
-            {
-                blockId: "b2",
-                blockTitle: "Block 2: Development During Early School Years (6-11 Years)",
-                color: "indigo",
-                topics: [
-                    {
-                        id: "motor-coordination",
-                        title: "Gross vs. Fine Motor Coordination",
-                        prompt: "Examine physical and motor development in middle childhood. Distinguish between gross and fine motor coordination, noting developmental trends.",
-                        essentials: `
-                            <p class="mb-2">During middle childhood (6-11 years), motor skills become more integrated, fluid, and specialized as cortical pathways undergo progressive myelination.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">The Physical Distinction:</h4>
-                            <ul class="list-disc pl-5 space-y-2 text-xs">
-                                <li><strong>Gross Motor Skills:</strong> Involve large, structural muscle systems (torso, limbs) supporting locomotion, jumping, and balance. Governed by phylogenetically older subcortical systems and vestibulospinal circuits.</li>
-                                <li><strong>Fine Motor Skills:</strong> Require precise, localized manipulation of small muscle systems (fingers, thumbs, wrists). Dependent on the corticospinal tract, cortical representation, visual-motor feedback loops, and cerebellar refinement.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🏗️</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Heavy Excavator vs. The Watchmaker's Screwdriver</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Gross motor skills operate like a heavy excavator arm, shifting big loads and clearing space with broad movements. Fine motor skills operate like a watchmaker's tweezers, carefully adjusting miniature gears under magnification with micro-precision.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "An 8-year-old child sprints across a field to intercept a soccer ball (gross motor), then sits down and meticulously threads a tiny sewing needle (fine motor)."
-                    },
-                    {
-                        id: "piaget-concrete",
-                        title: "Piaget's Concrete Operations",
-                        prompt: "Detail the critical achievements of Piaget's Concrete Operational Stage. Critically discuss cognitive milestones like conservation and decentration.",
-                        essentials: `
-                            <p class="mb-2"><strong>Concrete Operational Stage (7-11 Years):</strong> Marked by a transition from intuitive, perception-bound pre-operational thinking to systematic, logical operations, but only when applied to physical, concrete objects.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Critical Cognitive Milestones:</h4>
-                            <ul class="list-disc pl-5 space-y-1 text-xs">
-                                <li><strong>Decentration:</strong> The cognitive ability to analyze multiple dimensions of a situation simultaneously (rather than centering on a single focal element).</li>
-                                <li><strong>Conservation:</strong> The logical understanding that physical properties (volume, mass, number) remain unchanged despite changes in outward appearance or container shape.</li>
-                                <li><strong>Reversibility:</strong> Mental capacity to reverse a sequence of operations back to its starting state.</li>
-                                <li><strong>Seriation:</strong> The capacity to arrange elements quantitatively along physical dimensions (e.g., length, weight).</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">⚖️</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Dual Balancing Scale</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Pre-operational thinking is like looking only at how high a glass of water is. Concrete operational thinking is like a balancing scale: it weighs height against width simultaneously (decentration), realizing that when liquid goes up, width goes down, conserving total volume.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A 9-year-old realizes that flattening a clay ball into a pancake doesn't change the amount of clay, explaining: 'You just made it flatter, but it's still the same amount of clay.' (Conservation and Reversibility)."
-                    },
-                    {
-                        id: "kohlberg-morality",
-                        title: "Kohlberg's Moral Development",
-                        prompt: "Explain Lawrence Kohlberg's theory of moral development. Outline the stages and discuss empirical criticisms of the model.",
-                        essentials: `
-                            <p class="mb-2"><strong>Lawrence Kohlberg (1958):</strong> Proposed that moral development advances through structural stages, evaluated via cognitive responses to moral dilemmas (e.g., the Heinz Dilemma).</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Three Developmental Levels (6 Stages):</h4>
-                            <ul class="list-disc pl-5 space-y-1.5 text-xs">
-                                <li><strong>Pre-Conventional:</strong> Morality is externally controlled.
-                                    <br><em>Stage 1:</em> Obedience-Punishment orientation. 
-                                    <br><em>Stage 2:</em> Instrumental Relativist (self-interest).
-                                </li>
-                                <li><strong>Conventional:</strong> Focus on social relationships and legal maintenance.
-                                    <br><em>Stage 3:</em> Interpersonal Concordance (good boy/girl).
-                                    <br><em>Stage 4:</em> Authority and social-order maintaining orientation.
-                                </li>
-                                <li><strong>Post-Conventional:</strong> Principles abstractly chosen, surpassing legal frameworks.
-                                    <br><em>Stage 5:</em> Social Contract.
-                                    <br><em>Stage 6:</em> Universal Ethical Principles.
-                                </li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🛡️</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Multi-Layered Safety Shield</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Level 1 (Pre-con) is an outer shield protecting you from physical blows (punishment). Level 2 (Conventional) is a mirror reflecting the expectations of surrounding observers (social norms). Level 3 (Post-con) is an inner compass guide directing your steps regardless of the landscape's laws.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "An individual refrains from speeding not out of fear of a traffic ticket (Stage 1) or to look like a good citizen (Stage 3), but because of a moral social contract to keep others safe (Stage 5).",
-                        hasChart: "kohlberg"
-                    },
-                    {
-                        id: "learning-disabilities",
-                        title: "Learning Disabilities & ADHD",
-                        prompt: "Define learning disabilities. Discuss clinical manifestations of Dyslexia and ADHD in early school-aged children.",
-                        essentials: `
-                            <p class="mb-2"><strong>Learning Disabilities (LD):</strong> Neurodevelopmental impairments displaying a stark discrepancy between cognitive potential and actual academic achievement in reading, writing, or mathematics.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Key Manifestations:</h4>
-                            <ul class="list-disc pl-5 space-y-1.5 text-xs">
-                                <li><strong>Dyslexia:</strong> A phonological deficit resulting in profound reading difficulties, word decoding errors, and spelling challenges.</li>
-                                <li><strong>Dyscalculia:</strong> Deficit in processing basic numerical concepts, spatial math operations, and arithmetic fluency.</li>
-                                <li><strong>ADHD:</strong> Persistent patterns of inattention, hyperactivity, and/or impulsivity, linked to developmental delays in the prefrontal cortex's executive control circuits.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">📻</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">Signal Static vs. Route Divergence</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Dyslexia is like a visual routing delay where written words must take a detour to reach the brain's audio processor. ADHD is background radio static—so loud and distracting that the brain's executive control struggles to tune into any single instruction.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A 7-year-old child with average intelligence struggles to decode simple words, often substituting or reversing letters, indicating Dyslexia."
-                    }
-                ]
-            },
-            {
-                blockId: "b3",
-                blockTitle: "Block 3: Development During Adolescence",
-                color: "amber",
-                topics: [
-                    {
-                        id: "adolescent-puberty",
-                        title: "Physical & Pubertal Milestones",
-                        prompt: "Elaborate on the physiological mechanisms behind pubertal changes during adolescence, noting differences in early vs late maturation.",
-                        essentials: `
-                            <p class="mb-2"><strong>Endocrine System Activation:</strong> Puberty is initiated by the reactivation of the HPG (Hypothalamic-Pituitary-Gonadal) axis. GnRH triggers release of LH and FSH, stimulating estrogen and androgen secretion.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Developmental Markers:</h4>
-                            <ul class="list-disc pl-5 space-y-1 text-xs">
-                                <li><strong>Primary Sex Characteristics:</strong> Direct reproductive development (ovaries, uterus, testes, seminal vesicles).</li>
-                                <li><strong>Secondary Sex Characteristics:</strong> Outward markers of physiological development (breast growth, pubic hair, voice register drops).</li>
-                                <li><strong>Growth Spurt:</strong> Sudden, hormone-mediated increases in stature, muscle mass, and skeletal structure.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🧪</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Automated Biological Chassis Rewrite</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Adolescence is like a sudden, pre-programmed system update. Chemical triggers release new endocrine code that rewrites the system's architecture, altering fuel needs, speed limits, and structural styling overnight.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "An adolescent boy experiences a sudden 4-inch skeletal growth spurt alongside vocal cord thickening and acne within a single year."
-                    },
-                    {
-                        id: "adolescent-egocentrism",
-                        title: "Elkind's Adolescent Egocentrism",
-                        prompt: "Critically analyze David Elkind's concept of adolescent egocentrism, explaining the terms Imaginary Audience and Personal Fable.",
-                        essentials: `
-                            <p class="mb-2"><strong>David Elkind (1967):</strong> Described adolescent egocentrism as a cognitive distortion arising from newly developing formal operations. The adolescent can conceptualize others' thoughts, but struggles to distinguish between their own preoccupations and others'.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Two Primary Constructs:</h4>
-                            <ul class="list-disc pl-5 space-y-1.5 text-xs">
-                                <li><strong>Imaginary Audience:</strong> The strong belief that others are as constantly focused on one's appearance, behavior, and flaws as one is oneself. Leads to high self-consciousness and conforming behavior.</li>
-                                <li><strong>Personal Fable:</strong> An illusion of personal uniqueness, invulnerability, and isolation (e.g., 'No one has ever understood pain like mine') and risky behaviors based on the belief that rules of nature do not apply to them.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🎭</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Spotlight and the Bulletproof Vest</h4>
-                                    <p class="text-xs text-amber-800 mt-1">The Imaginary Audience is carrying a persistent theater spotlight that you believe illuminates every physical flaw for observers. The Personal Fable is wearing an invisible bulletproof vest, making you believe you can jump off a cliff and land unharmed.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A teenage girl refuses to attend class due to a small, unnoticeable stain on her skirt (Imaginary Audience), while her brother rides a motorcycle without a helmet, convinced he is invulnerable (Personal Fable)."
-                    },
-                    {
-                        id: "marcia-identity",
-                        title: "James Marcia's Identity Statuses",
-                        prompt: "Explain James Marcia's 4 identity statuses during adolescence. Discuss how they build on Erikson's developmental stage theory.",
-                        essentials: `
-                            <p class="mb-2"><strong>James Marcia (1966):</strong> Operationalized Erikson's developmental stage of <em>Identity vs. Role Confusion</em>, categorizing adolescent identity status along two key axes: **Exploration (Crisis)** and **Commitment**.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Four Distinct Statuses:</h4>
-                            <ul class="list-disc pl-5 space-y-2 text-xs">
-                                <li><strong>Identity Achievement:</strong> High Exploration & High Commitment. Has explored alternatives and actively made career/moral choices.</li>
-                                <li><strong>Identity Moratorium:</strong> High Exploration & Low Commitment. Currently undergoing developmental crisis, actively searching for answers.</li>
-                                <li><strong>Identity Foreclosure:</strong> Low Exploration & High Commitment. Rigidly accepted parental or cultural values without personal exploration.</li>
-                                <li><strong>Identity Diffusion:</strong> Low Exploration & Low Commitment. Directionless, uncommitted to choices, and avoiding active search.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🧭</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The GPS Navigation Statuses</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Achievement is mapping routes, driving, and arriving at your chosen destination. Moratorium is actively scrolling through live maps to pick a route. Foreclosure is letting your parents drive you to a destination they chose for you. Diffusion is drifting in neutral in an empty parking lot, ignoring the GPS entirely.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A college senior chooses a career in ecology after testing multiple majors (Achievement) vs doing pre-med solely because their parents are doctors without searching alternatives (Foreclosure).",
-                        hasChart: "marcia"
-                    },
-                    {
-                        id: "high-risk-coping",
-                        title: "High-Risk Behaviors & Coping",
-                        prompt: "Discuss developmental reasons for high-risk behaviors in adolescence. Contrast emotion-focused and problem-focused coping mechanisms.",
-                        essentials: `
-                            <p class="mb-2"><strong>Neurological Vulnerability:</strong> Adolescent risk-taking is driven by an asynchronous maturation rate between the limbic system (which processes socio-emotional rewards rapidly under hormonal surges) and the prefrontal cortex (which regulates executive control, planning, and risk assessment and matures later, into the mid-twenties).</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Dual Coping Modalities (Lazarus & Folkman):</h4>
-                            <ul class="list-disc pl-5 space-y-1.5 text-xs">
-                                <li><strong>Problem-Focused Coping:</strong> Direct cognitive or behavioral efforts to alter, remove, or manage the environmental stressor itself. Highly adaptive in controllable situations.</li>
-                                <li><strong>Emotion-Focused Coping:</strong> Strategies aiming to regulate the emotional distress associated with stressors (e.g., reframing, mindfulness, or maladaptive avoidance/denial).</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🏎️</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">A Turbo V8 Engine with Weak Bicycle Brakes</h4>
-                                    <p class="text-xs text-amber-800 mt-1">The adolescent brain is like a powerful racecar engine running on high-octane hormonal fuel (limbic reward seeking), but relying on small bicycle brakes (undeveloped prefrontal executive control) to navigate tricky turns.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "An adolescent struggles with school anxiety, choosing to skip classes (maladaptive emotion-focused) instead of asking their teacher for a study guide (problem-focused coping)."
-                    }
-                ]
-            },
-            {
-                blockId: "b4",
-                blockTitle: "Block 4: Adulthood and Ageing",
-                color: "teal",
-                topics: [
-                    {
-                        id: "levinson-seasons",
-                        title: "Levinson's Seasons of Life",
-                        prompt: "Outline Daniel Levinson's Seasons of Life theory, focusing on the concepts of life structure and the midlife transition.",
-                        essentials: `
-                            <p class="mb-2"><strong>Daniel Levinson (1978):</strong> Proposed a stage theory centered on the evolution of an individual's <em>Life Structure</em>—the underlying design or pattern of a person's life at any given period, primarily shaped by relationships, career, and family.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Key Developmental Epochs:</h4>
-                            <ul class="list-disc pl-5 space-y-1 text-xs">
-                                <li><strong>Early Adult Transition (17-22):</strong> Constructing 'The Dream' (aspirational future self-image) and leaving childhood dependence behind.</li>
-                                <li><strong>Entering the Adult World (22-28):</strong> Creating first adult lifestyle, balancing choices with exploratory freedoms.</li>
-                                <li><strong>Settling Down (33-40):</strong> Anchoring oneself in career, family, and community roles.</li>
-                                <li><strong>Midlife Transition (40-45):</strong> A systematic, often disruptive re-evaluation of accomplishments, priorities, and mortality, occasionally leading to structural life redesigns.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">🗼</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Architectural Blueprint Refit</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Levinson's model is like constructing a tower. Early adulthood is laying the foundation and framing the rooms based on initial designs. Midlife is stopping construction to inspect structural integrity, deciding to tear down weak walls and refit layouts for subsequent decades.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A 42-year-old corporate lawyer steps away from their partnership to manage a rural community conservation program, seeking alignment with personal values during their midlife transition."
-                    },
-                    {
-                        id: "fluid-crystallized",
-                        title: "Fluid vs. Crystallized Intelligence",
-                        prompt: "Compare and contrast Raymond Cattell's concepts of fluid and crystallized intelligence, tracking their trajectories across adulthood.",
-                        essentials: `
-                            <p class="mb-2"><strong>Raymond Cattell (1963):</strong> Proposed a two-factor theory of intelligence to explain distinct patterns of cognitive changes during adulthood.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">The Cognitive Components:</h4>
-                            <ul class="list-disc pl-5 space-y-1.5 text-xs">
-                                <li><strong>Fluid Intelligence (Gf):</strong> Fundamental neurodevelopmental reasoning capacities. Includes spatial orientation, processing speed, working memory capacity, and abstract problem-solving. It peaks in late adolescence and declines steadily beginning in early adulthood due to cellular brain senescence.</li>
-                                <li><strong>Crystallized Intelligence (Gc):</strong> The accumulation of knowledge, vocabulary, and semantic concepts acquired through education, culture, and life experience. It remains stable or increases throughout middle and late adulthood.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">⌛</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The CPU Speed vs. The Storage Drive</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Fluid intelligence is the clock speed of your computer's CPU; it processes new mathematical calculations quickly. Crystallized intelligence is the massive storage hard drive; even if the processor clock speed slows down, the database grows larger and more organized over time.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A 70-year-old lawyer takes longer to master a new legal software interface (decline in Gf) but writes a nuanced, highly complex legal defense using vocabulary and precedents they built over 40 years of practice (retention of Gc)."
-                    },
-                    {
-                        id: "integrity-despair",
-                        title: "Erikson's Integrity vs. Despair",
-                        prompt: "Elaborate on Erik Erikson's final stage of psychosocial development: Ego Integrity vs. Despair, highlighting the virtue of wisdom.",
-                        essentials: `
-                            <p class="mb-2"><strong>Erik Erikson (1950):</strong> The eighth and final stage of psychosocial development occurs in late adulthood (65+), focusing on life review and acceptance of one's unique developmental path.</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">The Psychosocial Crisis:</h4>
-                            <ul class="list-disc pl-5 space-y-1 text-xs">
-                                <li><strong>Ego Integrity:</strong> The cognitive and emotional integration of one's life as satisfying and meaningful, accepting both successes and failures. Results in the core virtue of <em>Wisdom</em> and a peaceful perspective on mortality.</li>
-                                <li><strong>Despair:</strong> A state of regret, bitterness, and anger over missed opportunities, leading to the feeling that life has been wasted, accompanied by a profound fear of death.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">📖</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">The Final Audit of the Ledger</h4>
-                                    <p class="text-xs text-amber-800 mt-1">At the end of business, you review your company ledger. Integrity is accepting the reconciled balance sheet, acknowledging both losses and profits with a smile. Despair is looking at a ledger full of uncorrected mistakes, knowing the business is closing and you have run out of time to fix them.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "An elderly artist smiles while browsing their catalog of simple works, accepting their flaws and valuing their relationships (Integrity), while another individual spends their days blaming others for their lost potential (Despair)."
-                    },
-                    {
-                        id: "challenges-ageing",
-                        title: "Challenges of Ageing & Retirement",
-                        prompt: "Examine physical, cognitive, and psychosocial adjustments required during late adulthood, with a focus on retirement adjustments.",
-                        essentials: `
-                            <p class="mb-2">Late adulthood involves adaptation to systemic physical changes (senescence, joint issues, sensory decline) and structural social transitions (loss of occupational roles, shifting social circles).</p>
-                            <h4 class="font-bold text-slate-800 mt-2 mb-1">Key Adjustment Domains:</h4>
-                            <ul class="list-disc pl-5 space-y-1.5 text-xs">
-                                <li><strong>Primary vs. Secondary Ageing:</strong> Primary is genetically-timed universal senescence; secondary is age-associated changes accelerated by disease or environment.</li>
-                                <li><strong>Retirement Dynamics:</strong> Shifting from an occupation-centric identity to a leisure/family identity. Adjustments depend on financial stability, physical health, and self-chosen transition plans.</li>
-                                <li><strong>Social Convoy Model:</strong> The evolving, supportive network of close relationships that cushions older individuals against isolation.</li>
-                            </ul>
-                        `,
-                        hook: `
-                            <div class="flex items-start gap-4">
-                                <div class="text-3xl">⛲</div>
-                                <div>
-                                    <h4 class="font-bold text-amber-900">Step Down from the Stage to the Garden</h4>
-                                    <p class="text-xs text-amber-800 mt-1">Retirement is like stepping off a busy public performance stage to focus on cultivating your own garden. It requires learning to value the quiet growth of flowers after years of measuring your worth by the volume of public applause.</p>
-                                </div>
-                            </div>
-                        `,
-                        example: "A retired clinical director initially feels a sense of identity loss, but successfully adapts by volunteering as a community museum guide, finding a new avenue for social connection."
-                    }
-                ]
-            }
-        ];
-
-        // Global active state management
-        let currentTopic = null;
-        let globalRevealMode = false;
-        let activeChart = null; // Chart.js instance holder
-
-        // Load mastery states from localStorage or initialize empty object
-        const masteryStorageKey = "mpc002_mastery_states_v2";
-        let masteryStates = JSON.parse(localStorage.getItem(masteryStorageKey)) || {};
-
-        // API Configuration (Standard endpoints)
-        const modelName = 'gemini-3-flash-preview';
-
-        // Custom alert helper mimicking user notification style gracefully
-        function showNotification(text, type = "info") {
-            const container = document.getElementById("toast-container");
-            const toast = document.createElement("div");
-            toast.className = `p-3 rounded-xl shadow-lg border text-xs font-semibold flex items-center justify-between gap-3 min-w-[240px] transition-all duration-300 transform translate-y-2 opacity-0`;
-            
-            if (type === "success") {
-                toast.classList.add("bg-emerald-50", "border-emerald-200", "text-emerald-800");
-            } else if (type === "error") {
-                toast.classList.add("bg-rose-50", "border-rose-200", "text-rose-800");
-            } else {
-                toast.classList.add("bg-indigo-50", "border-indigo-200", "text-indigo-800");
-            }
-
-            toast.innerHTML = `
-                <span>${text}</span>
-                <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 font-bold">&times;</button>
-            `;
-
-            container.appendChild(toast);
-            
-            // Trigger animation frame
-            setTimeout(() => {
-                toast.classList.remove("translate-y-2", "opacity-0");
-            }, 10);
-
-            // Auto-dismiss
-            setTimeout(() => {
-                toast.classList.add("translate-y-2", "opacity-0");
-                setTimeout(() => toast.remove(), 300);
-            }, 4000);
-        }
-
-        window.onload = function() {
-            renderSyllabusAccordion();
-            updateMasteryTracker();
-            
-            // Set up Global Reveal Button behavior
-            document.getElementById("global-reveal-btn").onclick = function() {
-                globalRevealMode = !globalRevealMode;
-                const covers = ["cover-essentials", "cover-hook", "cover-example"];
-                
-                if (globalRevealMode) {
-                    covers.forEach(c => {
-                        const el = document.getElementById(c);
-                        if (el) el.classList.add("hidden");
-                    });
-                    this.innerHTML = "<span>🔒 Re-lock Covers</span>";
-                    this.classList.replace("bg-white", "bg-slate-200");
-                } else {
-                    covers.forEach(c => {
-                        const el = document.getElementById(c);
-                        if (el) el.classList.remove("hidden");
-                    });
-                    this.innerHTML = "<span>💡 Force Reveal All</span>";
-                    this.classList.replace("bg-slate-200", "bg-white");
+            b1_t2: {
+                id: "b1_t2",
+                block: "b1",
+                blockTitle: "Block 1: Introduction to Life Span Development",
+                title: "Research Designs in Lifespan Studies",
+                essentials: `
+                    <p class="font-bold text-stone-900 mb-1">Methodological Classifications:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Cross-Sectional Design:</strong> Investigates cohorts of varying age boundaries simultaneously at a single timeline vector. Key risk: <em>Cohort Effects</em> (confounding cultural or historical shifts with true chronological age development).</li>
+                        <li><strong>Longitudinal Design:</strong> Tracks a singular, designated cohort group across multiple sequential timeline checkpoints. Key risks: Attrition bias, high budget overhead, and re-testing familiarity effects.</li>
+                        <li><strong>Sequential Design:</strong> The golden standard hybrid format. Integrates cross-sectional and longitudinal axes concurrently to parse apart chronological maturation variables from unique generational cohort historical influences.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Film Strip vs. The Panoramic Snapshot:</strong> A cross-sectional design is a single wide-angle group panoramic photo taken today, capturing individuals of all ages in one frozen moment. A longitudinal design is tracking a single individual over a lifetime by stitching together continuous frames of a single movie reel.",
+                example: "Testing the fluid intelligence of 20, 40, and 60-year-olds in 2026. A cross-sectional design shows a massive drop at age 60, but this is an artifact of the 60-year-old cohort having had less access to early digital literacy, rather than actual physiological cognitive decay.",
+                hasChart: true,
+                chartType: 'crossLong',
+                chartData: {
+                    labels: ['Age 20', 'Age 40', 'Age 60'],
+                    datasets: [
+                        { label: 'Cross-Sectional Trend (Confounded)', data: [90, 75, 50], borderColor: '#b91c1c', backgroundColor: 'transparent', borderDash: [5, 5] },
+                        { label: 'True Longitudinal Trajectory', data: [90, 88, 82], borderColor: '#15803d', backgroundColor: 'transparent' }
+                    ]
                 }
-            };
+            },
 
-            // Set up Exam Generator Button
-            document.getElementById("generate-exam-btn").onclick = function() {
-                if (!currentTopic) return;
-                showExamModal(currentTopic);
-            };
+            // BLOCK 2 DATA
+            b2_t1: {
+                id: "b2_t1",
+                block: "b2",
+                blockTitle: "Block 2: Development During Infancy & Early Childhood",
+                title: "Piaget's Cognitive Milestones (Infancy-Early Childhood)",
+                essentials: `
+                    <p class="font-bold text-stone-900 mb-1">1. Sensorimotor Stage (Birth to 2 Years):</p>
+                    <ul class="list-disc pl-5 space-y-0.5 mb-2">
+                        <li>Substages progress from basic instinctual reflex schemas to purposeful mental representations.</li>
+                        <li><strong>Object Permanence:</strong> The critical cognitive threshold where an infant understands objects exist independently of direct sensory track line-of-sight.</li>
+                    </ul>
+                    <p class="font-bold text-stone-900 mb-1">2. Preoperational Stage (2 to 7 Years):</p>
+                    <ul class="list-disc pl-5 space-y-0.5">
+                        <li><strong>Egocentrism:</strong> Fundamental inability to calculate spatial or psychological frames of reference from any alternative viewpoint (exemplified via the 3-Mountain Task).</li>
+                        <li><strong>Centration:</strong> Tendency to focus entirely on one salient physical attribute of an object while ignoring other structurally critical dimensions.</li>
+                        <li><strong>Lack of Conservation:</strong> Failure to recognize that physical mass, volume, or quantity remains unchanged despite superficial shifts in packaging configurations.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Blindered Spotlight:</strong> The preoperational mind acts like a fixed theatrical spotlight with an incredibly narrow beam. It shines fiercely on one feature—such as the height of the juice in a glass (Centration)—leaving the width of the glass completely hidden in pitch darkness.",
+                example: "A 4-year-old cries because their sibling got two pieces of broken cookie, believing two small broken pieces constitute more actual cookie volume than their single, unbroken giant piece.",
+                hasChart: false
+            },
+            b2_t2: {
+                id: "b2_t2",
+                block: "b2",
+                blockTitle: "Block 2: Development During Infancy & Early Childhood",
+                title: "Attachment Matrix (Bowlby & Ainsworth)",
+                essentials: `
+                    <p class="font-bold text-stone-900 mb-1">Core Theoretical Architecture:</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>John Bowlby's Ethological Foundation:</strong> Attachment is an evolutionary survival program designed to maintain proximity to an absolute protective caregiver (Secure Base).</li>
+                        <li><strong>Mary Ainsworth's Strange Situation Paradigm:</strong> A structured clinical lab procedure tracking an infant's behavioral responses across separation and reunion cycles.</li>
+                        <li><strong>Attachment Typologies:</strong>
+                            <br>1. <em>Secure:</em> Distressed by separation; comforted rapidly upon reunion.
+                            <br>2. <em>Insecure-Anxious/Ambivalent:</em> Highly distressed; shows anger and resistance during reunion.
+                            <br>3. <em>Insecure-Avoidant:</em> Displays artificial calmness; ignores caregiver upon reunion.
+                        </ul>
+                `,
+                hook: "<strong>The Thermal Regulatory Thermostat:</strong> Secure attachment functions like a perfectly calibrated smart thermostat. When a threat enters the room, the child's anxiety system activates and triggers immediate proximity seeking. Once the mother steps back in, the system registers safety, shuts off the anxiety loop, and re-engages normal exploratory behaviors.",
+                example: "A securely attached toddler crawls off to explore a room full of new toys, looking back periodically to establish eye contact with their parent to confirm the secure base is intact.",
+                hasChart: true,
+                chartType: 'attachmentDist',
+                chartData: {
+                    labels: ['Secure', 'Insecure-Avoidant', 'Insecure-Ambivalent', 'Disorganized'],
+                    datasets: [{
+                        label: 'Standard Population Distribution (%)',
+                        data: [65, 20, 10, 5],
+                        backgroundColor: ['#15803d', '#a16207', '#b91c1c', '#4a4a4a']
+                    }]
+                }
+            },
 
-            // Count words in essay grader real-time
-            document.getElementById("essay-text-area").addEventListener("input", function() {
-                const words = this.value.trim().split(/\s+/).filter(w => w.length > 0).length;
-                document.getElementById("essay-word-count").innerText = `${words} Words (Suggested: 300+)`;
-            });
+            // BLOCK 3 DATA
+            b3_t1: {
+                id: "b3_t1",
+                block: "b3",
+                blockTitle: "Block 3: Middle Childhood & Adolescence",
+                title: "Piaget: Concrete Operational Stage",
+                essentials: `
+                    <p class="font-bold text-stone-900 mb-1">Key Cognitive Acquisitions (Ages 7 to 11):</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Conservation Realization:</strong> Complete mastery of identity ($A=A$), compensation (height balances width), and reversibility ($2+3=5 \implies 5-3=2$).</li>
+                        <li><strong>Decentering:</strong> The capacity to evaluate multiple dimensions of a physical problem simultaneously.</li>
+                        <li><strong>Seriation:</strong> The operational capacity to mentally order items along a quantitative scale (e.g., sorting sticks systematically by length gradients).</li>
+                        <li><strong>Transitivity:</strong> The execution of logical relations ($A > B$ and $B > C \implies A > C$).</li>
+                    </ul>
+                `,
+                hook: "<strong>The Mental Undo Button:</strong> The concrete operational child has installed a cognitive 'Ctrl+Z' function in their brain. When they see juice poured from a short wide glass into a tall thin glass, they mentally hit 'Undo' and reverse the action back to verify the volume is identical.",
+                example: "An 8-year-old child confidently explains that flattening a ball of clay into a pancake shape does not add clay, because you can simply roll it right back into a ball.",
+                hasChart: false
+            },
+            b3_t2: {
+                id: "b3_t2",
+                block: "b3",
+                blockTitle: "Block 3: Middle Childhood & Adolescence",
+                title: "Identity Status Model (James Marcia)",
+                essentials: `
+                    <p class="font-bold text-stone-900 mb-1">Theoretical Taxonomy Matrix:</p>
+                    <p class="text-xs mb-2">Marcia operationalized Erikson's Identity vs. Role Confusion stage into 4 clear quadrants based on two axes: <strong>Crisis (Exploration)</strong> and <strong>Commitment</strong>.</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Identity Achievement:</strong> High Exploration + High Commitment. (Has experienced a self-directed crisis and established stable values).</li>
+                        <li><strong>Identity Moratorium:</strong> High Exploration + Low Commitment. (Currently in active, ongoing structural exploration; state of crisis).</li>
+                        <li><strong>Identity Foreclosure:</strong> Low Exploration + High Commitment. (Blind acceptance of parentally scripted values without personal verification).</li>
+                        <li><strong>Identity Diffusion:</strong> Low Exploration + Low Commitment. (Apathetic, fragmented drift with zero interest in defining goals).</li>
+                    </ul>
+                `,
+                hook: "<strong>The Career Real Estate Market:</strong> Foreclosure is buying the very first house your parents tell you to buy without looking around. Diffusion is drifting aimlessly between hotels without wanting a permanent home. Moratorium is touring open houses every weekend trying to figure out what fits. Achievement is signing the deed on a house after assessing multiple options.",
+                example: "A college freshman changes majors four times within a year to find their true fit (Moratorium), while their peer studies medicine solely because three generations of their family were doctors (Foreclosure).",
+                hasChart: true,
+                chartType: 'marciaMatrix',
+                chartData: {
+                    labels: ['Identity Diffusion', 'Identity Foreclosure', 'Identity Moratorium', 'Identity Achievement'],
+                    datasets: [
+                        { label: 'Exploration Level', data: [1, 1, 5, 5], backgroundColor: 'rgba(185, 28, 28, 0.7)' },
+                        { label: 'Commitment Level', data: [1, 5, 1, 5], backgroundColor: 'rgba(21, 128, 61, 0.7)' }
+                    ]
+                }
+            },
+
+            // BLOCK 4 DATA
+            b4_t1: {
+                id: "b4_t1",
+                block: "b4",
+                blockTitle: "Block 4: Adulthood & Aging",
+                title: "Cognitive Paradigms in Adulthood",
+                essentials: `
+                    <p class="font-bold text-stone-900 mb-1">Psychological Bifurcation of Intelligence (Cattell & Horn):</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li><strong>Fluid Intelligence ($G_f$):</strong> Pure neurological neuroprocessing speed, working memory limits, spatial manipulation abilities, and abstract inductive reasoning. Completely independent of educational background. Peaks in early adulthood and exhibits steady physiological decline.</li>
+                        <li><strong>Crystallized Intelligence ($G_c$):</strong> Accumulated structural knowledge repositories, specialized professional expertise, mechanical skills, and cultural/vocabulary mastery. Continues to expand across middle-to-late adulthood via environmental exposure.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Computer Hardware vs. Software Analogy:</strong> Fluid intelligence is your raw CPU processing speed and RAM capacity. Crystallized intelligence is the massive, deep, and stable database of specialized software applications installed on the system over a lifetime of use.",
+                example: "A 25-year-old software engineer solves an unfamiliar, highly complex algorithmic logic puzzle faster than their 60-year-old manager ($G_f$), but the 60-year-old manager accurately predicts a catastrophic structural project failure based on decades of complex enterprise case histories ($G_c$).",
+                hasChart: true,
+                chartType: 'intelligenceTrajectories',
+                chartData: {
+                    labels: ['Age 20', 'Age 35', 'Age 50', 'Age 65', 'Age 80'],
+                    datasets: [
+                        { label: 'Fluid Intelligence (Gf)', data: [95, 85, 70, 50, 30], borderColor: '#b91c1c', backgroundColor: 'transparent' },
+                        { label: 'Crystallized Intelligence (Gc)', data: [60, 80, 90, 95, 92], borderColor: '#15803d', backgroundColor: 'transparent' }
+                    ]
+                }
+            },
+            b4_t2: {
+                id: "b4_t2",
+                block: "b4",
+                blockTitle: "Block 4: Adulthood & Aging",
+                title: "Socioemotional Selectivity & Aging Theories",
+                essentials: `
+                    <p class="font-bold text-stone-900 mb-1">Socioemotional Selectivity Theory (Laura Carstensen):</p>
+                    <ul class="list-disc pl-5 space-y-1">
+                        <li>Aging triggers a fundamental cognitive calibration of remaining lifespan time horizons.</li>
+                        <li>When time horizons are perceived as wide open (youth), individuals prioritize future-oriented, informational, and networking social vectors.</li>
+                        <li>When time horizons are perceived as limited (old age), individuals shift strategies to optimize current-moment emotional meaning, shedding superficial ties to focus on high-depth, high-satisfaction intimate relationships.</li>
+                    </ul>
+                `,
+                hook: "<strong>The Contact List Filtering:</strong> Youth is like building a massive public social network account, adding thousands of casual connections to gather data. Aging is like turning that account completely private, systematically deleting acquaintances, and keeping only a 5-person close family group-chat to protect emotional wellness.",
+                example: "An 80-year-old grandmother refuses to attend an international industry networking banquet, choosing instead to spend the weekend telling ancestral stories to her immediate grandchildren.",
+                hasChart: false
+            }
         };
 
-        function renderSyllabusAccordion() {
-            const container = document.getElementById("syllabus-accordion");
-            container.innerHTML = "";
+        // UI View State tracking
+        let activeBlockFilter = 'all';
+        let currentChartInstance = null;
 
-            CURRICULUM_DATA.forEach(block => {
-                const blockDiv = document.createElement("div");
-                blockDiv.className = "border border-stone-200 rounded-xl bg-white overflow-hidden shadow-sm";
+        // Initialize App on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderTopicMenu();
+        });
 
-                // Block header element
-                const header = document.createElement("button");
-                header.className = `w-full text-left px-4 py-3 bg-stone-50 font-bold text-xs uppercase tracking-wider text-slate-700 flex justify-between items-center border-b border-stone-100 hover:bg-stone-100 transition`;
-                header.innerHTML = `
-                    <span>${block.blockTitle}</span>
-                    <span class="text-stone-400 font-normal text-[10px]">▼</span>
-                `;
-                
-                const topicsContainer = document.createElement("div");
-                topicsContainer.className = "p-2 space-y-1.5";
-
-                // Loop topics and construct indicators
-                block.topics.forEach(topic => {
-                    const topicBtn = document.createElement("button");
-                    topicBtn.setAttribute("data-topic-id", topic.id);
-                    
-                    const status = masteryStates[topic.id] || "untested";
-                    let borderClass = "border-stone-100";
-                    let bgDotClass = "bg-stone-300";
-
-                    if (status === "easy") { borderClass = "border-emerald-300 bg-emerald-50/20"; bgDotClass = "bg-emerald-500"; }
-                    else if (status === "hard") { borderClass = "border-amber-300 bg-amber-50/20"; bgDotClass = "bg-amber-500"; }
-                    else if (status === "fail") { borderClass = "border-rose-300 bg-rose-50/20"; bgDotClass = "bg-rose-500"; }
-
-                    topicBtn.className = `w-full text-left px-3 py-2.5 text-xs font-semibold rounded-lg border ${borderClass} hover:bg-slate-50 transition active:scale-[0.98] flex items-center justify-between gap-2`;
-                    topicBtn.innerHTML = `
-                        <span class="truncate text-slate-800">${topic.title}</span>
-                        <span class="w-2.5 h-2.5 rounded-full ${bgDotClass} shrink-0"></span>
-                    `;
-                    
-                    topicBtn.onclick = () => selectTopic(topic, block);
-                    topicsContainer.appendChild(topicBtn);
-                });
-
-                blockDiv.appendChild(header);
-                blockDiv.appendChild(topicsContainer);
-                container.appendChild(blockDiv);
-            });
-        }
-
-        function selectTopic(topic, block) {
-            currentTopic = topic;
+        // Filter View Routing Controller
+        function switchBlock(blockId) {
+            activeBlockFilter = blockId;
             
-            // Show workspace, hide welcome
-            document.getElementById("welcome-card").classList.add("hidden");
-            const workspace = document.getElementById("workspace-card");
-            workspace.classList.remove("hidden");
-            
-            // Set Titles and indicators
-            document.getElementById("workspace-block-title").innerText = block.blockTitle;
-            document.getElementById("workspace-topic-title").innerText = topic.title;
-            
-            const stripe = document.getElementById("block-indicator-stripe");
-            stripe.className = `absolute top-0 left-0 w-1.5 h-full bg-slate-900`;
-            if (block.color === "emerald") stripe.classList.add("bg-emerald-600");
-            else if (block.color === "indigo") stripe.classList.add("bg-indigo-600");
-            else if (block.color === "amber") stripe.classList.add("bg-amber-600");
-            else if (block.color === "teal") stripe.classList.add("bg-teal-600");
-
-            // Reset manual fields content
-            document.getElementById("content-essentials").innerHTML = topic.essentials;
-            document.getElementById("content-hook").innerHTML = topic.hook;
-            document.getElementById("content-example").innerText = topic.example;
-            
-            // Load contextual simulated question
-            document.getElementById("exam-prompt-text").innerText = topic.prompt;
-
-            // Reset covers (respecting global reveal override)
-            if (!globalRevealMode) {
-                const essentials = document.getElementById("cover-essentials");
-                const hook = document.getElementById("cover-hook");
-                const example = document.getElementById("cover-example");
-                if (essentials) essentials.classList.remove("hidden");
-                if (hook) hook.classList.remove("hidden");
-                if (example) example.classList.remove("hidden");
-            }
-
-            const visualContainer = document.getElementById("chart-visualization-container");
-            if (topic.hasChart) {
-                visualContainer.classList.remove("hidden");
-                initChartWidget(topic.hasChart);
-            } else {
-                visualContainer.classList.add("hidden");
-                if (activeChart) {
-                    activeChart.destroy();
-                    activeChart = null;
-                }
-            }
-
-            // Reset AI panes views to first tab
-            switchStudyTab('manual');
-            
-            // Scroll Workspace to top smoothly
-            window.scrollTo({ top: workspace.offsetTop - 100, behavior: 'smooth' });
-        }
-
-        function markStatus(status) {
-            if (!currentTopic) return;
-            
-            masteryStates[currentTopic.id] = status;
-            localStorage.setItem(masteryStorageKey, JSON.stringify(masteryStates));
-            
-            updateMasteryTracker();
-            renderSyllabusAccordion();
-            
-            // Highlight active selection
-            const activeBtn = document.querySelector(`[data-topic-id="${currentTopic.id}"]`);
-            if (activeBtn) activeBtn.classList.add("ring-2", "ring-slate-400");
-        }
-
-        function updateMasteryTracker() {
-            const total = 17; // Total topics in syllabus
-            const states = Object.values(masteryStates);
-            const masteredCount = states.filter(s => s === "easy").length;
-            
-            document.getElementById("mastery-count").innerText = masteredCount;
-            const percentage = Math.round((masteredCount / total) * 100);
-            document.getElementById("mastery-progress-bar").style.width = `${percentage}%`;
-        }
-
-        function revealField(field) {
-            const el = document.getElementById(`cover-${field}`);
-            if (el) el.classList.add("hidden");
-        }
-
-        function switchStudyTab(tabType) {
-            const tabs = ['manual', 'viva', 'grader', 'memory'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`tab-btn-${t}`);
-                const pane = document.getElementById(`pane-${t}`);
-                if (t === tabType) {
-                    btn.classList.replace("border-transparent", "border-slate-900");
-                    btn.classList.replace("text-slate-500", "text-slate-900");
-                    pane.classList.remove("hidden");
+            // Handle active styling of filters
+            ['all', 'b1', 'b2', 'b3', 'b4'].forEach(id => {
+                const btn = document.getElementById(`btn-${id}`);
+                if (id === blockId) {
+                    btn.className = "px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 bg-white text-stone-900 shadow-xs border border-stone-200/50";
                 } else {
-                    btn.classList.replace("border-slate-900", "border-transparent");
-                    btn.classList.replace("text-slate-900", "text-slate-500");
-                    pane.classList.add("hidden");
+                    btn.className = "px-3 py-1.5 text-xs font-medium rounded-md transition-all duration-200 text-stone-600 hover:text-stone-900";
                 }
             });
 
-            // Initialize or clear AI tabs on activation
-            if (tabType === 'viva') {
-                document.getElementById("viva-feedback-box").classList.add("hidden");
-                document.getElementById("viva-answer-section").classList.add("hidden");
-                document.getElementById("viva-question-box").innerHTML = `
-                    <p class="text-xs text-slate-500 italic">Click the button below to generate a challenging oral exam question based on this topic...</p>
-                `;
-            } else if (tabType === 'grader') {
-                document.getElementById("grader-feedback-box").classList.add("hidden");
-                document.getElementById("essay-text-area").value = "";
-                document.getElementById("essay-word-count").innerText = "0 Words (Suggested: 300+)";
-            } else if (tabType === 'memory') {
-                document.getElementById("custom-hook-box").classList.add("hidden");
-            }
+            renderTopicMenu();
         }
 
-        // Core fetch client with embedded exponential backoff to satisfy CSP Guidelines
-        async function fetchGeminiAPI(payload) {
-            // Check if user input is overriding the key, else keep blank for Canvas internal Injection
-            const userKey = document.getElementById("api-key-input").value.trim();
-            const apiKey = userKey || ""; // Canvas injects this automatically if left as empty string
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+        // Render Navigation Elements to dynamic side bar container
+        function renderTopicMenu() {
+            const menuContainer = document.getElementById('topic-menu');
+            menuContainer.innerHTML = '';
 
-            const retries = 3;
-            let delay = 1000;
-
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(apiUrl, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload)
-                    });
-
-                    if (response.ok) {
-                        return await response.json();
-                    }
-
-                    if (response.status === 429) {
-                        // Throttled: wait and execute backoff
-                        await new Promise(resolve => setTimeout(resolve, delay));
-                        delay *= 2;
-                        continue;
-                    }
-
-                    const errorDetails = await response.text();
-                    throw new Error(`API returned error code ${response.status}: ${errorDetails}`);
-                } catch (err) {
-                    if (i === retries - 1) {
-                        throw err;
-                    }
-                    await new Promise(resolve => setTimeout(resolve, delay));
-                    delay *= 2;
-                }
-            }
-        }
-
-        // AI Feature 1: Oral Viva Practice
-        async function generateVivaQuestion() {
-            if (!currentTopic) return;
-
-            const button = document.getElementById("viva-generate-btn");
-            const box = document.getElementById("viva-question-box");
-            
-            button.disabled = true;
-            button.innerText = "Consulting Board...";
-            box.innerHTML = `<p class="text-xs text-slate-500 animate-pulse">Generating realistic IGNOU examiner prompt... Please wait.</p>`;
-
-            const promptText = `Act as an expert IGNOU Life Span Psychology examiner. We are testing the candidate on the topic "${currentTopic.title}". 
-            Context: ${currentTopic.prompt}.
-            Generate a single, direct, probing academic question evaluating this specific concept. Do not provide answer keys, tips, or guidelines. Just return the clear clinical or developmental exam question directly. Keep it within 2 sentences.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                systemInstruction: {
-                    parts: [{ text: "You are a senior Professor evaluating psychological milestones. Be strict but clear. Output only the questions." }]
-                }
-            };
-
-            try {
-                const data = await fetchGeminiAPI(payload);
-                const candidateText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (candidateText) {
-                    box.innerHTML = `<p class="text-xs font-bold text-slate-800 leading-relaxed">"${candidateText.trim()}"</p>`;
-                    document.getElementById("viva-answer-section").classList.remove("hidden");
-                    document.getElementById("viva-user-answer").value = "";
-                } else {
-                    throw new Error("Empty response format received.");
-                }
-            } catch (err) {
-                showNotification("Could not communicate with Gemini. Check your API settings or network.", "error");
-                box.innerHTML = `<p class="text-xs text-rose-600 font-semibold">Error producing question. Please try again.</p>`;
-                console.error(err);
-            } finally {
-                button.disabled = false;
-                button.innerText = "Re-Generate Question";
-            }
-        }
-
-        async function submitVivaAnswer() {
-            const userAnswer = document.getElementById("viva-user-answer").value.trim();
-            if (!userAnswer) {
-                showNotification("Please provide a response before submitting.", "error");
-                return;
-            }
-
-            const button = document.getElementById("viva-submit-btn");
-            button.disabled = true;
-            button.innerText = "Assessing...";
-
-            const questionText = document.querySelector("#viva-question-box p").innerText;
-
-            const promptText = `Review the candidate's answer based on standard academic lifespans guidelines.
-            Topic: ${currentTopic.title}.
-            Question: ${questionText}
-            User Answer: "${userAnswer}"
-            
-            Structure your critique into valid JSON matching this schema:
-            {
-              "score": <number out of 10>,
-              "generalFeedback": "A concise paragraph critiquing terminology, citations, ages, and accuracy.",
-              "keyPointsMissed": ["missing element 1", "missing element 2"],
-              "exemplaryModelAnswer": "A full, professional high-scoring answer paragraph that maps to maximum scores."
-            }
-            Do not include markdowns outside of the JSON block. Return ONLY raw JSON.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            score: { type: "NUMBER" },
-                            generalFeedback: { type: "STRING" },
-                            keyPointsMissed: { type: "ARRAY", items: { type: "STRING" } },
-                            exemplaryModelAnswer: { type: "STRING" }
-                        },
-                        required: ["score", "generalFeedback", "keyPointsMissed", "exemplaryModelAnswer"]
-                    }
-                }
-            };
-
-            try {
-                const data = await fetchGeminiAPI(payload);
-                const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                const result = JSON.parse(jsonText);
-
-                document.getElementById("viva-score-tag").innerText = `Score: ${result.score} / 10 Marks`;
-                document.getElementById("viva-feedback-text").innerText = result.generalFeedback;
-                
-                const list = document.getElementById("viva-missing-list");
-                list.innerHTML = "";
-                if (result.keyPointsMissed.length > 0) {
-                    result.keyPointsMissed.forEach(pt => {
-                        const li = document.createElement("li");
-                        li.innerText = pt;
-                        list.appendChild(li);
-                    });
-                } else {
-                    list.innerHTML = "<li class='text-emerald-700 italic'>No critical omissions found! Excellent.</li>";
-                }
-
-                document.getElementById("viva-model-answer-text").innerText = result.exemplaryModelAnswer;
-                document.getElementById("viva-feedback-box").classList.remove("hidden");
-                showNotification("Viva evaluated successfully!", "success");
-            } catch (err) {
-                showNotification("Could not parse AI evaluation. Try rewriting clearly.", "error");
-                console.error(err);
-            } finally {
-                button.disabled = false;
-                button.innerText = "Submit Answer for Evaluation";
-            }
-        }
-
-        // AI Feature 2: High-volume 10-Mark Essay Evaluator
-        async function gradeFullEssay() {
-            const essayText = document.getElementById("essay-text-area").value.trim();
-            if (!essayText) {
-                showNotification("Write or paste your essay content first.", "error");
-                return;
-            }
-
-            const button = document.getElementById("grade-essay-btn");
-            button.disabled = true;
-            button.innerText = "Running Rubric Audit...";
-
-            const promptText = `Act as an official examiner auditing an IGNOU MPC-002 exam sheet. 
-            Topic: ${currentTopic.title}.
-            Task Prompt: ${currentTopic.prompt}.
-            User's Submitted Essay:
-            "${essayText}"
-
-            Grade this answer meticulously out of 10 split into 4 parts:
-            - keyDefinitions (0 to 2.5)
-            - theoreticalConsistency (0 to 2.5)
-            - structureAndModels (0 to 2.5)
-            - applicationCase (0 to 2.5)
-
-            Structure your assessment into valid JSON matching this schema:
-            {
-              "keyDefinitionsScore": <number>,
-              "theoreticalConsistencyScore": <number>,
-              "structureAndModelsScore": <number>,
-              "applicationCaseScore": <number>,
-              "generalSummary": "Detailed academic critique.",
-              "strengthsList": ["strength 1", "strength 2"],
-              "improvementsList": ["improvement 1", "improvement 2"]
-            }
-            Do not include markdown flags. Return strictly JSON.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            keyDefinitionsScore: { type: "NUMBER" },
-                            theoreticalConsistencyScore: { type: "NUMBER" },
-                            structureAndModelsScore: { type: "NUMBER" },
-                            applicationCaseScore: { type: "NUMBER" },
-                            generalSummary: { type: "STRING" },
-                            strengthsList: { type: "ARRAY", items: { type: "STRING" } },
-                            improvementsList: { type: "ARRAY", items: { type: "STRING" } }
-                        },
-                        required: ["keyDefinitionsScore", "theoreticalConsistencyScore", "structureAndModelsScore", "applicationCaseScore", "generalSummary", "strengthsList", "improvementsList"]
-                    }
-                }
-            };
-
-            try {
-                const data = await fetchGeminiAPI(payload);
-                const result = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text);
-
-                // Math sum
-                const total = result.keyDefinitionsScore + result.theoreticalConsistencyScore + result.structureAndModelsScore + result.applicationCaseScore;
-                document.getElementById("essay-total-score").innerText = `${total.toFixed(1)} / 10 MARKS`;
-                
-                document.getElementById("grade-def-score").innerText = `${result.keyDefinitionsScore.toFixed(1)}/2.5`;
-                document.getElementById("grade-theory-score").innerText = `${result.theoreticalConsistencyScore.toFixed(1)}/2.5`;
-                document.getElementById("grade-struct-score").innerText = `${result.structureAndModelsScore.toFixed(1)}/2.5`;
-                document.getElementById("grade-case-score").innerText = `${result.applicationCaseScore.toFixed(1)}/2.5`;
-
-                document.getElementById("grade-feedback-summary").innerText = result.generalSummary;
-
-                // Lists mappings
-                const strUl = document.getElementById("grade-strengths");
-                strUl.innerHTML = "";
-                result.strengthsList.forEach(s => {
-                    const li = document.createElement("li");
-                    li.innerText = s;
-                    strUl.appendChild(li);
-                });
-
-                const weakUl = document.getElementById("grade-weaknesses");
-                weakUl.innerHTML = "";
-                result.improvementsList.forEach(w => {
-                    const li = document.createElement("li");
-                    li.innerText = w;
-                    weakUl.appendChild(li);
-                });
-
-                document.getElementById("grader-feedback-box").classList.remove("hidden");
-                showNotification("Evaluation scores updated!", "success");
-            } catch (err) {
-                showNotification("Grading metrics error. Please retry.", "error");
-                console.error(err);
-            } finally {
-                button.disabled = false;
-                button.innerText = "Analyze & Grade Essay";
-            }
-        }
-
-        // AI Feature 3: Customized Memory Anchors Studio
-        async function generateCustomMemoryHook() {
-            if (!currentTopic) return;
-
-            const button = document.getElementById("generate-custom-hook-btn");
-            const theme = document.getElementById("metaphor-theme-select").value;
-
-            button.disabled = true;
-            button.innerText = "Architecting Metaphor...";
-
-            const promptText = `Design an intricate cognitive memory metaphor for the lifespan psychology topic "${currentTopic.title}".
-            Target theme: "${theme}" (such as aviation, gaming, or cooking).
-            Requirement: DO NOT use simple word mnemonics. Create a rich physical, architectural, or logistical environment analogy where every operational element maps to a theoretical component of the model.
-
-            Structure into valid JSON:
-            {
-              "metaphorTitle": "Creative Title mapping theme to concept",
-              "conceptAnalogy": "A clear, engaging paragraph describing the physical scene comparison.",
-              "concreteExplanation": "A point-by-point breakdown showing exactly which parts of the metaphor map to key developmental concepts (e.g., ages, researchers, rules)."
-            }
-            Output only raw JSON.`;
-
-            const payload = {
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: {
-                    responseMimeType: "application/json",
-                    responseSchema: {
-                        type: "OBJECT",
-                        properties: {
-                            metaphorTitle: { type: "STRING" },
-                            conceptAnalogy: { type: "STRING" },
-                            concreteExplanation: { type: "STRING" }
-                        },
-                        required: ["metaphorTitle", "conceptAnalogy", "concreteExplanation"]
-                    }
-                }
-            };
-
-            try {
-                const data = await fetchGeminiAPI(payload);
-                const result = JSON.parse(data.candidates?.[0]?.content?.parts?.[0]?.text);
-
-                document.getElementById("custom-hook-title").innerText = result.metaphorTitle;
-                document.getElementById("custom-hook-analogy").innerText = result.conceptAnalogy;
-                document.getElementById("custom-hook-explanation").innerHTML = result.concreteExplanation.replace(/\n/g, "<br>");
-
-                document.getElementById("custom-hook-box").classList.remove("hidden");
-                showNotification("Memory hook generated!", "success");
-            } catch (err) {
-                showNotification("Error spinning metaphor base. Please try again.", "error");
-                console.error(err);
-            } finally {
-                button.disabled = false;
-                button.innerText = "Build Memory Metaphor";
-            }
-        }
-
-        // ChartJS interactive canvas structures
-        function initChartWidget(chartType) {
-            if (activeChart) {
-                activeChart.destroy();
-            }
-
-            const ctx = document.getElementById("stageChart").getContext("2d");
-            const controls = document.getElementById("chart-controls");
-            controls.innerHTML = "";
-
-            if (chartType === "kohlberg") {
-                document.getElementById("chart-title-text").innerText = "Interactive Kohlberg Moral Reasoning Shift Chart";
-                
-                const data = {
-                    labels: ['Childhood (Ages 6-9)', 'Adolescence (Ages 11-16)', 'Adulthood (Ages 20+)'],
-                    datasets: [
-                        {
-                            label: 'Pre-Conventional (Stages 1-2)',
-                            data: [75, 20, 5],
-                            backgroundColor: '#FDA4AF', // Warm rose
-                            borderWidth: 1,
-                            borderRadius: 6
-                        },
-                        {
-                            label: 'Conventional (Stages 3-4)',
-                            data: [23, 70, 60],
-                            backgroundColor: '#93C5FD', // Light Blue
-                            borderWidth: 1,
-                            borderRadius: 6
-                        },
-                        {
-                            label: 'Post-Conventional (Stages 5-6)',
-                            data: [2, 10, 35],
-                            backgroundColor: '#6EE7B7', // Soft green
-                            borderWidth: 1,
-                            borderRadius: 6
-                        }
-                    ]
-                };
-
-                activeChart = new Chart(ctx, {
-                    type: 'bar',
-                    data: data,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 10 } } }
-                        },
-                        scales: {
-                            y: { beginAtZero: true, max: 100, title: { display: true, text: '% Usage of Moral Reasoning', font: { size: 10 } } }
-                        }
-                    }
-                });
-
-                controls.innerHTML = `
-                    <div class="bg-stone-50 p-4 rounded-xl space-y-2 border border-stone-200">
-                        <p class="text-xs font-bold text-slate-800">📊 Kohlberg's Statistical Findings:</p>
-                        <p class="text-[11px] text-slate-600 leading-relaxed">
-                            Observe how <strong>Pre-Conventional reasoning</strong> drops dramatically as cognitive abstract capabilities emerge in adolescence. In contrast, <strong>Post-Conventional values</strong> remain relatively low across all groups, highlighting that many individuals never fully achieve abstract Stage 5/6 morality in typical adult scenarios.
-                        </p>
-                    </div>
-                `;
-
-            } else if (chartType === "marcia") {
-                document.getElementById("chart-title-text").innerText = "James Marcia Identity Status Grid";
-
-                const scatterData = {
-                    datasets: [{
-                        label: 'Active Identity Path Coordinate',
-                        data: [{ x: 3, y: 3 }], // Default: Achievement
-                        backgroundColor: '#0F766E', // Deep Teal
-                        borderColor: '#115E59',
-                        pointRadius: 10,
-                        pointHoverRadius: 12
-                    }]
-                };
-
-                activeChart = new Chart(ctx, {
-                    type: 'scatter',
-                    data: scatterData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                min: -5,
-                                max: 5,
-                                title: { display: true, text: '◄ Exploration (Crisis) ►', font: { weight: 'bold', size: 11 } },
-                                grid: { color: (context) => context.tick.value === 0 ? '#475569' : '#E2E8F0', lineWidth: (context) => context.tick.value === 0 ? 2 : 1 }
-                            },
-                            y: {
-                                min: -5,
-                                max: 5,
-                                title: { display: true, text: '◄ Commitment Level ►', font: { weight: 'bold', size: 11 } },
-                                grid: { color: (context) => context.tick.value === 0 ? '#475569' : '#E2E8F0', lineWidth: (context) => context.tick.value === 0 ? 2 : 1 }
-                            }
-                        },
-                        plugins: {
-                            legend: { display: false }
-                        }
-                    }
-                });
-
-                controls.innerHTML = `
-                    <div class="bg-stone-50 p-4 rounded-xl space-y-4 border border-stone-200">
-                        <p class="text-xs font-bold text-slate-800 font-semibold">🕹️ Interactive Status Slider Matrix:</p>
-                        
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-[11px] font-medium text-slate-600">
-                                <span>Exploration Rate:</span>
-                                <span id="val-exp" class="font-bold text-emerald-700">High (+3)</span>
-                            </div>
-                            <input type="range" id="slider-exploration" min="-5" max="5" value="3" class="w-full accent-emerald-600">
-                        </div>
-
-                        <div class="space-y-1">
-                            <div class="flex justify-between text-[11px] font-medium text-slate-600">
-                                <span>Commitment Rate:</span>
-                                <span id="val-com" class="font-bold text-emerald-700">High (+3)</span>
-                            </div>
-                            <input type="range" id="slider-commitment" min="-5" max="5" value="3" class="w-full accent-emerald-600">
-                        </div>
-
-                        <div class="p-3 bg-emerald-50 rounded-lg border border-emerald-100">
-                            <p class="text-[10px] uppercase font-bold text-emerald-800">Dynamic Status Output:</p>
-                            <p id="quadrant-output-text" class="text-xs font-semibold text-slate-700 mt-0.5">Identity Achievement</p>
-                        </div>
-                    </div>
-                `;
-
-                const slExp = document.getElementById("slider-exploration");
-                const slCom = document.getElementById("slider-commitment");
-
-                const updateScatter = () => {
-                    const expVal = parseInt(slExp.value);
-                    const comVal = parseInt(slCom.value);
-
-                    document.getElementById("val-exp").innerText = `${expVal >= 0 ? "High" : "Low"} (${expVal})`;
-                    document.getElementById("val-com").innerText = `${comVal >= 0 ? "High" : "Low"} (${comVal})`;
-
-                    activeChart.data.datasets[0].data = [{ x: expVal, y: comVal }];
-                    activeChart.update();
-
-                    let statusLabel = "";
-                    if (expVal >= 0 && comVal >= 0) {
-                        statusLabel = "🚀 Identity Achievement (High Exploration, High Commitment)";
-                    } else if (expVal < 0 && comVal >= 0) {
-                        statusLabel = "🔒 Identity Foreclosure (Low Exploration, High Commitment)";
-                    } else if (expVal >= 0 && comVal < 0) {
-                        statusLabel = "🧭 Identity Moratorium (High Exploration, Low Commitment)";
-                    } else {
-                        statusLabel = "💨 Identity Diffusion (Low Exploration, Low Commitment)";
-                    }
-                    document.getElementById("quadrant-output-text").innerText = statusLabel;
-                };
-
-                slExp.oninput = updateScatter;
-                slCom.oninput = updateScatter;
-            }
-        }
-
-        function showExamModal(topic) {
-            const modal = document.getElementById("exam-modal");
-            document.getElementById("modal-question-title").innerText = topic.prompt;
-
-            const list = document.getElementById("modal-points-list");
-            list.innerHTML = "";
-
-            const answerPoints = [
-                "Define terminology precisely in the opening block introductory paragraph.",
-                "Detail at least three (3) critical milestone stages or developmental transitions.",
-                "Mention key cognitive or psychosocial researchers (e.g., Erikson, Kohlberg, Ainsworth).",
-                "Describe structural models or curves explicitly (such as Fluid/Crystallized intelligence trajectories).",
-                "Incorporate a physical metaphor and a corresponding practical clinical case study to unlock final analysis marks."
+            // Group metadata references
+            const blocks = [
+                { id: 'b1', name: 'Block 1: Intro & Research' },
+                { id: 'b2', name: 'Block 2: Infancy & Early Child' },
+                { id: 'b3', name: 'Block 3: Middle Child & Adolescence' },
+                { id: 'b4', name: 'Block 4: Adulthood & Aging' }
             ];
 
-            answerPoints.forEach(p => {
-                const li = document.createElement("li");
-                li.innerText = p;
-                list.appendChild(li);
+            blocks.forEach(b => {
+                if (activeBlockFilter !== 'all' && activeBlockFilter !== b.id) return;
+
+                // Create block header element
+                const header = document.createElement('h3');
+                header.className = "text-xs font-bold text-stone-400 uppercase tracking-wider mt-4 mb-2 px-2";
+                header.innerText = b.name;
+                menuContainer.appendChild(header);
+
+                // Filter and append child items belonging to this block grouping
+                Object.values(syllabusData).forEach(topic => {
+                    if (topic.block !== b.id) return;
+
+                    const itemBtn = document.createElement('button');
+                    itemBtn.id = `menu-item-${topic.id}`;
+                    itemBtn.className = "w-full text-left px-3 py-2.5 text-xs font-medium rounded-lg bg-white border border-stone-200 hover:border-amber-600/40 hover:bg-amber-50/20 text-stone-700 transition-all duration-150 flex items-center justify-between group shadow-2xs cursor-pointer";
+                    itemBtn.setAttribute('onclick', `selectTopic('${topic.id}')`);
+                    itemBtn.innerHTML = `
+                        <span class="truncate pr-2">${topic.title}</span>
+                        <span class="text-[10px] text-stone-400 bg-stone-50 border border-stone-200 px-1.5 py-0.5 rounded-md group-hover:bg-amber-50 group-hover:text-amber-800 transition-colors">Recall</span>
+                    `;
+                    menuContainer.appendChild(itemBtn);
+                });
+            });
+        }
+
+        // Active Recall Disclosure Router
+        function selectTopic(topicId) {
+            const data = syllabusData[topicId];
+            if (!data) return;
+
+            // Manage UI Highlight active borders
+            Object.keys(syllabusData).forEach(id => {
+                const el = document.getElementById(`menu-item-${id}`);
+                if (el) {
+                    if (id === topicId) {
+                        el.classList.remove('bg-white', 'border-stone-200', 'text-stone-700');
+                        el.classList.add('bg-amber-50/40', 'border-amber-600', 'text-amber-950', 'ring-1', 'ring-amber-600/20');
+                    } else {
+                        el.classList.remove('bg-amber-50/40', 'border-amber-600', 'text-amber-950', 'ring-1', 'ring-amber-600/20');
+                        el.classList.add('bg-white', 'border-stone-200', 'text-stone-700');
+                    }
+                }
             });
 
-            modal.classList.remove("hidden");
-        }
+            // Toggle view visibility panes
+            document.getElementById('empty-state').classList.add('hidden');
+            const displayPane = document.getElementById('content-display');
+            displayPane.classList.remove('hidden');
 
-        function closeExamModal() {
-            document.getElementById("exam-modal").classList.add("hidden");
-        }
+            // Map data payloads into targets
+            document.getElementById('display-block').innerText = data.blockTitle;
+            document.getElementById('display-title').innerText = data.title;
+            document.getElementById('display-essentials').innerHTML = data.essentials;
+            document.getElementById('display-hook').innerHTML = data.hook;
+            document.getElementById('display-example').innerHTML = data.example;
 
-        function copyQuestionToClipboard() {
-            if (!currentTopic) return;
-            const txt = currentTopic.prompt;
-            const dummy = document.createElement("textarea");
-            document.body.appendChild(dummy);
-            dummy.value = txt;
-            dummy.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummy);
-            
-            showNotification("Question copied to clipboard!", "success");
+            // Handle Dynamic Data Visualizations Architecture
+            const chartWrapper = document.getElementById('chart-container-wrapper');
+            if (currentChartInstance) {
+                currentChartInstance.destroy();
+                currentChartInstance = null;
+            }
+
+            if (data.hasChart) {
+                chartWrapper.classList.remove('hidden');
+                const ctx = document.getElementById('conceptual-chart').getContext('2d');
+                
+                let configuration = {};
+                
+                if (data.chartType === 'crossLong' || data.chartType === 'intelligenceTrajectories') {
+                    configuration = {
+                        type: 'line',
+                        data: data.chartData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: { legend: { labels: { font: { size: 11, family: 'sans-serif' } } } },
+                            scales: { y: { beginAtZero: true, title: { display: true, text: 'Performance Metric / Score', font: { size: 10 } } } }
+                        }
+                    };
+                } else if (data.chartType === 'attachmentDist') {
+                    configuration = {
+                        type: 'bar',
+                        data: data.chartData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            plugins: { legend: { display: false } },
+                            scales: { y: { beginAtZero: true, max: 100, title: { display: true, text: 'Percentage of Sample', font: { size: 10 } } } }
+                        }
+                    };
+                } else if (data.chartType === 'marciaMatrix') {
+                    configuration = {
+                        type: 'bar',
+                        data: data.chartData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: true,
+                            scales: { y: { beginAtZero: true, max: 5, title: { display: true, text: 'Construct Intensity Level', font: { size: 10 } } } }
+                        }
+                    };
+                }
+
+                currentChartInstance = new Chart(ctx, configuration);
+            } else {
+                chartWrapper.classList.add('hidden');
+            }
+
+            // Instantly auto scroll workspace smoothly back to top viewport coordinates
+            displayPane.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     </script>
 </body>
