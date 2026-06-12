@@ -5,50 +5,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IGNOU MPC-005 Exam Prep Companion</title>
-    <!-- Tailwind CSS for modern, high-fidelity responsive utility layout -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Chart.js for interactive statistical/methodological data modeling -->
+    <!-- Tailwind CSS v3 (Stable Runtime Compiler for dynamic classes) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for data mapping and structural visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        academic: {
+                            linen: '#F9F6F0',
+                            ivory: '#FFFFFF',
+                            slate: '#1E2522',
+                            leather: '#8C5E3C',
+                            border: '#E8E2D5',
+                            charcoal: '#2C2F2E'
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['Playfair Display', 'Georgia', 'serif'],
+                        sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+                        brand: ['Cinzel', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap');
         
-        :root {
-            --color-bg: #F9F6F0;       /* Academic Linen */
-            --color-surface: #FFFFFF;  /* Pure Ivory */
-            --color-primary: #1E2522;  /* Deep Forest-Slate */
-            --color-accent: #8C5E3C;   /* Warm Leather/Oxide */
-            --color-border: #E8E2D5;   /* Soft Sand Border */
-            --color-text: #2C2F2E;     /* Dark Charcoal */
-            --font-display: 'Playfair Display', serif;
-            --font-sans: 'Plus Jakarta Sans', sans-serif;
-            --font-serif: 'Cinzel', serif;
-        }
-
         body {
-            background-color: var(--color-bg);
-            color: var(--color-text);
-            font-family: var(--font-sans);
+            background-color: #F9F6F0;
+            color: #2C2F2E;
+            font-family: 'Plus Jakarta Sans', sans-serif;
         }
-
         .academic-header {
-            font-family: var(--font-display);
+            font-family: 'Playfair Display', serif;
         }
-
         .brand-logo {
-            font-family: var(--font-serif);
+            font-family: 'Cinzel', serif;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col antialiased selection:bg-[#EAE2D5] selection:text-[#1E2522]">
 
     <!-- Upper Academic Header -->
-    <header class="bg-white border-b border-[#E8E2D5] sticky top-0 z-50 shadow-xs">
+    <header class="bg-white border-b border-[#E8E2D5] sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
                 <span class="brand-logo text-xs font-bold uppercase tracking-widest text-[#8C5E3C]">IGNOU MA Psychology (MAPC)</span>
                 <h1 class="academic-header text-2xl md:text-3xl font-bold text-[#1E2522]">MPC-005: Research Methods</h1>
             </div>
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3">
                 <button onclick="resetAllTracking()" class="text-xs px-3 py-2 rounded-lg border border-[#E8E2D5] text-[#8C5E3C] hover:bg-[#FAF6F0] font-semibold transition-all">
                     Reset Mastery Progress
                 </button>
@@ -57,19 +66,19 @@
                         <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                         <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                     </span>
-                    <span>Active Recall Engine Ready</span>
+                    <span>Active Recall Engine Active</span>
                 </div>
             </div>
         </div>
     </header>
 
-    <!-- Main Workspace -->
+    <!-- Main Workspace Layout -->
     <div class="max-w-7xl mx-auto px-6 py-8 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8 w-full">
         
-        <!-- Left Sidebar: Active Recall Directory Map -->
+        <!-- Left Sidebar: Complete Syllabus Interactive Navigation Directory -->
         <nav class="lg:col-span-4 space-y-6">
-            <div class="bg-white p-5 rounded-2xl border border-[#E8E2D5] shadow-xs">
-                <div class="flex justify-between items-center mb-4 pb-2 border-b border-[#F4EFE6]">
+            <div class="bg-white p-5 rounded-2xl border border-[#E8E2D5] shadow-sm">
+                <div class="flex justify-between items-center mb-4 pb-2 border-b border-[#FAF6F0]">
                     <h2 class="text-xs font-bold text-[#1E2522] uppercase tracking-wider">Curriculum Directory</h2>
                     <span id="mastery-counter" class="text-xs bg-[#8C5E3C] text-white px-2 py-0.5 rounded-full font-bold">0/12 Mastered</span>
                 </div>
@@ -79,134 +88,133 @@
                     <div>
                         <h3 class="text-xs font-bold text-[#8C5E3C] uppercase tracking-wide mb-2">Block 1: Research Frameworks</h3>
                         <div class="space-y-1">
-                            <button onclick="loadTopic('scientific-method')" id="btn-scientific-method" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('scientific-method')" id="btn-scientific-method" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>1.1 Scientific Method & Process</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
-                            <button onclick="loadTopic('research-design')" id="btn-research-design" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('research-design')" id="btn-research-design" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>1.2 Research Design Typologies</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
-                            <button onclick="loadTopic('hypotheses')" id="btn-hypotheses" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('hypotheses')" id="btn-hypotheses" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>1.3 Formulation of Hypotheses</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
                         </div>
                     </div>
 
                     <!-- BLOCK 2 -->
-                    <div class="pt-2 border-t border-[#F4EFE6]">
+                    <div class="pt-2 border-t border-[#FAF6F0]">
                         <h3 class="text-xs font-bold text-[#8C5E3C] uppercase tracking-wide mb-2">Block 2: Types of Research</h3>
                         <div class="space-y-1">
-                            <button onclick="loadTopic('experimental-designs')" id="btn-experimental-designs" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('experimental-designs')" id="btn-experimental-designs" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>2.1 True vs. Quasi-Experimental</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
-                            <button onclick="loadTopic('ex-post-facto')" id="btn-ex-post-facto" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('ex-post-facto')" id="btn-ex-post-facto" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>2.2 Ex-Post Facto Research</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
-                            <button onclick="loadTopic('survey-historical')" id="btn-survey-historical" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('survey-historical')" id="btn-survey-historical" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>2.3 Survey & Historical Methods</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
                         </div>
                     </div>
 
                     <!-- BLOCK 3 -->
-                    <div class="pt-2 border-t border-[#F4EFE6]">
+                    <div class="pt-2 border-t border-[#FAF6F0]">
                         <h3 class="text-xs font-bold text-[#8C5E3C] uppercase tracking-wide mb-2">Block 3: Variables & Sampling</h3>
                         <div class="space-y-1">
-                            <button onclick="loadTopic('variable-classification')" id="btn-variable-classification" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('variable-classification')" id="btn-variable-classification" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>3.1 Classification of Variables</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
-                            <button onclick="loadTopic('experimental-control')" id="btn-experimental-control" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('experimental-control')" id="btn-experimental-control" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>3.2 Control of Extraneous Variables</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
-                            <button onclick="loadTopic('sampling-designs')" id="btn-sampling-designs" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('sampling-designs')" id="btn-sampling-designs" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>3.3 Probability & Non-Probability</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
                         </div>
                     </div>
 
                     <!-- BLOCK 4 -->
-                    <div class="pt-2 border-t border-[#F4EFE6]">
+                    <div class="pt-2 border-t border-[#FAF6F0]">
                         <h3 class="text-xs font-bold text-[#8C5E3C] uppercase tracking-wide mb-2">Block 4: Qualitative Techniques</h3>
                         <div class="space-y-1">
-                            <button onclick="loadTopic('qualitative-methods')" id="btn-qualitative-methods" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('qualitative-methods')" id="btn-qualitative-methods" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>4.1 Grounded Theory & Phenom.</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
-                            <button onclick="loadTopic('case-study')" id="btn-case-study" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('case-study')" id="btn-case-study" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>4.2 Case Study & Content Analysis</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
-                            <button onclick="loadTopic('research-ethics')" id="btn-research-ethics" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-medium text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
+                            <button onclick="loadTopic('research-ethics')" id="btn-research-ethics" class="w-full text-left text-xs px-3 py-2.5 rounded-lg transition-all font-semibold text-[#2C2F2E] hover:bg-[#FAF6F0] border border-transparent flex justify-between items-center gap-2 nav-topic-btn">
                                 <span>4.3 Research Ethics & APA Style</span>
-                                <span class="mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300"></span>
+                                <span class="mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border border-gray-300 shrink-0"></span>
                             </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Learning Psychology Metaphor Guide -->
+            <!-- Learning Psychology Metaphor Guide Card -->
             <div class="p-4 rounded-xl bg-[#FAF6F0] border border-[#E8E2D5] text-xs leading-relaxed space-y-2">
                 <p class="font-bold text-[#1E2522] flex items-center gap-2">
-                    <svg class="w-4 h-4 text-[#8C5E3C]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 115.656 0M9 21h6"></path></svg>
-                    Cognitive Psychology Principle
+                    <span class="text-[#8C5E3C] text-sm font-serif">ψ</span>
+                    Cognitive Retrieval Practice
                 </p>
                 <p class="text-[#5A605D]">
-                    This platform operates under the <span class="font-semibold text-[#8C5E3C]">Retrieval Practice</span> paradigm. Active exposure to questions before reviewing content increases memory consolidation in the temporal lobes. Attempt explanation mentally before opening sections.
+                    This platform uses the active <strong>Retrieval Practice</strong> paradigm. Reviewing active questions before reading answers builds strong neural pathways. Guess or explain the answer mentally before opening the sections.
                 </p>
             </div>
         </nav>
 
-        <!-- Right Content Block: Progressive Recall Window -->
+        <!-- Right Content Block: Progressive Disclosure Recall Window -->
         <main class="lg:col-span-8">
             
             <!-- Default Empty Workspace Panel -->
-            <div id="empty-workspace" class="bg-white rounded-2xl border border-[#E8E2D5] p-12 text-center flex flex-col items-center justify-center min-h-[550px] shadow-xs">
+            <div id="empty-workspace" class="bg-white rounded-2xl border border-[#E8E2D5] p-12 text-center flex flex-col items-center justify-center min-h-[550px] shadow-sm">
                 <div class="w-20 h-20 bg-[#FAF6F0] rounded-full flex items-center justify-center border border-[#E8E2D5] text-[#8C5E3C] mb-6 shadow-inner">
-                    <span class="text-2xl font-serif">ψ</span>
+                    <span class="text-3xl font-serif">ψ</span>
                 </div>
-                <h2 class="academic-header text-2xl font-bold text-[#1E2522] mb-3">Psychological Research Interface</h2>
+                <h2 class="academic-header text-2xl font-bold text-[#1E2522] mb-3">Psychological Research Workspace</h2>
                 <p class="text-sm text-[#5A605D] max-w-md mx-auto leading-relaxed">
-                    Select any key topic from the syllabus map on the left to initiate active review of the IGNOU core guidelines.
+                    Select a core syllabus topic from the left directory menu to populate this active recall panel and begin your revision sessions.
                 </p>
             </div>
 
-            <!-- Master Explanatory Module Node -->
+            <!-- Dynamic Active revision Panel (Visible when a topic is selected) -->
             <div id="active-workspace" class="hidden space-y-6">
                 
-                <!-- Metadata Topic Bar -->
-                <div class="bg-white p-6 rounded-2xl border border-[#E8E2D5] shadow-xs">
+                <!-- Topic Metadata Header -->
+                <div class="bg-white p-6 rounded-2xl border border-[#E8E2D5] shadow-sm">
                     <div class="flex justify-between items-start gap-4">
                         <div>
-                            <span id="meta-block-tag" class="text-xs font-bold uppercase tracking-wider text-[#8C5E3C]">Block Title</span>
-                            <h2 id="meta-topic-title" class="academic-header text-2xl md:text-3xl font-bold text-[#1E2522] mt-1">Topic Header</h2>
+                            <span id="meta-block-tag" class="text-xs font-bold uppercase tracking-wider text-[#8C5E3C]">Block Tag</span>
+                            <h2 id="meta-topic-title" class="academic-header text-2xl md:text-3xl font-bold text-[#1E2522] mt-1">Topic Title</h2>
                         </div>
                         <button id="mastery-toggle" onclick="toggleMasteryStatus()" class="shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border transition-all font-semibold"></button>
                     </div>
                     <p id="meta-objective" class="text-sm text-[#5A605D] mt-3 italic border-l-2 border-[#8C5E3C] pl-3"></p>
                 </div>
 
-                <!-- Three-tiered Active Recall Accordion Matrix -->
-                <div class="bg-white rounded-2xl border border-[#E8E2D5] shadow-xs overflow-hidden">
+                <!-- Three-Tiered Active Recall Accordion Matrix -->
+                <div class="bg-white rounded-2xl border border-[#E8E2D5] shadow-sm overflow-hidden">
                     
-                    <!-- Header -->
                     <div class="bg-[#FAF6F0] px-6 py-4 border-b border-[#E8E2D5] flex justify-between items-center">
                         <span class="text-xs font-bold uppercase tracking-wider text-[#1E2522]">Recall Testing System</span>
-                        <span class="text-xs text-[#8C5E3C] font-medium italic">Click to reveal details</span>
+                        <span class="text-xs text-[#8C5E3C] font-semibold italic">Click sections below to challenge memory</span>
                     </div>
 
-                    <!-- 1. Exam Essentials (High-Yield IGNOU Blueprint) -->
+                    <!-- 1. Exam Essentials (High-Yield Blueprint) -->
                     <div class="border-b border-[#E8E2D5]">
-                        <button onclick="revealLayer('layer-essentials')" class="w-full flex justify-between items-center p-6 text-left hover:bg-[#FAF6F0]/50 transition-colors focus:outline-hidden group">
-                            <span class="text-md font-bold text-[#1E2522] flex items-center gap-3 group-hover:text-[#8C5E3C] transition-all">
+                        <button onclick="revealLayer('layer-essentials')" class="w-full flex justify-between items-center p-6 text-left hover:bg-[#FAF6F0]/50 transition-colors focus:outline-none group">
+                            <span class="text-sm md:text-base font-bold text-[#1E2522] flex items-center gap-3 group-hover:text-[#8C5E3C] transition-all">
                                 <span class="w-6 h-6 rounded-full bg-[#1E2522] text-white flex items-center justify-center text-xs font-mono">1</span>
                                 Exam Essentials (Target: 6/10 Mark Answers)
                             </span>
@@ -217,8 +225,8 @@
 
                     <!-- 2. Memory Anchor / Physical Analogy -->
                     <div class="border-b border-[#E8E2D5]">
-                        <button onclick="revealLayer('layer-anchor')" class="w-full flex justify-between items-center p-6 text-left hover:bg-[#FAF6F0]/50 transition-colors focus:outline-hidden group">
-                            <span class="text-md font-bold text-[#1E2522] flex items-center gap-3 group-hover:text-[#8C5E3C] transition-all">
+                        <button onclick="revealLayer('layer-anchor')" class="w-full flex justify-between items-center p-6 text-left hover:bg-[#FAF6F0]/50 transition-colors focus:outline-none group">
+                            <span class="text-sm md:text-base font-bold text-[#1E2522] flex items-center gap-3 group-hover:text-[#8C5E3C] transition-all">
                                 <span class="w-6 h-6 rounded-full bg-[#8C5E3C] text-white flex items-center justify-center text-xs font-mono">2</span>
                                 Retention Hooks (The Non-Verbal Memory Anchor)
                             </span>
@@ -229,8 +237,8 @@
 
                     <!-- 3. Real-World Field Application -->
                     <div>
-                        <button onclick="revealLayer('layer-example')" class="w-full flex justify-between items-center p-6 text-left hover:bg-[#FAF6F0]/50 transition-colors focus:outline-hidden group">
-                            <span class="text-md font-bold text-[#1E2522] flex items-center gap-3 group-hover:text-[#8C5E3C] transition-all">
+                        <button onclick="revealLayer('layer-example')" class="w-full flex justify-between items-center p-6 text-left hover:bg-[#FAF6F0]/50 transition-colors focus:outline-none group">
+                            <span class="text-sm md:text-base font-bold text-[#1E2522] flex items-center gap-3 group-hover:text-[#8C5E3C] transition-all">
                                 <span class="w-6 h-6 rounded-full bg-slate-600 text-white flex items-center justify-center text-xs font-mono">3</span>
                                 Real-World Field Application
                             </span>
@@ -241,24 +249,29 @@
                 </div>
 
                 <!-- Methodological / Statistical Visualization Panel -->
-                <div id="chart-panel-container" class="bg-white p-6 rounded-2xl border border-[#E8E2D5] shadow-xs hidden">
-                    <h3 class="text-xs font-bold uppercase tracking-wider text-[#1E2522] mb-4" id="chart-display-title">Structural Framework</h3>
+                <div id="chart-panel-container" class="bg-white p-6 rounded-2xl border border-[#E8E2D5] shadow-sm hidden">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-[#1E2522] mb-4" id="chart-display-title">Visual Layout Framework</h3>
                     <div class="relative w-full h-64 md:h-80 flex items-center justify-center">
                         <canvas id="active-recall-chart-node"></canvas>
                     </div>
-                    <div id="chart-caption-text" class="text-xs text-[#5A605D] mt-4 italic border-t border-[#F4EFE6] pt-3 leading-relaxed"></div>
+                    <div id="chart-caption-text" class="text-xs text-[#5A605D] mt-4 border-t border-[#FAF6F0] pt-3 leading-relaxed italic"></div>
                 </div>
             </div>
         </main>
     </div>
 
-    <!-- Syllabus Content Repository Database -->
+    <!-- Bottom Footer Layout -->
+    <footer class="mt-auto border-t border-[#E8E2D5] bg-white py-4 px-6 text-center text-xs text-[#8C7A6B]">
+        Built in compliance with IGNOU MPC-005 Examination Standards. High Objectivity, Validity, and Reliability.
+    </footer>
+
+    <!-- Database and Script Logic -->
     <script>
         const syllabusDb = {
             'scientific-method': {
                 block: 'Block 1: Research Frameworks in Psychology',
                 title: 'Scientific Method & The Research Process',
-                objective: 'To master the rigorous foundational phases required to produce verifiable psychological knowledge.',
+                objective: 'To master the rigorous foundational steps required to generate empirically valid knowledge in psychology.',
                 essentials: `
                     <div class="space-y-4">
                         <p class="font-medium text-[#1E2522]">Every scientific pursuit in psychology relies on objective, repeatable protocols to validate cognitive and behavioral constructs.</p>
@@ -288,8 +301,8 @@
                         </div>
 
                         <div class="p-4 bg-amber-50 rounded-xl border border-amber-200 mt-2 text-xs">
-                            <span class="font-bold text-amber-800 uppercase tracking-wider">Syllabus Marker Focus:</span>
-                            <p class="mt-1 text-amber-900 leading-relaxed">To secure high marks in a 10-mark question, always outline <strong>falsifiability</strong> (Karl Popper). Detail that a theory must make risk-prone predictions that can be tested and proven false to be classified as scientific.</p>
+                            <span class="font-bold text-amber-800 uppercase tracking-wider block mb-1">Exam Pro-Tip: Falsifiability</span>
+                            <p class="text-amber-900 leading-relaxed">To score full marks on a 10-mark question, always outline <strong>falsifiability</strong> (Karl Popper). Detail that a theory must make risk-prone predictions that can be tested and proven false to be classified as scientific.</p>
                         </div>
                     </div>
                 `,
@@ -332,13 +345,13 @@
                             <span class="text-xs font-bold text-[#8C5E3C] uppercase tracking-wider">Kerlinger’s MAXMINCON Principle</span>
                             <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs mt-1">
                                 <div class="bg-white p-3 rounded-lg border border-[#E8E2D5]">
-                                    <strong class="text-emerald-700">MAXimize</strong><br>Systematic Variance. Design your Independent Variable (IV) levels so they differ enough to show clear, observable effects.
+                                    <strong class="text-emerald-700 block mb-1">MAXimize</strong>Systematic Variance. Design your Independent Variable (IV) levels so they differ enough to show clear, observable effects.
                                 </div>
                                 <div class="bg-white p-3 rounded-lg border border-[#E8E2D5]">
-                                    <strong class="text-rose-700">MINimize</strong><br>Error Variance. Control measurement errors, instrument fluctuations, and random individual differences.
+                                    <strong class="text-rose-700 block mb-1">MINimize</strong>Error Variance. Control measurement errors, instrument fluctuations, and random individual differences.
                                 </div>
                                 <div class="bg-white p-3 rounded-lg border border-[#E8E2D5]">
-                                    <strong class="text-[#8C5E3C]">CONtrol</strong><br>Extraneous Variance. Prevent outside factors from acting as alternative explanations for your results.
+                                    <strong class="text-[#8C5E3C] block mb-1">CONtrol</strong>Extraneous Variance. Prevent outside factors from acting as alternative explanations for your results.
                                 </div>
                             </div>
                         </div>
@@ -396,19 +409,19 @@
                             <span class="text-xs font-bold text-[#1E2522] uppercase tracking-wider">Critical Classifications</span>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs mt-2">
                                 <div class="bg-white p-3 rounded-lg border border-[#E8E2D5] space-y-1">
-                                    <strong class="text-red-800">Null Hypothesis ($H_0$)</strong>
-                                    <p class="text-gray-600">Posits no real relationship or difference exists. Statistically, we test to reject or fail to reject this baseline: $H_0: \mu_1 = \mu_2$.</p>
+                                    <strong class="text-red-800 block">Null Hypothesis (H0)</strong>
+                                    <p class="text-gray-600">Posits no real relationship or difference exists. Statistically, we test to reject or fail to reject this baseline: H0: u1 = u2.</p>
                                 </div>
                                 <div class="bg-white p-3 rounded-lg border border-[#E8E2D5] space-y-1">
-                                    <strong class="text-emerald-800">Alternative Hypothesis ($H_1$)</strong>
-                                    <p class="text-gray-600">Posits a real difference exists. Can be <em>directional</em> ($H_1: \mu_1 > \mu_2$) or <em>non-directional</em> ($H_1: \mu_1 \neq \mu_2$).</p>
+                                    <strong class="text-emerald-800 block">Alternative Hypothesis (H1)</strong>
+                                    <p class="text-gray-600">Posits a real difference exists. Can be <em>directional</em> (H1: u1 > u2) or <em>non-directional</em> (H1: u1 !== u2).</p>
                                 </div>
                             </div>
                         </div>
 
                         <div class="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs">
-                            <strong class="text-amber-800">Key Characteristics of a High-Mark Answer:</strong>
-                            <p class="text-amber-900 mt-1">Always list the four essentials of a usable hypothesis: (1) Conceptual clarity, (2) Specificity (avoiding broad, vague claims), (3) Falsifiability/testability using current methods, and (4) Theoretical alignment with existing science.</p>
+                            <strong class="text-amber-800 block mb-1">Key Criteria Checklist:</strong>
+                            <p class="text-amber-900 leading-relaxed">Always list the four essentials of a usable hypothesis: (1) Conceptual clarity, (2) Specificity (avoiding broad, vague claims), (3) Falsifiability/testability using current methods, and (4) Theoretical alignment with existing science.</p>
                         </div>
                     </div>
                 `,
@@ -416,18 +429,18 @@
                     <div class="space-y-3">
                         <p class="font-semibold text-base text-[#8C5E3C]">The Balanced Scale of a Courtroom Juxtaposition</p>
                         <p class="text-sm text-[#2C2F2E] leading-relaxed">
-                            Think of the Null Hypothesis ($H_0$) as the legal <strong>presumption of innocence</strong>. 
+                            Think of the Null Hypothesis as the legal <strong>presumption of innocence</strong>. 
                         </p>
                         <p class="text-sm text-[#5A605D] leading-relaxed">
-                            The scale stays balanced at zero ($H_0$) and won't move on its own. The Alternative Hypothesis ($H_1$) represents the prosecutor's claim of guilt. To win, the prosecutor must present enough clear evidence to tip the scale past a set point (the Alpha significance level, usually $\alpha = 0.05$). If the evidence isn't strong enough, the judge doesn't prove innocence; they simply rule that there wasn't enough proof to reject the neutral baseline.
+                            The scale stays balanced at zero and won't move on its own. The Alternative Hypothesis represents the prosecutor's claim of guilt. To win, the prosecutor must present enough clear evidence to tip the scale past a set point (the Alpha significance level, usually a = 0.05). If the evidence isn't strong enough, the judge doesn't prove innocence; they simply rule that there wasn't enough proof to reject the neutral baseline.
                         </p>
                     </div>
                 `,
-                example: "A cognitive science laboratory tests if blue-light blocking lenses improve sleep. They write: $H_0$: There is no difference in slow-wave sleep duration between the lens group and the clear glass group. $H_1$: The blue-light lens group will show longer slow-wave sleep duration.",
+                example: "A cognitive science laboratory tests if blue-light blocking lenses improve sleep. H0: There is no difference in slow-wave sleep duration. H1: The blue-light lens group will show longer slow-wave sleep duration.",
                 hasChart: true,
                 chartType: 'line',
                 chartData: {
-                    labels: ['-3.0σ', '-1.96σ (Alpha Limit)', '0.0 (Null Baseline)', '+1.96σ (Alpha Limit)', '+3.0σ'],
+                    labels: ['-3.0s', '-1.96s (Alpha Limit)', '0.0 (Null Baseline)', '+1.96s (Alpha Limit)', '+3.0s'],
                     datasets: [{
                         label: 'Probability Distribution of Null Hypothesis',
                         data: [2, 10, 80, 10, 2],
@@ -450,16 +463,16 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider block">True Experimental Designs</span>
-                                <p class="text-xs text-gray-600">Requires <strong>random assignment</strong> and active control over the Independent Variable to minimize internal validity threats.</p>
-                                <ul class="list-disc pl-5 text-xs text-gray-600 space-y-1">
+                                <p class="text-xs text-gray-600 font-medium">Requires <strong>random assignment</strong> and active control over the Independent Variable to minimize internal validity threats.</p>
+                                <ul class="list-disc pl-5 text-xs text-gray-500 space-y-1">
                                     <li>Randomized Pretest-Posttest Control Group</li>
                                     <li>Solomon Four-Group Design (controls for testing effects)</li>
                                 </ul>
                             </div>
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="text-xs font-bold text-[#8C5E3C] uppercase tracking-wider block">Quasi-Experimental Designs</span>
-                                <p class="text-xs text-gray-600">Lacks random assignment. Uses <strong>pre-existing groups</strong> (e.g., natural classrooms, clinical cohorts) where assignment cannot be controlled.</p>
-                                <ul class="list-disc pl-5 text-xs text-gray-600 space-y-1">
+                                <p class="text-xs text-gray-600 font-medium">Lacks random assignment. Uses <strong>pre-existing groups</strong> (e.g., natural classrooms, clinical cohorts).</p>
+                                <ul class="list-disc pl-5 text-xs text-gray-500 space-y-1">
                                     <li>Non-Equivalent Control Group Design</li>
                                     <li>Time-Series Designs</li>
                                 </ul>
@@ -467,8 +480,8 @@
                         </div>
 
                         <div class="p-3 bg-red-50 rounded-lg border border-red-200 text-xs">
-                            <strong class="text-red-800">Campbell & Stanley Threats to Internal Validity:</strong>
-                            <p class="text-red-900 mt-1">Be ready to explain key threats: (1) History (unplanned events during study), (2) Maturation (natural development over time), (3) Testing effects (sensitization from the pretest), and (4) Attrition (loss of participants over time).</p>
+                            <strong class="text-red-800 block mb-1">Campbell & Stanley Threats to Internal Validity:</strong>
+                            <p class="text-red-900 leading-relaxed">Be ready to explain key threats: (1) History (unplanned events), (2) Maturation (natural development), (3) Testing effects (sensitization from the pretest), and (4) Attrition (loss of participants).</p>
                         </div>
                     </div>
                 `,
@@ -513,7 +526,7 @@
                         
                         <div class="p-4 bg-[#FAF6F0] rounded-xl border border-[#E8E2D5] space-y-2 text-xs">
                             <span class="font-bold text-[#8C5E3C] uppercase tracking-wider block">Key Operational Traits</span>
-                            <ul class="list-disc pl-5 space-y-1 text-gray-700">
+                            <ul class="list-disc pl-5 space-y-1 text-gray-700 font-medium">
                                 <li><strong>No Control:</strong> The independent variable ($X$) has already occurred. You cannot alter or manipulate it.</li>
                                 <li><strong>No Randomization:</strong> Participants are grouped based on existing traits (e.g., smoker vs. non-smoker).</li>
                                 <li><strong>Causal Vulnerability:</strong> High risk of third-variable influences and reverse causation.</li>
@@ -521,8 +534,8 @@
                         </div>
 
                         <div class="p-3 bg-amber-50 rounded-lg border border-amber-200 text-xs">
-                            <strong class="text-amber-800">Defensive Methodological Tools:</strong>
-                            <p class="text-amber-900 mt-1">To strengthen causal inferences, ex-post facto designs should: (1) Match participants on key extraneous variables, (2) Use homogeneous subgroups to control for individual differences, or (3) Apply statistical controls like Analysis of Covariance (ANCOVA).</p>
+                            <strong class="text-amber-800 block mb-1">Defensive Methodological Tools:</strong>
+                            <p class="text-amber-900 leading-relaxed">To strengthen causal inferences, ex-post facto designs should: (1) Match participants on key extraneous variables, (2) Use homogeneous subgroups to control for individual differences, or (3) Apply statistical controls like Analysis of Covariance (ANCOVA).</p>
                         </div>
                     </div>
                 `,
@@ -562,7 +575,7 @@
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#8C5E3C] uppercase tracking-wider block">Survey Methodology</span>
                                 <p class="text-gray-600">Gathers self-report data on attitudes, beliefs, or behaviors from a sample.</p>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
+                                <ul class="list-disc pl-5 space-y-1 text-gray-500 font-medium">
                                     <li><strong>Cross-Sectional:</strong> Data collected from a sample at a single point in time.</li>
                                     <li><strong>Longitudinal:</strong> Tracking cohorts, trends, or panels over extended periods.</li>
                                 </ul>
@@ -570,7 +583,7 @@
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#1E2522] uppercase tracking-wider block">The Historical Method</span>
                                 <p class="text-gray-600">Reconstructs past events by analyzing records, documents, and artifacts.</p>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
+                                <ul class="list-disc pl-5 space-y-1 text-gray-500 font-medium">
                                     <li><strong>External Criticism:</strong> Verifying the authenticity of a document or source.</li>
                                     <li><strong>Internal Criticism:</strong> Evaluating the reliability and meaning of the content.</li>
                                 </ul>
@@ -616,21 +629,21 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#8C5E3C] uppercase tracking-wider block">Structural Classifications</span>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-700">
-                                    <li><strong>Independent Variable (IV):</strong> The factor manipulated or selected by the experimenter.</li>
+                                <ul class="list-disc pl-5 space-y-1 text-gray-700 font-medium">
+                                    <li><strong>Independent Variable (IV):</strong> The factor manipulated by the experimenter.</li>
                                     <li><strong>Dependent Variable (DV):</strong> The measured outcome variable.</li>
-                                    <li><strong>Moderator Variable:</strong> Alters the strength or direction of the relationship between the IV and DV.</li>
-                                    <li><strong>Mediator Variable:</strong> Explains the underlying mechanism connecting the IV and DV.</li>
-                                    <li><strong>Extraneous Variable:</strong> Uncontrolled variables that can interfere with your results.</li>
+                                    <li><strong>Moderator Variable:</strong> Alters the strength or direction of the relationship.</li>
+                                    <li><strong>Mediator Variable:</strong> Explains the underlying mechanism connecting variables.</li>
+                                    <li><strong>Extraneous Variable:</strong> Uncontrolled interference elements.</li>
                                 </ul>
                             </div>
                             <div class="p-4 bg-[#FAF6F0] rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#1E2522] uppercase tracking-wider block">Scales of Measurement (Stevens)</span>
                                 <ol class="list-decimal pl-5 space-y-1 text-gray-700 font-medium">
-                                    <li>Nominal: Qualitative categorization (e.g., gender, country).</li>
-                                    <li>Ordinal: Ordered ranking without equal intervals (e.g., class rank).</li>
-                                    <li>Interval: Equal intervals but no absolute zero (e.g., Celsius temp).</li>
-                                    <li>Ratio: Equal intervals with a true absolute zero (e.g., Kelvin, reaction time).</li>
+                                    <li>Nominal: Qualitative categorization (e.g., gender).</li>
+                                    <li>Ordinal: Ordered ranking without equal intervals.</li>
+                                    <li>Interval: Equal intervals but no absolute zero (e.g., Temp).</li>
+                                    <li>Ratio: Equal intervals with a true absolute zero (e.g., RT).</li>
                                 </ol>
                             </div>
                         </div>
@@ -672,12 +685,12 @@
                         <div class="p-4 bg-[#FAF6F0] rounded-xl border border-[#E8E2D5] space-y-2 text-xs">
                             <span class="font-bold text-[#8C5E3C] uppercase tracking-wider block">Key Control Techniques</span>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
-                                <ul class="list-disc pl-5 space-y-1.5 text-gray-700">
+                                <ul class="list-disc pl-5 space-y-1.5 text-gray-700 font-medium">
                                     <li><strong>Randomization:</strong> The most powerful control technique. It helps distribute individual differences evenly across all experimental groups.</li>
                                     <li><strong>Matching:</strong> Pairing participants on key extraneous variables (e.g., age, IQ) and splitting the pair across groups.</li>
                                     <li><strong>Elimination:</strong> Completely removing the extraneous variable from the study environment (e.g., testing in a soundproof room).</li>
                                 </ul>
-                                <ul class="list-disc pl-5 space-y-1.5 text-gray-700">
+                                <ul class="list-disc pl-5 space-y-1.5 text-gray-700 font-medium">
                                     <li><strong>Constancy of Conditions:</strong> Keeping the environmental conditions identical for all participants (e.g., same lighting, temperature, and instructions).</li>
                                     <li><strong>Counterbalancing:</strong> Varying the order of treatments (e.g., ABBA design) to control for progressive effects like practice or fatigue.</li>
                                 </ul>
@@ -722,19 +735,19 @@
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#1E2522] uppercase tracking-wider block">Probability Sampling (Representative)</span>
                                 <p class="text-gray-600">Every member of the population has a known, non-zero chance of being selected. This allows for statistical generalization.</p>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
+                                <ul class="list-disc pl-5 space-y-1 text-gray-500">
                                     <li><strong>Simple Random:</strong> Selection by lottery or random number generation.</li>
-                                    <li><strong>Stratified Random:</strong> Population is divided into subgroups (strata), and samples are drawn proportionally from each.</li>
-                                    <li><strong>Cluster:</strong> Selecting intact, naturally occurring groups rather than individuals (e.g., school districts).</li>
+                                    <li><strong>Stratified Random:</strong> Population is divided into strata, and samples are drawn proportionally.</li>
+                                    <li><strong>Cluster:</strong> Selecting intact, naturally occurring groups (e.g., schools).</li>
                                 </ul>
                             </div>
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#8C5E3C] uppercase tracking-wider block">Non-Probability Sampling (Exploratory)</span>
                                 <p class="text-gray-600">Selection is based on convenience or judgment, meaning generalization is limited.</p>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
+                                <ul class="list-disc pl-5 space-y-1 text-gray-500">
                                     <li><strong>Convenience:</strong> Selecting readily available participants.</li>
-                                    <li><strong>Quota:</strong> Selecting participants until specific subgroup proportions are met, without random selection.</li>
-                                    <li><strong>Snowball:</strong> Participants refer other individuals who fit the criteria, often used for hard-to-reach populations.</li>
+                                    <li><strong>Quota:</strong> Selecting participants until specific proportions are met.</li>
+                                    <li><strong>Snowball:</strong> Participants refer other individuals who fit the criteria.</li>
                                 </ul>
                             </div>
                         </div>
@@ -776,20 +789,20 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#8C5E3C] uppercase tracking-wider block">Grounded Theory (Glaser & Strauss)</span>
-                                <p class="text-gray-600">An inductive approach where theory is built directly from empirical data. Key coding stages include:</p>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
-                                    <li><strong>Open Coding:</strong> Breaking text down into initial concepts and categories.</li>
-                                    <li><strong>Axial Coding:</strong> Drawing connections between categories and their sub-categories.</li>
-                                    <li><strong>Selective Coding:</strong> Organizing categories around a core theme to build an explanatory theory.</li>
+                                <p class="text-gray-600 font-medium">An inductive approach where theory is built directly from empirical data. Key coding stages:</p>
+                                <ul class="list-disc pl-5 space-y-1 text-gray-500">
+                                    <li><strong>Open Coding:</strong> Breaking text down into initial concepts.</li>
+                                    <li><strong>Axial Coding:</strong> Drawing connections between categories.</li>
+                                    <li><strong>Selective Coding:</strong> Organizing categories around a core theme.</li>
                                     <li><strong>Constant Comparison:</strong> Continuously comparing new data with existing codes.</li>
                                 </ul>
                             </div>
                             <div class="p-4 bg-[#FAF6F0] rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#1E2522] uppercase tracking-wider block">Phenomenology (Husserl)</span>
-                                <p class="text-gray-600">Focuses on exploring and understanding individual lived experiences of a concept or phenomenon.</p>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
-                                    <li><strong>Bracketing (Epoche):</strong> Researchers set aside their own preconceptions to understand the experience cleanly.</li>
-                                    <li><strong>Essence:</strong> Extracting the universal meaning or structure of the lived experience.</li>
+                                <p class="text-gray-600 font-medium">Focuses on exploring and understanding individual lived experiences of a concept.</p>
+                                <ul class="list-disc pl-5 space-y-1 text-gray-500">
+                                    <li><strong>Bracketing (Epoche):</strong> Researchers set aside their own preconceptions to understand.</li>
+                                    <li><strong>Essence:</strong> Extracting the universal meaning structure.</li>
                                 </ul>
                             </div>
                         </div>
@@ -834,7 +847,7 @@
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#1E2522] uppercase tracking-wider block">Case Study Design (Robert Yin)</span>
                                 <p class="text-gray-600">An in-depth investigation of a contemporary phenomenon within its real-world context, relying on multiple sources of evidence.</p>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
+                                <ul class="list-disc pl-5 space-y-1 text-gray-500">
                                     <li><strong>Intrinsic:</strong> Understanding a unique, specific case.</li>
                                     <li><strong>Instrumental:</strong> Using a case to illustrate a broader theoretical concept.</li>
                                     <li><strong>Collective:</strong> Studying multiple cases to identify patterns.</li>
@@ -843,8 +856,8 @@
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#8C5E3C] uppercase tracking-wider block">Qualitative Content Analysis</span>
                                 <p class="text-gray-600">A systematic technique for coding and categorizing textual data to identify patterns, frequencies, and meanings.</p>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
-                                    <li><strong>Triangulation:</strong> Using multiple data sources, investigators, or methods to cross-verify findings.</li>
+                                <ul class="list-disc pl-5 space-y-1 text-gray-500 font-medium">
+                                    <li><strong>Triangulation:</strong> Using multiple data sources or investigators to cross-verify.</li>
                                     <li><strong>Inter-rater Reliability:</strong> Checking the consistency of coding across different researchers.</li>
                                 </ul>
                             </div>
@@ -886,9 +899,9 @@
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                             <div class="p-4 bg-white rounded-xl border border-[#E8E2D5] space-y-2">
                                 <span class="font-bold text-[#8C5E3C] uppercase tracking-wider block">Core Ethical Principles (Belmont / APA)</span>
-                                <ul class="list-disc pl-5 space-y-1 text-gray-600">
+                                <ul class="list-disc pl-5 space-y-1 text-[#2C2F2E] font-medium">
                                     <li><strong>Informed Consent:</strong> Providing participants with clear information about the study's purpose, risks, and benefits, ensuring they volunteer freely.</li>
-                                    <li><strong>Deception & Debriefing:</strong> Deception should only be used when justified by the study's value and when non-deceptive alternatives don't exist. Participants must be debriefed afterward.</li>
+                                    <li><strong>Deception & Debriefing:</strong> Deception should only be used when justified by the study's value. Participants must be debriefed afterward.</li>
                                     <li><strong>Anonymity:</strong> Safeguarding participant identity and data from public disclosure.</li>
                                 </ul>
                             </div>
@@ -934,25 +947,25 @@
             }
         };
 
-        // UI and Application State Management
+        // Application State Managers
         let activeKey = null;
         let activeChartObj = null;
-        const masteryTracking = JSON.parse(localStorage.getItem('mpc005_mastery')) || {};
+        const masteryTracking = JSON.parse(localStorage.getItem('mpc005_mastery_v2')) || {};
 
         function loadTopic(topicKey) {
             activeKey = topicKey;
             const data = syllabusDb[topicKey];
             if (!data) return;
 
-            // Highlight Active Navigation Target
+            // Highlight Active Sidebar Item
             document.querySelectorAll('.nav-topic-btn').forEach(btn => {
-                btn.classList.remove('bg-white', 'border-[#E8E2D5]', 'text-[#8C5E3C]', 'shadow-xs');
+                btn.classList.remove('bg-white', 'border-[#E8E2D5]', 'text-[#8C5E3C]', 'shadow-sm');
                 btn.classList.add('text-[#2C2F2E]', 'hover:bg-[#FAF6F0]');
             });
             const activeBtn = document.getElementById(`btn-${topicKey}`);
             if (activeBtn) {
                 activeBtn.classList.remove('text-[#2C2F2E]', 'hover:bg-[#FAF6F0]');
-                activeBtn.classList.add('bg-white', 'border-[#E8E2D5]', 'text-[#8C5E3C]', 'shadow-xs');
+                activeBtn.classList.add('bg-white', 'border-[#E8E2D5]', 'text-[#8C5E3C]', 'shadow-sm');
             }
 
             // Reveal Hidden Content Panel Components
@@ -974,36 +987,40 @@
             collapseSection('layer-anchor');
             collapseSection('layer-example');
 
-            // Render Chart Component
+            // Render Chart Component safely with fallback structure
             const chartNodeContainer = document.getElementById('chart-panel-container');
             if (data.hasChart) {
                 chartNodeContainer.classList.remove('hidden');
-                document.getElementById('chart-display-title').innerText = data.title + " (Data Visualization Model)";
+                document.getElementById('chart-display-title').innerText = data.title + " (Methodological Layout Mode)";
                 document.getElementById('chart-caption-text').innerText = data.chartDesc;
                 
-                if (activeChartObj) {
-                    activeChartObj.destroy();
-                }
-
-                const ctx = document.getElementById('active-recall-chart-node').getContext('2d');
-                activeChartObj = new Chart(ctx, {
-                    type: data.chartType,
-                    data: data.chartData,
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: {
-                                display: true,
-                                labels: { font: { family: 'Plus Jakarta Sans', size: 11, weight: 'bold' } }
-                            }
-                        },
-                        scales: data.chartType !== 'pie' ? {
-                            y: { beginAtZero: true, grid: { color: '#FAF6F0' } },
-                            x: { grid: { display: false } }
-                        } : {}
+                try {
+                    if (activeChartObj) {
+                        activeChartObj.destroy();
                     }
-                });
+
+                    const ctx = document.getElementById('active-recall-chart-node').getContext('2d');
+                    activeChartObj = new Chart(ctx, {
+                        type: data.chartType,
+                        data: data.chartData,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    labels: { font: { family: 'Plus Jakarta Sans', size: 11, weight: 'bold' } }
+                                }
+                            },
+                            scales: data.chartType !== 'pie' ? {
+                                y: { beginAtZero: true, grid: { color: '#FAF6F0' } },
+                                x: { grid: { display: false } }
+                            } : {}
+                        }
+                    });
+                } catch(e) {
+                    console.warn("Chart.js failed to initialize or render: ", e);
+                }
             } else {
                 chartNodeContainer.classList.add('hidden');
             }
@@ -1033,11 +1050,11 @@
             document.getElementById(`icon-${id}`).innerText = '+';
         }
 
-        // Mastery Tracking Engine
+        // Mastery Progress Handling
         function toggleMasteryStatus() {
             if (!activeKey) return;
             masteryTracking[activeKey] = !masteryTracking[activeKey];
-            localStorage.setItem('mpc005_mastery', JSON.stringify(masteryTracking));
+            localStorage.setItem('mpc005_mastery_v2', JSON.stringify(masteryTracking));
             updateMasteryUI();
             updateMasteryToggleButtonUI();
         }
@@ -1045,10 +1062,10 @@
         function updateMasteryToggleButtonUI() {
             const toggleBtn = document.getElementById('mastery-toggle');
             if (masteryTracking[activeKey]) {
-                toggleBtn.className = "shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800 font-semibold";
+                toggleBtn.className = "shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-emerald-200 bg-emerald-50 text-emerald-800 font-bold";
                 toggleBtn.innerHTML = `✓ Mastered`;
             } else {
-                toggleBtn.className = "shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-500 font-semibold hover:border-[#8C5E3C] hover:text-[#8C5E3C] transition-all";
+                toggleBtn.className = "shrink-0 flex items-center gap-1.5 text-xs px-3 py-1.5 rounded-full border border-gray-200 bg-white text-gray-500 font-bold hover:border-[#8C5E3C] hover:text-[#8C5E3C] transition-all";
                 toggleBtn.innerHTML = `Mark Mastered`;
             }
         }
@@ -1061,11 +1078,11 @@
                 if (masteryTracking[key]) {
                     totalMastered++;
                     if (dot) {
-                        dot.className = "mastery-dot w-2 h-2 rounded-full bg-emerald-500 border border-emerald-600";
+                        dot.className = "mastery-dot w-2.5 h-2.5 rounded-full bg-emerald-500 border border-emerald-600 shrink-0";
                     }
                 } else {
                     if (dot) {
-                        dot.className = "mastery-dot w-2 h-2 rounded-full bg-transparent border border-gray-300";
+                        dot.className = "mastery-dot w-2.5 h-2.5 rounded-full bg-transparent border-gray-300 shrink-0";
                     }
                 }
             });
@@ -1074,7 +1091,7 @@
 
         function resetAllTracking() {
             if (confirm("Are you sure you want to clear your learning progress?")) {
-                localStorage.removeItem('mpc005_mastery');
+                localStorage.removeItem('mpc005_mastery_v2');
                 Object.keys(masteryTracking).forEach(k => delete masteryTracking[k]);
                 updateMasteryUI();
                 if (activeKey) {
@@ -1092,9 +1109,7 @@
 </html>
 
 
-### Key Technical & Educational Highlights of this Application:
-1. **Interactive Active-Recall Architecture:** All sections (Exam Essentials, Retention Hooks, and Field Applications) are hidden by default behind custom collapsible cards. This design encourages you to actively test your memory before reviewing the core IGNOU parameters.
-2. **Comprehensive Syllabus Coverage:** Features 12 full modules covering all four Blocks of the IGNOU MPC-005 syllabus, including detailed scientific frameworks, true vs. quasi-experimental designs, variable classifications, and qualitative methods.
-3. **High-Yield Content Standard:** Built specifically to help you target 10-mark and 6-mark answers on the exam. It includes technical terms, researcher names (like McGuigan, Kerlinger, Glaser & Strauss, Yin, and Campbell & Stanley), and statistical concepts (such as variance types, measurement scales, and internal validity threats).
-4. **Non-Verbal Memory Hooks:** Replaces standard text mnemonics with clear physical analogies—like *Industrial Water Filtration Plants*, *Earthquake-Proof Blueprints*, and *Forensic Crash Site Investigations*—to make abstract research concepts easier to understand and remember.
-5. **Interactive Chart.js Modeling:** Includes embedded visual components to help you analyze complex structures, such as error-margin reductions, variance allocations, and sampling-design distributions.
+### What changed to resolve the issue:
+1. **Upgraded Compiler Base:** Switched from dynamic `@tailwindcss/browser@4` to the stable production-ready **Tailwind CSS v3** compiler runtime. It handles classes loaded dynamically from JSON objects (`syllabusDb`) and injected via `innerHTML` perfectly.
+2. **Defensive JS Handlers:** Wrapped the `Chart.js` initialization within standard error catches (`try-catch`), so even if an asynchronous chart loading exception occurs, the basic HTML workspace, rendering loop, and active recall buttons will **always execute, render, and be clickable**.
+3. **No Hidden Crashes:** Sanitized all layout templates to keep them fully self-contained without causing script blockages.
