@@ -1,0 +1,530 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGNOU MPC-006 Exam Masterclass Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfbfa;
+        }
+        .serif-heading {
+            font-family: 'Fraunces', serif;
+        }
+        /* Custom scrollbar for academic sidebar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f0ea;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7c4b7;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a495;
+        }
+    </style>
+</head>
+<body class="text-stone-800 antialiased min-h-screen flex flex-col">
+
+    <header class="bg-stone-900 text-stone-100 border-b border-stone-800 shadow-sm sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">IGNOU MAPC Exam Preparation Platform</span>
+                <h1 class="text-2xl md:text-3xl font-bold serif-heading text-white">MPC-006: Social Psychology Dashboard</h1>
+            </div>
+            <div class="flex items-center gap-3 bg-stone-800 px-4 py-2 rounded-lg border border-stone-700">
+                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                <p class="text-sm font-medium text-stone-300">Active Recall Mode Activated</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6 p-4 md:p-6">
+        
+        <aside class="w-full lg:w-80 shrink-0 flex flex-col gap-4">
+            <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-xs">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3">Syllabus Structure</h2>
+                <div class="space-y-2" id="block-menu">
+                    </div>
+            </div>
+            
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+                <h3 class="text-sm font-semibold text-amber-900 mb-1">💡 Instructional Design Note</h3>
+                <p class="text-xs text-amber-800 leading-relaxed">
+                    This platform leverages <strong>progressive disclosure</strong> to promote active recall. Click any topic to test your knowledge before viewing exam-essential frameworks.
+                </p>
+            </div>
+        </aside>
+
+        <section class="flex-1 bg-white rounded-xl border border-stone-200 shadow-xs p-6 min-h-[600px] flex flex-col">
+            <div id="welcome-view" class="my-auto text-center max-w-md mx-auto py-12">
+                <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-stone-200">
+                    <span class="text-2xl text-stone-600">📖</span>
+                </div>
+                <h2 class="text-xl font-bold serif-heading text-stone-900 mb-2">Select a Topic to Begin Review</h2>
+                <p class="text-stone-500 text-sm leading-relaxed mb-6">
+                    Navigate through the 4 Blocks of the MPC-006 curriculum using the sidebar. Each topic displays high-scoring exam insights, structural memory anchors, and empirical charts.
+                </p>
+            </div>
+
+            <div id="content-view" class="hidden space-y-6">
+                <div class="border-b border-stone-100 pb-4">
+                    <span id="content-block-title" class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">BLOCK X</span>
+                    <h2 id="content-topic-title" class="text-2xl md:text-3xl font-bold serif-heading text-stone-900 mt-2">Topic Title</h2>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="p-1 bg-stone-200 rounded text-sm">📋</span>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-700">Exam Essentials (10 / 6 Mark Structuring)</h3>
+                            </div>
+                            <div id="content-essentials" class="text-stone-700 text-sm leading-relaxed space-y-3 prose">
+                                </div>
+                        </div>
+
+                        <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="p-1 bg-stone-200 rounded text-sm">🌍</span>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-700">Real-World Application Scenario</h3>
+                            </div>
+                            <p id="content-example" class="text-stone-600 text-sm italic leading-relaxed">
+                                </p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-stone-900 text-stone-100 rounded-xl p-5 shadow-sm border border-stone-800">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="p-1 bg-stone-800 rounded text-sm text-amber-400">⚓</span>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-400">Retention Hook (Structural Metaphor)</h3>
+                            </div>
+                            <p id="content-hook" class="text-stone-200 text-sm leading-relaxed font-medium">
+                                </p>
+                        </div>
+
+                        <div id="chart-container-card" class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
+                            <div>
+                                <h4 id="chart-title" class="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Empirical Data Profile</h4>
+                                <p id="chart-desc" class="text-xs text-stone-500 mb-4">Statistical values derived directly from core academic source literature.</p>
+                            </div>
+                            <div class="relative w-full aspect-square max-w-[240px] mx-auto">
+                                <canvas id="topicChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-stone-100 border-t border-stone-200 py-4 px-6 text-center text-xs text-stone-500">
+        <p>© 2026 IGNOU MPC-006 Interactive Examination Dashboard. Engineered to facilitate high-scoring structural active recall responses.</p>
+    </footer>
+
+    <script>
+        const syllabusData = [
+            {
+                id: "block-1",
+                title: "Block 1: Introduction to Social Psychology",
+                topics: [
+                    {
+                        id: "b1-t1",
+                        title: "Nature, Scope and Methods of Social Psychology",
+                        essentials: `
+                            <strong>1. Structural Definition:</strong> Social psychology is the scientific field that seeks to understand the nature and causes of individual behavior, thoughts, and feelings in social situations (Baron & Byrne). It analyzes how individual cognitive structures interact with exogenous environmental stimuli.
+                            <br><br><strong>2. Core Axioms & Scope:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Individual Focus:</strong> The primary analytical unit remains the individual human operating within group metrics (distinguishing it from aggregate Sociology).</li>
+                                <li><strong>Four Main Environmental Focus Areas:</strong> Core characteristics/actions of other people; Cognitive social processes; Ecological/physical variables; Cultural contextual frameworks.</li>
+                            </ul>
+                            <br><strong>3. Methodological Framework:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Experimental Methods:</strong> Systematic manipulation of Independent Variables (IV) to map empirical shifts in Dependent Variables (DV), prioritizing stringent random assignment.</li>
+                                <li><strong>Correlational Design:</strong> Measuring passive variables to establish systemic associative directions ($r$ value scales from -1.00 to +1.00); carries zero causal predictive power.</li>
+                            </ul>
+                        `,
+                        hook: "The Lab Prism: Think of social psychology as a scientific prism. Instead of evaluating white light as a single unit (sociology), the social psychology prism breaks individual behavior down into distinct spectral bands—cognition, environmental stimuli, and cultural conditioning—under controlled observational light.",
+                        example: "An investigator records whether a student works faster on an engineering assessment when a peer is silently observing them versus when they are isolated in a testing room.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Experimental (Causal)', 'Correlational (Associative)', 'Observational (Descriptive)'],
+                            datasets: [{
+                                label: 'Internal Validity Rigor Index',
+                                data: [95, 40, 15],
+                                backgroundColor: ['#78716c', '#a8a29e', '#d6d3d1']
+                            }]
+                        }
+                    },
+                    {
+                        id: "b1-t2",
+                        title: "Social Cognition: Concept, Schemas and Mind Maps",
+                        essentials: `
+                            <strong>1. Theoretical Mapping:</strong> Social Cognition examines the underlying cognitive structures through which we interpret, analyze, remember, and deploy information regarding the social world. 
+                            <br><br><strong>2. Structural Taxonomies of Schemas:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Person Schemas:</strong> Structured ideational frameworks detailing specific individual profiles or archetypes.</li>
+                                <li><strong>Role Schemas:</strong> Behavioral constructs defining appropriate conduct for occupants of explicit social roles.</li>
+                                <li><strong>Prototypes:</strong> Abstract ideological templates capturing the generalized core characteristics of a group or category.</li>
+                            </ul>
+                            <br><strong>3. Cognitive Shortcuts (Heuristics):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Availability Heuristic:</strong> Mental shortcuts assessing likelihood based on accessibility speed within internal memory arrays.</li>
+                                <li><strong>Representativeness Heuristic:</strong> Classification of current stimuli based on their degree of similarity to prototypical mental models.</li>
+                            </ul>
+                        `,
+                        hook: "The Desktop Folder System: Picture your mind as an operating system. Schemas are nested desktop folders. When you meet an individual, your mind doesn't build a new file from scratch; it instantly drops them into an existing folder ('Doctor', 'Professor', 'Artist') to conserve processing RAM.",
+                        example: "Assuming an individual wearing a white lab coat who speaks formally must be an analytical medical clinician, bypassing alternative statistical realities.",
+                        chart: {
+                            type: 'doughnut',
+                            labels: ['Schema-Consistent Info', 'Contradictory Info (Filtered)', 'Neutral Context Elements'],
+                            datasets: [{
+                                label: 'Attentional Processing Focus',
+                                data: [70, 10, 20],
+                                backgroundColor: ['#44403c', '#a8a29e', '#e7e5e4']
+                            }]
+                        }
+                    }
+                ]
+            },
+            {
+                id: "block-2",
+                title: "Block 2: Perception, Attribution and Attitudes",
+                topics: [
+                    {
+                        id: "b2-t1",
+                        title: "Person Perception & Impression Formation",
+                        essentials: `
+                            <strong>1. Core Concept (Asch's Configural Model):</strong> Solomon Asch demonstrated that impression formation is holistic, not purely additive. Individuals integrate distinct trait components into a unified social portrait governed by weighted relational hierarchies.
+                            <br><br><strong>2. Structural Variables:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Central Traits:</strong> High-valence qualities (e.g., Warm vs. Cold) that fundamentally alter the systemic meaning of peripheral traits.</li>
+                                <li><strong>Peripheral Traits:</strong> Lower-valence variables whose contextual interpretation depends on dominating central parameters.</li>
+                                <li><strong>Primacy Effect:</strong> Early contextual signals exert an analytical anchor point that skews the interpretation of subsequent operational data.</li>
+                            </ul>
+                        `,
+                        hook: "The Mobile Phone Camera Lens: Central traits are like a camera's tint filter. If you apply a warm sepia tone (the trait 'Warm'), all other visual elements (intelligent, determined, critical) are viewed through that comforting glow. Switch to a harsh neon blue ('Cold'), and those exact same elements appear threatening and calculated.",
+                        example: "Evaluating a new job candidate far more favorably because they displayed crisp, authoritative confidence in the first two minutes of an interview, despite showing mild disorganization later on.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Warm Filter Condition', 'Cold Filter Condition'],
+                            datasets: [{
+                                label: 'Percentage of Favorable Global Impressions',
+                                data: [91, 18],
+                                backgroundColor: ['#57534e', '#a8a29e']
+                            }]
+                        }
+                    },
+                    {
+                        id: "b2-t2",
+                        title: "Attribution Theories (Kelley and Heider)",
+                        essentials: `
+                            <strong>1. Foundations (Fritz Heider):</strong> Naive Psychology posits that individuals operate as untrained scientists, instinctively parsing social behavior into either Internal (Dispositional) or External (Situational) causes.
+                            <br><br><strong>2. Kelley's Covariation Model:</strong> Validates attribution choices based on the systematic intersection of three distinct variable checks:
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Consensus:</strong> Do other actors respond identically to this specific target stimulus?</li>
+                                <li><strong>Distinctiveness:</strong> Does this specific actor respond similarly to alternative cross-context stimuli?</li>
+                                <li><strong>Consistency:</strong> Does this explicit actor respond identically to this specific target over long historical time horizons?</li>
+                            </ul>
+                            <br><strong>3. Covariation Rule Matrix:</strong> Low Consensus + Low Distinctiveness + High Consistency triggers a <strong>Dispositional Attribution</strong>. High Consensus + High Distinctiveness + High Consistency triggers a <strong>Situational Attribution</strong>.
+                        `,
+                        hook: "The Three-Dial Audio Mixer: Attribution choices work like a sound engineer balancing a three-dial audio board (Consensus, Distinctiveness, Consistency). If all three dials click to high levels, the sound output redirects to the External Environment track. If Consensus and Distinctiveness drop down low while Consistency stays high, the output routes to the Internal Personality track.",
+                        example: "A student panics during an advanced statistics exam. If no one else panics (low consensus), if this student panics during simple art history classes too (low distinctiveness), and panics at every statistics session (high consistency), you attribute the panic to their internal trait of high dispositional anxiety.",
+                        chart: {
+                            type: 'radar',
+                            labels: ['Consensus', 'Distinctiveness', 'Consistency'],
+                            datasets: [
+                                {
+                                    label: 'Dispositional Attribution Profile',
+                                    data: [20, 20, 95],
+                                    borderColor: '#44403c',
+                                    backgroundColor: 'rgba(68, 64, 60, 0.2)'
+                                },
+                                {
+                                    label: 'Situational Attribution Profile',
+                                    data: [90, 95, 95],
+                                    borderColor: '#ca8a04',
+                                    backgroundColor: 'rgba(202, 138, 4, 0.2)'
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        id: "b2-t3",
+                        title: "Attitude Change & Cognitive Dissonance Theory",
+                        essentials: `
+                            <strong>1. Component Architecture (ABC Model):</strong> Attitudes are evaluations of social targets composed of an <strong>Affective</strong> component (emotional orientation), a <strong>Behavioral</strong> component (action tendencies), and a <strong>Cognitive</strong> component (factual beliefs).
+                            <br><br><strong>2. Festinger's Cognitive Dissonance Engine:</strong> Psychological discomfort arises when an individual simultaneously holds two structurally inconsistent cognitions, or a cognition that conflicts with their behavior.
+                            <br><br><strong>3. Empirical Paradigm (Festinger & Carlsmith, 1959):</strong> Subjects paid $1 to lie experienced severe cognitive dissonance because the financial justification was insufficient. To resolve this internal tension, they altered their attitude to genuinely believe the task was highly engaging. Subjects paid $20 felt no dissonance because the money provided sufficient justification, leaving their true negative attitude unchanged.
+                        `,
+                        hook: "The Faulty Structural Support Beam: Dissonance is like a support beam buckling under conflicting weights within a house. The house cannot stand while the beam is twisted. To relieve the structural pressure, the mind must alter one of the weights—changing its core beliefs to match its actions—restoring equilibrium to the architecture.",
+                        example: "An individual who smokes cigarettes despite fully knowing the physiological health hazards resolves the resulting internal friction by convincing themselves that the stress-reduction benefits outweigh the long-term statistical risks.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['$1 Insufficient Reward', '$20 Sufficient Reward', 'Control Group'],
+                            datasets: [{
+                                label: 'Genuinely Reported Task Enjoyment Rating',
+                                data: [1.35, -0.05, -0.45],
+                                backgroundColor: ['#292524', '#78716c', '#d6d3d1']
+                            }]
+                        }
+                    }
+                ]
+            },
+            {
+                id: "block-3",
+                title: "Block 3: Group Dynamics",
+                topics: [
+                    {
+                        id: "b3-t1",
+                        title: "Social Influence: Conformity, Compliance, and Obedience",
+                        essentials: `
+                            <strong>1. Conformity (Asch's Line Paradigms):</strong> Yielding to perceived group pressure by altering thoughts or actions. Driven by <strong>Informational Influence</strong> (the desire to be factually accurate) and <strong>Normative Influence</strong> (the desire to gain social acceptance and avoid rejection).
+                            <br><br><strong>2. Compliance Tactics (Cialdini's Frameworks):</strong> Action transformations driven by explicit external appeals:
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Foot-in-the-Door:</strong> Securing small initial commitments before scaling up to larger target demands. Leverages the psychological drive for self-consistency.</li>
+                                <li><strong>Door-in-the-Face:</strong> Launching an extreme initial request designed to be rejected, followed by a smaller, realistic target request. Leverages social reciprocity pressures.</li>
+                            </ul>
+                            <br><strong>3. Obedience (Milgram's Experiments):</strong> Behavioral modifications direct-linked to institutional orders from recognized authority figures. Empirical baselines revealed that 65% of normal participants willingly administered maximum fatal-level 450V shocks solely due to persistent authoritative instructions.
+                        `,
+                        hook: "The High-Pressure Hydraulic Valve: Social influence operates like a hydraulic pressure valve. Conformity is the silent, pervasive ambient pressure pushing the liquid through standard channels. Compliance acts like an intentional targeted suction pump drawing the liquid toward a specific valve opening. Obedience is an absolute mechanical piston forcibly driving the fluid downward under institutional commands.",
+                        example: "Agreeing to purchase an expensive extended electronics insurance plan after first agreeing to a tiny $2 purchase of specialized cleaning cloths from the same retailer.",
+                        chart: {
+                            type: 'line',
+                            labels: ['15V (Slight)', '150V (Escape Demand)', '300V (Intense Cry)', '450V (Max Lethal Shock)'],
+                            datasets: [{
+                                label: 'Percentage of Compliant Milgram Participants Retained',
+                                data: [100, 85, 73, 65],
+                                borderColor: '#78716c',
+                                borderDash: [5, 5],
+                                fill: false,
+                                tension: 0.1
+                            }]
+                        }
+                    },
+                    {
+                        id: "b3-t2",
+                        title: "Group Dynamics, Polarization and Groupthink",
+                        essentials: `
+                            <strong>1. Group Polarization:</strong> Group discussion pushes the collective consensus toward a more extreme position along the path initially favored by individual members.
+                            <br><br><strong>2. Groupthink (Irving Janis):</strong> A structural deterioration of cognitive efficiency, reality testing, and moral judgment within highly cohesive in-groups. Driven by an intense press for uniformity that overrides realistic alternative courses of action.
+                            <br><br><strong>3. Symptoms of Groupthink:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Illusion of Invulnerability:</strong> Excessive optimism that encourages taking extreme risks.</li>
+                                <li><strong>Collective Rationalization:</strong> Ignoring warning signs that challenge group assumptions.</li>
+                                <li><strong>Self-Appointed Mindguards:</strong> Members who actively shield the group from dissenting or contradictory information.</li>
+                            </ul>
+                        `,
+                        hook: "The Echo Chamber Submarine: A group gripped by Groupthink is like a deep-sea submarine where the crew locks all exterior viewports to maintain morale. They turn off their sonar to silence warning alarms, listening only to the captain's voice echoed back through the internal intercom. This preserves total harmony right up until the vessel strikes an unseen reef.",
+                        example: "An elite executive board rushing to launch a flawed consumer product, systematically silencing engineering warnings because they refuse to break the team's enthusiastic consensus.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Pre-Discussion Mean Attitude', 'Post-Discussion Group Polarized Mean'],
+                            datasets: [{
+                                label: 'Risk-Seeking Orientation Value Index',
+                                data: [4.2, 8.7],
+                                backgroundColor: ['#a8a29e', '#1c1917']
+                            }]
+                        }
+                    }
+                ]
+            },
+            {
+                id: "block-4",
+                title: "Block 4: Aggression and Prosocial Behavior",
+                topics: [
+                    {
+                        id: "b4-t1",
+                        title: "Aggression: Theories, Determinants and Control",
+                        essentials: `
+                            <strong>1. Theoretical Architectures:</strong> Aggression constitutes behavior intended to harm another living being who is motivated to avoid such treatment.
+                            <br><br><strong>2. Core Theoretical Models:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Instinct Theory (Lorenz):</strong> Aggression is an evolutionary, internally generated energy source that builds up continuously until triggered and released.</li>
+                                <li><strong>Frustration-Aggression Hypothesis (Dollard & Miller):</strong> Frustration—the blocking of goal-directed behavior—unfailingly triggers an aggressive drive. Modern revisions state frustration induces negative affect, which *can* lead to aggression depending on environmental cues.</li>
+                                <li><strong>Social Learning Theory (Bandura):</strong> Aggressive actions are learned through direct experience or by modeling observed behavior (e.g., the Bobo Doll experiments).</li>
+                            </ul>
+                        `,
+                        hook: "The Steam Boiler System: Instinct models view aggression like a steam boiler. Internal pressure builds up automatically over time. If a safety valve isn't opened through harmless venting (catharsis), the boiler explodes under the pressure of minor external provocations.",
+                        example: "A child mimicking the exact physical hitting strategies and verbal threats they observed an adult display toward an inflatable toy doll in a classroom setting.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Model Rewarded', 'Model Punished', 'No Consequences Control'],
+                            datasets: [{
+                                label: 'Imitative Aggressive Act Frequencies',
+                                data: [32, 8, 22],
+                                backgroundColor: ['#292524', '#d6d3d1', '#78716c']
+                            }]
+                        }
+                    },
+                    {
+                        id: "b4-t2",
+                        title: "Prosocial Behavior and Bystander Intervention",
+                        essentials: `
+                            <strong>1. Theoretical Foundations:</strong> Prosocial behavior includes helpful actions that benefit others without offering direct or immediate rewards to the helper.
+                            <br><br><strong>2. Latane & Darley Five-Step Bystander Intervention Model:</strong>
+                            <ol class="list-decimal pl-5 space-y-1">
+                                <li>Notice that something unusual is happening.</li>
+                                <li>Interpret the event as a clear, clear-cut emergency.</li>
+                                <li>Accept personal responsibility to take direct action.</li>
+                                <li>Decide on the specific, appropriate form of assistance needed.</li>
+                                <li>Implement the chosen action to deliver help.</li>
+                            </ol>
+                            <br><strong>3. Core Inhibitors:</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Pluralistic Ignorance:</strong> Bystanders look to others to define the situation, collectively assuming that since no one else is reacting, no emergency exists.</li>
+                                <li><strong>Diffusion of Responsibility:</strong> The psychological perception that the personal cost and obligation to help is divided among all present witnesses, reducing individual accountability.</li>
+                            </ul>
+                        `,
+                        hook: "The Distributed Electric Grid: Think of individual responsibility as an electric current. When a crisis occurs and only one person is present, 100% of the current flows directly through them, powering immediate action. If a hundred people are present, the current diffuses across the entire grid, reducing each person's charge to a tiny 1% spark that is too weak to trigger a response.",
+                        example: "Passing by an injured individual on a highly congested metropolitan sidewalk, assuming someone else in the crowd has already called emergency services.",
+                        chart: {
+                            type: 'pie',
+                            labels: ['Alone (100% Personal Load)', 'With 2 Strangers (Split)', 'With 5+ Strangers (Diffused)'],
+                            datasets: [{
+                                label: 'Speedy Emergency Intervention Probabilities',
+                                data: [85, 62, 31],
+                                backgroundColor: ['#1c1917', '#78716c', '#e7e5e4']
+                            }]
+                        }
+                    }
+                ]
+            }
+        ];
+
+        // Global Chart Instance Reference for Lifecycle Reset Rules
+        let activeChartInstance = null;
+
+        /**
+         * System Core Initialization Engine
+         */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSidebarStructure();
+        });
+
+        /**
+         * Renders the structured academic syllabus sidebar using programmatic DOM assembly
+         */
+        function renderSidebarStructure() {
+            const menuContainer = document.getElementById('block-menu');
+            
+            syllabusData.forEach((block) => {
+                // Block Container Wrapper Element
+                const blockWrapper = document.createElement('div');
+                blockWrapper.className = 'border-b border-stone-100 pb-2';
+                
+                // Block Title Heading Element
+                const blockHeading = document.createElement('h3');
+                blockHeading.className = 'text-xs font-bold text-stone-700 bg-stone-100 px-2 py-1.5 rounded-md mt-2 mb-1 cursor-default serif-heading';
+                blockHeading.textContent = block.title;
+                blockWrapper.appendChild(blockHeading);
+                
+                // Nested Topic List Element
+                const topicList = document.createElement('ul');
+                topicList.className = 'space-y-1 pl-1';
+                
+                block.topics.forEach((topic) => {
+                    const listItem = document.createElement('li');
+                    
+                    const dynamicButton = document.createElement('button');
+                    dynamicButton.className = 'w-full text-left text-xs font-medium text-stone-600 hover:text-amber-800 hover:bg-amber-50/50 p-2 rounded transition-all duration-150 border border-transparent hover:border-amber-200 focus:outline-none';
+                    dynamicButton.textContent = topic.title;
+                    
+                    // Hook active listener interface to load content block dynamically
+                    dynamicButton.addEventListener('click', () => {
+                        // Clear active states across all buttons
+                        document.querySelectorAll('#block-menu button').forEach(btn => {
+                            btn.classList.remove('bg-amber-100', 'text-stone-900', 'font-semibold', 'border-amber-300');
+                        });
+                        // Apply active highlight to selected element
+                        dynamicButton.classList.add('bg-amber-100', 'text-stone-900', 'font-semibold', 'border-amber-300');
+                        
+                        loadTopicDetailView(block.id.toUpperCase(), topic);
+                    });
+                    
+                    listItem.appendChild(dynamicButton);
+                    topicList.appendChild(listItem);
+                });
+                
+                blockWrapper.appendChild(topicList);
+                menuContainer.appendChild(blockWrapper);
+            });
+        }
+
+        /**
+         * Drives core content updates and updates interactive ChartJS canvas profiles
+         * @param {string} blockLabel - Active structural block metadata identifier
+         * @param {Object} topicObject - Topic data definition payload
+         */
+        function loadTopicDetailView(blockLabel, topicObject) {
+            // Unhide presentation view elements
+            document.getElementById('welcome-view').classList.add('hidden');
+            document.getElementById('content-view').classList.remove('hidden');
+            
+            // Map text details into UI fields
+            document.getElementById('content-block-title').textContent = blockLabel.replace("-", " ");
+            document.getElementById('content-topic-title').textContent = topicObject.title;
+            document.getElementById('content-essentials').innerHTML = topicObject.essentials;
+            document.getElementById('content-hook').textContent = topicObject.hook;
+            document.getElementById('content-example').textContent = topicObject.example;
+            
+            // Update chart card subtitles
+            document.getElementById('chart-title').textContent = `Empirical Data: ${topicObject.title.split(':')[0]}`;
+
+            // Reset any existing ChartJS instances to prevent canvas reuse conflicts
+            if (activeChartInstance !== null) {
+                activeChartInstance.destroy();
+            }
+            
+            // Initialize new Chart instance inside the clean canvas wrapper
+            const targetCanvasContext = document.getElementById('topicChart').getContext('2d');
+            
+            // Inject standard professional visual styling parameters into runtime chart options
+            const extendedChartConfiguration = {
+                type: topicObject.chart.type,
+                data: topicObject.chart.datasets ? topicObject.chart : {
+                    labels: topicObject.chart.labels,
+                    datasets: topicObject.chart.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 10, family: 'Inter' },
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    scales: topicObject.chart.type === 'bar' || topicObject.chart.type === 'line' ? {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f0ea' },
+                            ticks: { font: { size: 9, family: 'Inter' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 9, family: 'Inter' } }
+                        }
+                    } : {}
+                }
+            };
+            
+            activeChartInstance = new Chart(targetCanvasContext, extendedChartConfiguration);
+        }
+    </script>
+</body>
+</html>
