@@ -7,7 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&family=Fraunces:ital,opsz,wght=0,9..144,400;0,9..144,600;1,9..144,400&display=swap');
         body {
             font-family: 'Inter', sans-serif;
             background-color: #fcfbfa;
@@ -147,7 +147,7 @@
                             <ul class="list-disc pl-5 space-y-1">
                                 <li><strong>Level of Measurement:</strong> Parametric requires Interval or Ratio scales (e.g., IQ score). Non-parametric works on Nominal or Ordinal levels (e.g., diagnostic ranks).</li>
                                 <li><strong>Distribution Profile:</strong> Parametric assumes normal distribution (bell curve). Non-parametric handles severely skewed, non-normal data.</li>
-                                <li><strong>Sample Size ($N$):</strong> Parametric requires large samples ($N > 30$). Non-parametric is highly resilient with small sample cohorts.</li>
+                                <li><strong>Sample Size ($N$):</strong> Parametric requires large samples ($N &gt; 30$). Non-parametric is highly resilient with small sample cohorts.</li>
                                 <li><strong>Variance Homogeneity:</strong> Parametric requires equal variances across comparison groups.</li>
                             </ul>
                             <br><strong>3. Classical Test Pairings:</strong> Independent $t$-test vs. Mann-Whitney $U$; One-way ANOVA vs. Kruskal-Wallis.
@@ -279,10 +279,10 @@
                         title: "Divergence from Normality: Skewness and Kurtosis",
                         essentials: `
                             <strong>1. Skewness (Asymmetry):</strong> Measures the directional shift of the curve's tail relative to a standard symmetrical distribution.
-                            <br>• <strong>Positive Skewness:</strong> Tail extends far toward the right (high positive values). Mass of data points cluster on the left side. Mean shifts higher than Median (Mean > Median).
-                            <br>• <strong>Negative Skewness:</strong> Tail extends far toward the left. Mass of data points cluster on the right. Mean shifts lower than Median (Mean < Median).
+                            <br>• <strong>Positive Skewness:</strong> Tail extends far toward the right (high positive values). Mass of data points cluster on the left side. Mean shifts higher than Median (Mean &gt; Median).
+                            <br>• <strong>Negative Skewness:</strong> Tail extends far toward the left. Mass of data points cluster on the right. Mean shifts lower than Median (Mean &lt; Median).
                             <br><br><strong>2. Kurtosis (Peakedness Profile):</strong> Measures the relative peak height and tail thickness of the distribution.
-                            <br>• <strong>Leptokurtic:</strong> Extremely high, narrow peak with thick tails ($Ku > 0.263$ or positive excess kurtosis).
+                            <br>• <strong>Leptokurtic:</strong> Extremely high, narrow peak with thick tails ($Ku &gt; 0.263$ or positive excess kurtosis).
                             <br>• <strong>Platykurtic:</strong> Broad, flat-topped, shallow peak with thin tails.
                             <br>• <strong>Mesokurtic:</strong> The baseline standard normal curve profile.
                         `,
@@ -375,3 +375,103 @@
                 blockHeading.className = 'text-xs font-bold text-stone-700 bg-stone-100 px-2 py-1.5 rounded-md mt-2 mb-1 cursor-default serif-heading';
                 blockHeading.textContent = block.title;
                 blockWrapper.appendChild(blockHeading);
+                
+                // Nested Topic List Element
+                const topicList = document.createElement('ul');
+                topicList.className = 'space-y-1 pl-1';
+                
+                block.topics.forEach((topic) => {
+                    const listItem = document.createElement('li');
+                    
+                    const dynamicButton = document.createElement('button');
+                    dynamicButton.className = 'w-full text-left text-xs font-medium text-stone-600 hover:text-amber-800 hover:bg-amber-50/50 p-2 rounded transition-all duration-150 border border-transparent hover:border-amber-200 focus:outline-none';
+                    dynamicButton.textContent = topic.title;
+                    
+                    // Hook active listener interface to load content block dynamically
+                    dynamicButton.addEventListener('click', () => {
+                        // Clear active states across all buttons
+                        document.querySelectorAll('#block-menu button').forEach(btn => {
+                            btn.classList.remove('bg-amber-100', 'text-stone-900', 'font-semibold', 'border-amber-300');
+                        });
+                        // Apply active highlight to selected element
+                        dynamicButton.classList.add('bg-amber-100', 'text-stone-900', 'font-semibold', 'border-amber-300');
+                        
+                        loadTopicDetailView(block.id.toUpperCase(), topic);
+                    });
+                    
+                    listItem.appendChild(dynamicButton);
+                    topicList.appendChild(listItem);
+                });
+                
+                blockWrapper.appendChild(topicList);
+                menuContainer.appendChild(blockWrapper);
+            });
+        }
+
+        /**
+         * Drives core content updates and updates interactive ChartJS canvas profiles
+         * @param {string} blockLabel - Active structural block metadata identifier
+         * @param {Object} topicObject - Topic data definition payload
+         */
+        function loadTopicDetailView(blockLabel, topicObject) {
+            // Unhide presentation view elements
+            document.getElementById('welcome-view').classList.add('hidden');
+            document.getElementById('content-view').classList.remove('hidden');
+            
+            // Map text details into UI fields
+            document.getElementById('content-block-title').textContent = blockLabel.replace("-", " ");
+            document.getElementById('content-topic-title').textContent = topicObject.title;
+            document.getElementById('content-essentials').innerHTML = topicObject.essentials;
+            document.getElementById('content-hook').textContent = topicObject.hook;
+            document.getElementById('content-example').textContent = topicObject.example;
+            
+            // Update chart card subtitles
+            document.getElementById('chart-title').textContent = `Data View: ${topicObject.title.split(':')[0]}`;
+
+            // Reset any existing ChartJS instances to prevent canvas reuse conflicts
+            if (activeChartInstance !== null) {
+                activeChartInstance.destroy();
+            }
+            
+            // Initialize new Chart instance inside the clean canvas wrapper
+            const targetCanvasContext = document.getElementById('topicChart').getContext('2d');
+            
+            // Inject standard professional visual styling parameters into runtime chart options
+            const extendedChartConfiguration = {
+                type: topicObject.chart.type,
+                data: topicObject.chart.datasets ? topicObject.chart : {
+                    labels: topicObject.chart.labels,
+                    datasets: topicObject.chart.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 10, family: 'Inter' },
+                                boxWidth: 12
+                            }
+                        }
+                    },
+                    scales: topicObject.chart.type === 'bar' || topicObject.chart.type === 'line' ? {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f0ea' },
+                            ticks: { font: { size: 9, family: 'Inter' } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 9, family: 'Inter' } }
+                        }
+                    } : {}
+                }
+            };
+            
+            activeChartInstance = new Chart(targetCanvasContext, extendedChartConfiguration);
+        }
+    </script>
+</body>
+</html>
