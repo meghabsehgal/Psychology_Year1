@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -37,7 +37,7 @@
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">IGNOU MAPC Exam Preparation Platform</span>
-                <h1 class="text-2xl md:text-3xl font-bold serif-heading text-white">MPC-006: Social Psychology Dashboard</h1>
+                <h1 class="text-2xl md:text-3xl font-bold serif-heading text-white">MPC-006: Statistics in Psychology</h1>
             </div>
             <div class="flex items-center gap-3 bg-stone-800 px-4 py-2 rounded-lg border border-stone-700">
                 <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -56,9 +56,9 @@
             </div>
             
             <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl">
-                <h3 class="text-sm font-semibold text-amber-900 mb-1">💡 Instructional Design Note</h3>
+                <h3 class="text-sm font-semibold text-amber-900 mb-1">💡 Active Recall Testing</h3>
                 <p class="text-xs text-amber-800 leading-relaxed">
-                    This platform leverages <strong>progressive disclosure</strong> to promote active recall. Click any topic to test your knowledge before viewing exam-essential frameworks.
+                    Statistical concepts require precise theoretical structuring for IGNOU marks. Click a topic and mentally draft your <strong>assumptions, properties, or definition formulas</strong> before revealing the cards.
                 </p>
             </div>
         </aside>
@@ -66,11 +66,11 @@
         <section class="flex-1 bg-white rounded-xl border border-stone-200 shadow-xs p-6 min-h-[600px] flex flex-col">
             <div id="welcome-view" class="my-auto text-center max-w-md mx-auto py-12">
                 <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-stone-200">
-                    <span class="text-2xl text-stone-600">📖</span>
+                    <span class="text-2xl text-stone-600">📊</span>
                 </div>
-                <h2 class="text-xl font-bold serif-heading text-stone-900 mb-2">Select a Topic to Begin Review</h2>
+                <h2 class="text-xl font-bold serif-heading text-stone-900 mb-2">Select a Statistical Unit to Review</h2>
                 <p class="text-stone-500 text-sm leading-relaxed mb-6">
-                    Navigate through the 4 Blocks of the MPC-006 curriculum using the sidebar. Each topic displays high-scoring exam insights, structural memory anchors, and empirical charts.
+                    Navigate through the core operational blocks of the MPC-006 curriculum using the sidebar to reveal Exam Essentials, Structural Metaphors, and real-world psychological application charts.
                 </p>
             </div>
 
@@ -86,7 +86,7 @@
                         <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
                             <div class="flex items-center gap-2 mb-3">
                                 <span class="p-1 bg-stone-200 rounded text-sm">📋</span>
-                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-700">Exam Essentials (10 / 6 Mark Structuring)</h3>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-700">Exam Essentials (10 / 6 Mark Technical Structuring)</h3>
                             </div>
                             <div id="content-essentials" class="text-stone-700 text-sm leading-relaxed space-y-3 prose">
                                 </div>
@@ -95,7 +95,7 @@
                         <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
                             <div class="flex items-center gap-2 mb-3">
                                 <span class="p-1 bg-stone-200 rounded text-sm">🌍</span>
-                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-700">Real-World Application Scenario</h3>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-700">Psychological Research Scenario</h3>
                             </div>
                             <p id="content-example" class="text-stone-600 text-sm italic leading-relaxed">
                                 </p>
@@ -106,7 +106,7 @@
                         <div class="bg-stone-900 text-stone-100 rounded-xl p-5 shadow-sm border border-stone-800">
                             <div class="flex items-center gap-2 mb-3">
                                 <span class="p-1 bg-stone-800 rounded text-sm text-amber-400">⚓</span>
-                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-400">Retention Hook (Structural Metaphor)</h3>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-400">Retention Hook (Physical Metaphor)</h3>
                             </div>
                             <p id="content-hook" class="text-stone-200 text-sm leading-relaxed font-medium">
                                 </p>
@@ -114,8 +114,8 @@
 
                         <div id="chart-container-card" class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
                             <div>
-                                <h4 id="chart-title" class="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Empirical Data Profile</h4>
-                                <p id="chart-desc" class="text-xs text-stone-500 mb-4">Statistical values derived directly from core academic source literature.</p>
+                                <h4 id="chart-title" class="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Mathematical Representation</h4>
+                                <p id="chart-desc" class="text-xs text-stone-500 mb-4">Empirical geometric distributions or data profiles mapped out for visualization.</p>
                             </div>
                             <div class="relative w-full aspect-square max-w-[240px] mx-auto">
                                 <canvas id="topicChart"></canvas>
@@ -129,69 +129,70 @@
     </main>
 
     <footer class="bg-stone-100 border-t border-stone-200 py-4 px-6 text-center text-xs text-stone-500">
-        <p>© 2026 IGNOU MPC-006 Interactive Examination Dashboard. Engineered to facilitate high-scoring structural active recall responses.</p>
+        <p>© 2026 IGNOU MPC-006 Core Statistics Syllabus Engine. Formatted for high-yield exam responses.</p>
     </footer>
 
     <script>
         const syllabusData = [
             {
                 id: "block-1",
-                title: "Block 1: Introduction to Social Psychology",
+                title: "Block 1: Introduction to Statistics",
                 topics: [
                     {
                         id: "b1-t1",
-                        title: "Nature, Scope and Methods of Social Psychology",
+                        title: "Parametric vs. Non-Parametric Statistics",
                         essentials: `
-                            <strong>1. Structural Definition:</strong> Social psychology is the scientific field that seeks to understand the nature and causes of individual behavior, thoughts, and feelings in social situations (Baron & Byrne). It analyzes how individual cognitive structures interact with exogenous environmental stimuli.
-                            <br><br><strong>2. Core Axioms & Scope:</strong>
+                            <strong>1. Definition Framework:</strong> Statistics in psychology split based on population distribution assumptions. Parametric tests make strict assumptions about population parameters; Non-parametric tests are distribution-free.
+                            <br><br><strong>2. Standard Criteria for Selection (Essential for 10-Mark Answer):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Individual Focus:</strong> The primary analytical unit remains the individual human operating within group metrics (distinguishing it from aggregate Sociology).</li>
-                                <li><strong>Four Main Environmental Focus Areas:</strong> Core characteristics/actions of other people; Cognitive social processes; Ecological/physical variables; Cultural contextual frameworks.</li>
+                                <li><strong>Level of Measurement:</strong> Parametric requires Interval or Ratio scales (e.g., IQ score). Non-parametric works on Nominal or Ordinal levels (e.g., diagnostic ranks).</li>
+                                <li><strong>Distribution Profile:</strong> Parametric assumes normal distribution (bell curve). Non-parametric handles severely skewed, non-normal data.</li>
+                                <li><strong>Sample Size ($N$):</strong> Parametric requires large samples ($N > 30$). Non-parametric is highly resilient with small sample cohorts.</li>
+                                <li><strong>Variance Homogeneity:</strong> Parametric requires equal variances across comparison groups.</li>
                             </ul>
-                            <br><strong>3. Methodological Framework:</strong>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Experimental Methods:</strong> Systematic manipulation of Independent Variables (IV) to map empirical shifts in Dependent Variables (DV), prioritizing stringent random assignment.</li>
-                                <li><strong>Correlational Design:</strong> Measuring passive variables to establish systemic associative directions ($r$ value scales from -1.00 to +1.00); carries zero causal predictive power.</li>
-                            </ul>
+                            <br><strong>3. Classical Test Pairings:</strong> Independent $t$-test vs. Mann-Whitney $U$; One-way ANOVA vs. Kruskal-Wallis.
                         `,
-                        hook: "The Lab Prism: Think of social psychology as a scientific prism. Instead of evaluating white light as a single unit (sociology), the social psychology prism breaks individual behavior down into distinct spectral bands—cognition, environmental stimuli, and cultural conditioning—under controlled observational light.",
-                        example: "An investigator records whether a student works faster on an engineering assessment when a peer is silently observing them versus when they are isolated in a testing room.",
+                        hook: "The Custom Tailored Suit vs. One-Size-Fits-All Poncho: Parametric stats are like a luxury tailored suit—it fits beautifully and has immense aesthetic power (statistical power), but only if you precisely match its exact measurements (normal distribution, interval scale). Non-parametric stats are like a rain poncho—it doesn't care about your specific shape or size (distribution-free); it fits anyone, but lacks fine precision.",
+                        example: "A clinical researcher evaluates reaction times (interval scale, normal data) using an independent t-test, but switches to Chi-Square when assessing the categorical preference of treatment choice (Nominal scale).",
                         chart: {
                             type: 'bar',
-                            labels: ['Experimental (Causal)', 'Correlational (Associative)', 'Observational (Descriptive)'],
-                            datasets: [{
-                                label: 'Internal Validity Rigor Index',
-                                data: [95, 40, 15],
-                                backgroundColor: ['#78716c', '#a8a29e', '#d6d3d1']
-                            }]
+                            labels: ['Statistical Power Efficiency', 'Distribution Flexibility', 'Small Sample Resilience'],
+                            datasets: [
+                                {
+                                    label: 'Parametric Tests',
+                                    data: [95, 20, 30],
+                                    backgroundColor: '#44403c'
+                                },
+                                {
+                                    label: 'Non-Parametric Tests',
+                                    data: [70, 100, 95],
+                                    backgroundColor: '#d6d3d1'
+                                }
+                            ]
                         }
                     },
                     {
                         id: "b1-t2",
-                        title: "Social Cognition: Concept, Schemas and Mind Maps",
+                        title: "Descriptive vs. Inferential Statistics",
                         essentials: `
-                            <strong>1. Theoretical Mapping:</strong> Social Cognition examines the underlying cognitive structures through which we interpret, analyze, remember, and deploy information regarding the social world. 
-                            <br><br><strong>2. Structural Taxonomies of Schemas:</strong>
+                            <strong>1. Analytical Splitting:</strong> 
+                            <br>• <strong>Descriptive Statistics:</strong> Focuses purely on summarizing, organizing, and describing data collected directly from a concrete sample group. It does not generalize beyond that specific data set.
+                            <br>• <strong>Inferential Statistics:</strong> Uses sample data metrics to draw probability-based mathematical conclusions, general predictions, or estimations regarding the broader unmeasured population.
+                            <br><br><strong>2. Core Structural Measures:</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Person Schemas:</strong> Structured ideational frameworks detailing specific individual profiles or archetypes.</li>
-                                <li><strong>Role Schemas:</strong> Behavioral constructs defining appropriate conduct for occupants of explicit social roles.</li>
-                                <li><strong>Prototypes:</strong> Abstract ideological templates capturing the generalized core characteristics of a group or category.</li>
-                            </ul>
-                            <br><strong>3. Cognitive Shortcuts (Heuristics):</strong>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Availability Heuristic:</strong> Mental shortcuts assessing likelihood based on accessibility speed within internal memory arrays.</li>
-                                <li><strong>Representativeness Heuristic:</strong> Classification of current stimuli based on their degree of similarity to prototypical mental models.</li>
+                                <li><strong>Descriptive Parameters:</strong> Central tendency (Mean, Median, Mode); Dispersion (Range, Variance, Standard Deviation); Distribution shape (Skewness, Kurtosis).</li>
+                                <li><strong>Inferential Systems:</strong> Hypothesis testing protocols ($p$-values, $\alpha$ levels, Type I/II errors); Parameter estimations (Confidence Intervals).</li>
                             </ul>
                         `,
-                        hook: "The Desktop Folder System: Picture your mind as an operating system. Schemas are nested desktop folders. When you meet an individual, your mind doesn't build a new file from scratch; it instantly drops them into an existing folder ('Doctor', 'Professor', 'Artist') to conserve processing RAM.",
-                        example: "Assuming an individual wearing a white lab coat who speaks formally must be an analytical medical clinician, bypassing alternative statistical realities.",
+                        hook: "The Single Photograph vs. The Sonar Radar: Descriptive statistics are like a digital photograph—it gives you an exact, highly detailed layout of what is caught in the frame (the sample), but tells you nothing about what's around the corner. Inferential statistics are like sonar radar—it reads small acoustic fragments bounced back to map out a probabilistic prediction of an entire hidden ocean floor.",
+                        example: "Calculating that the class mean on a test is 72% (Descriptive) vs. running an ANOVA to see if that mean difference proves that a new teaching method will work across all nationwide schools (Inferential).",
                         chart: {
                             type: 'doughnut',
-                            labels: ['Schema-Consistent Info', 'Contradictory Info (Filtered)', 'Neutral Context Elements'],
+                            labels: ['Descriptive Focus (Organizing Data)', 'Inferential Focus (Population Prediction)'],
                             datasets: [{
-                                label: 'Attentional Processing Focus',
-                                data: [70, 10, 20],
-                                backgroundColor: ['#44403c', '#a8a29e', '#e7e5e4']
+                                label: 'Analytical Function Matrix',
+                                data: [50, 50],
+                                backgroundColor: ['#57534e', '#a8a29e']
                             }]
                         }
                     }
@@ -199,202 +200,148 @@
             },
             {
                 id: "block-2",
-                title: "Block 2: Perception, Attribution and Attitudes",
+                title: "Block 2: Correlation and Regression",
                 topics: [
                     {
                         id: "b2-t1",
-                        title: "Person Perception & Impression Formation",
+                        title: "Product-Moment Correlation (Pearson r)",
                         essentials: `
-                            <strong>1. Core Concept (Asch's Configural Model):</strong> Solomon Asch demonstrated that impression formation is holistic, not purely additive. Individuals integrate distinct trait components into a unified social portrait governed by weighted relational hierarchies.
-                            <br><br><strong>2. Structural Variables:</strong>
+                            <strong>1. Definition & Target:</strong> Pearson's $r$ measures the linear relationship strength and direction between two continuous variables ($X$ and $Y$). The value ranges strictly between $-1.00$ and $+1.00$.
+                            <br><br><strong>2. Underlying Mathematical Assumptions (6-Mark Target):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Central Traits:</strong> High-valence qualities (e.g., Warm vs. Cold) that fundamentally alter the systemic meaning of peripheral traits.</li>
-                                <li><strong>Peripheral Traits:</strong> Lower-valence variables whose contextual interpretation depends on dominating central parameters.</li>
-                                <li><strong>Primacy Effect:</strong> Early contextual signals exert an analytical anchor point that skews the interpretation of subsequent operational data.</li>
+                                <li><strong>Linearity:</strong> The relationship between variables must be straight-lined, not curvilinear.</li>
+                                <li><strong>Continuous Variables:</strong> Data must be measured at the interval or ratio level.</li>
+                                <li><strong>Homoscedasticity:</strong> The variance of residual points must be uniformly distributed across all values of the independent variable.</li>
+                                <li><strong>Normal Distribution:</strong> Both variables must be normally distributed within the population.</li>
                             </ul>
                         `,
-                        hook: "The Mobile Phone Camera Lens: Central traits are like a camera's tint filter. If you apply a warm sepia tone (the trait 'Warm'), all other visual elements (intelligent, determined, critical) are viewed through that comforting glow. Switch to a harsh neon blue ('Cold'), and those exact same elements appear threatening and calculated.",
-                        example: "Evaluating a new job candidate far more favorably because they displayed crisp, authoritative confidence in the first two minutes of an interview, despite showing mild disorganization later on.",
+                        hook: "The Two Tandem Skaters: Think of Pearson $r$ as a mechanical bar linking two roller skaters. An $r = +1.00$ means they glide ahead in identical parallel paths. An $r = -1.00$ means they are mechanically pulled in mirror-opposite directions. An $r = 0.00$ means the bar is detached—one skater moves without exerting any predictable pull on the other.",
+                        example: "Correlating the total hours spent studying for an exam with the empirical grade scored on the exam across 50 students.",
                         chart: {
-                            type: 'bar',
-                            labels: ['Warm Filter Condition', 'Cold Filter Condition'],
-                            datasets: [{
-                                label: 'Percentage of Favorable Global Impressions',
-                                data: [91, 18],
-                                backgroundColor: ['#57534e', '#a8a29e']
-                            }]
-                        }
-                    },
-                    {
-                        id: "b2-t2",
-                        title: "Attribution Theories (Kelley and Heider)",
-                        essentials: `
-                            <strong>1. Foundations (Fritz Heider):</strong> Naive Psychology posits that individuals operate as untrained scientists, instinctively parsing social behavior into either Internal (Dispositional) or External (Situational) causes.
-                            <br><br><strong>2. Kelley's Covariation Model:</strong> Validates attribution choices based on the systematic intersection of three distinct variable checks:
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Consensus:</strong> Do other actors respond identically to this specific target stimulus?</li>
-                                <li><strong>Distinctiveness:</strong> Does this specific actor respond similarly to alternative cross-context stimuli?</li>
-                                <li><strong>Consistency:</strong> Does this explicit actor respond identically to this specific target over long historical time horizons?</li>
-                            </ul>
-                            <br><strong>3. Covariation Rule Matrix:</strong> Low Consensus + Low Distinctiveness + High Consistency triggers a <strong>Dispositional Attribution</strong>. High Consensus + High Distinctiveness + High Consistency triggers a <strong>Situational Attribution</strong>.
-                        `,
-                        hook: "The Three-Dial Audio Mixer: Attribution choices work like a sound engineer balancing a three-dial audio board (Consensus, Distinctiveness, Consistency). If all three dials click to high levels, the sound output redirects to the External Environment track. If Consensus and Distinctiveness drop down low while Consistency stays high, the output routes to the Internal Personality track.",
-                        example: "A student panics during an advanced statistics exam. If no one else panics (low consensus), if this student panics during simple art history classes too (low distinctiveness), and panics at every statistics session (high consistency), you attribute the panic to their internal trait of high dispositional anxiety.",
-                        chart: {
-                            type: 'radar',
-                            labels: ['Consensus', 'Distinctiveness', 'Consistency'],
+                            type: 'line',
+                            labels: ['Low X', 'Mid X', 'High X'],
                             datasets: [
                                 {
-                                    label: 'Dispositional Attribution Profile',
-                                    data: [20, 20, 95],
+                                    label: 'Positive Linear Trend (r = +0.85)',
+                                    data: [20, 50, 85],
                                     borderColor: '#44403c',
-                                    backgroundColor: 'rgba(68, 64, 60, 0.2)'
+                                    fill: false
                                 },
                                 {
-                                    label: 'Situational Attribution Profile',
-                                    data: [90, 95, 95],
+                                    label: 'Negative Linear Trend (r = -0.85)',
+                                    data: [85, 50, 20],
                                     borderColor: '#ca8a04',
-                                    backgroundColor: 'rgba(202, 138, 4, 0.2)'
+                                    fill: false
                                 }
                             ]
-                        }
-                    },
-                    {
-                        id: "b2-t3",
-                        title: "Attitude Change & Cognitive Dissonance Theory",
-                        essentials: `
-                            <strong>1. Component Architecture (ABC Model):</strong> Attitudes are evaluations of social targets composed of an <strong>Affective</strong> component (emotional orientation), a <strong>Behavioral</strong> component (action tendencies), and a <strong>Cognitive</strong> component (factual beliefs).
-                            <br><br><strong>2. Festinger's Cognitive Dissonance Engine:</strong> Psychological discomfort arises when an individual simultaneously holds two structurally inconsistent cognitions, or a cognition that conflicts with their behavior.
-                            <br><br><strong>3. Empirical Paradigm (Festinger & Carlsmith, 1959):</strong> Subjects paid $1 to lie experienced severe cognitive dissonance because the financial justification was insufficient. To resolve this internal tension, they altered their attitude to genuinely believe the task was highly engaging. Subjects paid $20 felt no dissonance because the money provided sufficient justification, leaving their true negative attitude unchanged.
-                        `,
-                        hook: "The Faulty Structural Support Beam: Dissonance is like a support beam buckling under conflicting weights within a house. The house cannot stand while the beam is twisted. To relieve the structural pressure, the mind must alter one of the weights—changing its core beliefs to match its actions—restoring equilibrium to the architecture.",
-                        example: "An individual who smokes cigarettes despite fully knowing the physiological health hazards resolves the resulting internal friction by convincing themselves that the stress-reduction benefits outweigh the long-term statistical risks.",
-                        chart: {
-                            type: 'bar',
-                            labels: ['$1 Insufficient Reward', '$20 Sufficient Reward', 'Control Group'],
-                            datasets: [{
-                                label: 'Genuinely Reported Task Enjoyment Rating',
-                                data: [1.35, -0.05, -0.45],
-                                backgroundColor: ['#292524', '#78716c', '#d6d3d1']
-                            }]
                         }
                     }
                 ]
             },
             {
                 id: "block-3",
-                title: "Block 3: Group Dynamics",
+                title: "Block 3: Normal Probability Distribution",
                 topics: [
                     {
                         id: "b3-t1",
-                        title: "Social Influence: Conformity, Compliance, and Obedience",
+                        title: "Characteristics of the Normal Curve (NPC)",
                         essentials: `
-                            <strong>1. Conformity (Asch's Line Paradigms):</strong> Yielding to perceived group pressure by altering thoughts or actions. Driven by <strong>Informational Influence</strong> (the desire to be factually accurate) and <strong>Normative Influence</strong> (the desire to gain social acceptance and avoid rejection).
-                            <br><br><strong>2. Compliance Tactics (Cialdini's Frameworks):</strong> Action transformations driven by explicit external appeals:
+                            <strong>1. Definition & Nature:</strong> The Normal Probability Curve (NPC) is a mathematical, theoretical ideal model of continuous probability distribution that is perfectly symmetrical and bell-shaped.
+                            <br><br><strong>2. Fixed Structural Properties (10-Mark Exam Mandatory Point):</strong>
                             <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Foot-in-the-Door:</strong> Securing small initial commitments before scaling up to larger target demands. Leverages the psychological drive for self-consistency.</li>
-                                <li><strong>Door-in-the-Face:</strong> Launching an extreme initial request designed to be rejected, followed by a smaller, realistic target request. Leverages social reciprocity pressures.</li>
+                                <li><strong>Unimodal & Symmetrical:</strong> Mean, Median, and Mode all coincide at a single central peak point.</li>
+                                <li><strong>Asymptotic to Base Line:</strong> The tails of the curve approach but never physically touch the horizontal $X$-axis, extending to infinity ($\pm\infty$).</li>
+                                <li><strong>Fixed Percentage Boundaries (Empirical Rule):</strong> 
+                                    <br>• $\pm 1$ Standard Deviation ($\sigma$) encompasses exactly <strong>68.26%</strong> of total cases.
+                                    <br>• $\pm 2$ Standard Deviations ($\sigma$) encompasses exactly <strong>95.44%</strong> of total cases.
+                                    <br>• $\pm 3$ Standard Deviations ($\sigma$) encompasses exactly <strong>99.73%</strong> of total cases.
+                                    <br>• Total area under the curve is always equal to $1.00$ or $100\%$.
+                                </li>
                             </ul>
-                            <br><strong>3. Obedience (Milgram's Experiments):</strong> Behavioral modifications direct-linked to institutional orders from recognized authority figures. Empirical baselines revealed that 65% of normal participants willingly administered maximum fatal-level 450V shocks solely due to persistent authoritative instructions.
                         `,
-                        hook: "The High-Pressure Hydraulic Valve: Social influence operates like a hydraulic pressure valve. Conformity is the silent, pervasive ambient pressure pushing the liquid through standard channels. Compliance acts like an intentional targeted suction pump drawing the liquid toward a specific valve opening. Obedience is an absolute mechanical piston forcibly driving the fluid downward under institutional commands.",
-                        example: "Agreeing to purchase an expensive extended electronics insurance plan after first agreeing to a tiny $2 purchase of specialized cleaning cloths from the same retailer.",
+                        hook: "The Symmetric Sand Hourglass: Imagine pouring fine sand through a pinpoint funnel onto a flat plate. The sand piles up naturally into a clean, uniform bell shape. The peak is where the average individual sits; the rare, tapering edges represent extreme outliers, stretching infinitely outward but thinning down to single grains.",
+                        example: "Standardized IQ tests are constructed so that population scores map directly to an NPC with a Mean of 100 and a Standard Deviation of 15.",
                         chart: {
                             type: 'line',
-                            labels: ['15V (Slight)', '150V (Escape Demand)', '300V (Intense Cry)', '450V (Max Lethal Shock)'],
+                            labels: ['-3σ', '-2σ', '-1σ', 'Mean (0)', '+1σ', '+2σ', '+3σ'],
                             datasets: [{
-                                label: 'Percentage of Compliant Milgram Participants Retained',
-                                data: [100, 85, 73, 65],
-                                borderColor: '#78716c',
-                                borderDash: [5, 5],
-                                fill: false,
-                                tension: 0.1
+                                label: 'Percentage of Cases Under Curve',
+                                data: [0.13, 2.14, 13.59, 34.13, 34.13, 13.59, 2.14],
+                                borderColor: '#1c1917',
+                                backgroundColor: 'rgba(28, 25, 23, 0.1)',
+                                fill: true,
+                                tension: 0.4
                             }]
                         }
                     },
                     {
                         id: "b3-t2",
-                        title: "Group Dynamics, Polarization and Groupthink",
+                        title: "Divergence from Normality: Skewness and Kurtosis",
                         essentials: `
-                            <strong>1. Group Polarization:</strong> Group discussion pushes the collective consensus toward a more extreme position along the path initially favored by individual members.
-                            <br><br><strong>2. Groupthink (Irving Janis):</strong> A structural deterioration of cognitive efficiency, reality testing, and moral judgment within highly cohesive in-groups. Driven by an intense press for uniformity that overrides realistic alternative courses of action.
-                            <br><br><strong>3. Symptoms of Groupthink:</strong>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Illusion of Invulnerability:</strong> Excessive optimism that encourages taking extreme risks.</li>
-                                <li><strong>Collective Rationalization:</strong> Ignoring warning signs that challenge group assumptions.</li>
-                                <li><strong>Self-Appointed Mindguards:</strong> Members who actively shield the group from dissenting or contradictory information.</li>
-                            </ul>
+                            <strong>1. Skewness (Asymmetry):</strong> Measures the directional shift of the curve's tail relative to a standard symmetrical distribution.
+                            <br>• <strong>Positive Skewness:</strong> Tail extends far toward the right (high positive values). Mass of data points cluster on the left side. Mean shifts higher than Median (Mean > Median).
+                            <br>• <strong>Negative Skewness:</strong> Tail extends far toward the left. Mass of data points cluster on the right. Mean shifts lower than Median (Mean < Median).
+                            <br><br><strong>2. Kurtosis (Peakedness Profile):</strong> Measures the relative peak height and tail thickness of the distribution.
+                            <br>• <strong>Leptokurtic:</strong> Extremely high, narrow peak with thick tails ($Ku > 0.263$ or positive excess kurtosis).
+                            <br>• <strong>Platykurtic:</strong> Broad, flat-topped, shallow peak with thin tails.
+                            <br>• <strong>Mesokurtic:</strong> The baseline standard normal curve profile.
                         `,
-                        hook: "The Echo Chamber Submarine: A group gripped by Groupthink is like a deep-sea submarine where the crew locks all exterior viewports to maintain morale. They turn off their sonar to silence warning alarms, listening only to the captain's voice echoed back through the internal intercom. This preserves total harmony right up until the vessel strikes an unseen reef.",
-                        example: "An elite executive board rushing to launch a flawed consumer product, systematically silencing engineering warnings because they refuse to break the team's enthusiastic consensus.",
+                        hook: "The Pulled Elastic Sheet: Think of a standard normal distribution as a perfectly balanced elastic sheet. Skewness happens when someone grabs either the left or right tail and yanks it hard to one side, stretching the fabric out thin. Kurtosis happens when someone grabs the center peak and pulls it straight up to a sharp peak (Leptokurtic) or steps on the center to flatten it down into a table (Platykurtic).",
+                        example: "An exceptionally difficult psychological exam causes almost all students to score very poorly, creating a distribution curve with a long trailing tail pointing toward the high scores on the right (Positive Skew).",
                         chart: {
-                            type: 'bar',
-                            labels: ['Pre-Discussion Mean Attitude', 'Post-Discussion Group Polarized Mean'],
-                            datasets: [{
-                                label: 'Risk-Seeking Orientation Value Index',
-                                data: [4.2, 8.7],
-                                backgroundColor: ['#a8a29e', '#1c1917']
-                            }]
+                            type: 'line',
+                            labels: ['Left Tail', 'Center Base', 'Right Tail'],
+                            datasets: [
+                                { label: 'Normal (Mesokurtic)', data: [10, 50, 10], borderColor: '#78716c', fill: false, tension: 0.3 },
+                                { label: 'Positive Skewed (Tail Right)', data: [45, 15, 2], borderColor: '#ca8a04', fill: false, tension: 0.3 },
+                                { label: 'Leptokurtic (High Peak)', data: [2, 90, 2], borderColor: '#1c1917', fill: false, tension: 0.3 }
+                            ]
                         }
                     }
                 ]
             },
             {
                 id: "block-4",
-                title: "Block 4: Aggression and Prosocial Behavior",
+                title: "Block 4: Hypothesis Testing & Inferential Statistics",
                 topics: [
                     {
                         id: "b4-t1",
-                        title: "Aggression: Theories, Determinants and Control",
+                        title: "Hypothesis Testing: Type I and Type II Errors",
                         essentials: `
-                            <strong>1. Theoretical Architectures:</strong> Aggression constitutes behavior intended to harm another living being who is motivated to avoid such treatment.
-                            <br><br><strong>2. Core Theoretical Models:</strong>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Instinct Theory (Lorenz):</strong> Aggression is an evolutionary, internally generated energy source that builds up continuously until triggered and released.</li>
-                                <li><strong>Frustration-Aggression Hypothesis (Dollard & Miller):</strong> Frustration—the blocking of goal-directed behavior—unfailingly triggers an aggressive drive. Modern revisions state frustration induces negative affect, which *can* lead to aggression depending on environmental cues.</li>
-                                <li><strong>Social Learning Theory (Bandura):</strong> Aggressive actions are learned through direct experience or by modeling observed behavior (e.g., the Bobo Doll experiments).</li>
-                            </ul>
+                            <strong>1. Definitional Protocol:</strong> Inferential statistics evaluates the validity of a Null Hypothesis ($H_0$), which states that no true experimental effect or group difference exists.
+                            <br><br><strong>2. Structural Matrix of Errors (Highly Tested 6-Mark Section):</strong>
+                            <table class="min-w-full text-xs border border-stone-200 mt-2">
+                                <thead>
+                                    <tr class="bg-stone-100">
+                                        <th class="border p-1">Decision Metric</th>
+                                        <th class="border p-1">H0 is Genuinely True</th>
+                                        <th class="border p-1">H0 is Genuinely False</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="border p-1 font-semibold">Reject H0</td>
+                                        <td class="border p-1 bg-red-50 text-red-700"><strong>Type I Error (Alpha α)</strong><br>False Positive (Claiming effect exists when it does not)</td>
+                                        <td class="border p-1 bg-green-50 text-green-700">Correct Decision<br>Statistical Power ($1 - \beta$)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border p-1 font-semibold">Fail to Reject H0</td>
+                                        <td class="border p-1 bg-green-50 text-green-700">Correct Decision<br>Probability = $1 - \alpha$</td>
+                                        <td class="border p-1 bg-red-50 text-red-700"><strong>Type II Error (Beta β)</strong><br>False Negative (Missing a real effect)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br><strong>3. Control Mechanisms:</strong> Setting a conservative Significance Level (e.g., $\alpha = 0.01$) reduces Type I Error but increases the risk of a Type II Error. Increasing sample size ($N$) protects against both.
                         `,
-                        hook: "The Steam Boiler System: Instinct models view aggression like a steam boiler. Internal pressure builds up automatically over time. If a safety valve isn't opened through harmless venting (catharsis), the boiler explodes under the pressure of minor external provocations.",
-                        example: "A child mimicking the exact physical hitting strategies and verbal threats they observed an adult display toward an inflatable toy doll in a classroom setting.",
-                        chart: {
-                            type: 'bar',
-                            labels: ['Model Rewarded', 'Model Punished', 'No Consequences Control'],
-                            datasets: [{
-                                label: 'Imitative Aggressive Act Frequencies',
-                                data: [32, 8, 22],
-                                backgroundColor: ['#292524', '#d6d3d1', '#78716c']
-                            }]
-                        }
-                    },
-                    {
-                        id: "b4-t2",
-                        title: "Prosocial Behavior and Bystander Intervention",
-                        essentials: `
-                            <strong>1. Theoretical Foundations:</strong> Prosocial behavior includes helpful actions that benefit others without offering direct or immediate rewards to the helper.
-                            <br><br><strong>2. Latane & Darley Five-Step Bystander Intervention Model:</strong>
-                            <ol class="list-decimal pl-5 space-y-1">
-                                <li>Notice that something unusual is happening.</li>
-                                <li>Interpret the event as a clear, clear-cut emergency.</li>
-                                <li>Accept personal responsibility to take direct action.</li>
-                                <li>Decide on the specific, appropriate form of assistance needed.</li>
-                                <li>Implement the chosen action to deliver help.</li>
-                            </ol>
-                            <br><strong>3. Core Inhibitors:</strong>
-                            <ul class="list-disc pl-5 space-y-1">
-                                <li><strong>Pluralistic Ignorance:</strong> Bystanders look to others to define the situation, collectively assuming that since no one else is reacting, no emergency exists.</li>
-                                <li><strong>Diffusion of Responsibility:</strong> The psychological perception that the personal cost and obligation to help is divided among all present witnesses, reducing individual accountability.</li>
-                            </ul>
-                        `,
-                        hook: "The Distributed Electric Grid: Think of individual responsibility as an electric current. When a crisis occurs and only one person is present, 100% of the current flows directly through them, powering immediate action. If a hundred people are present, the current diffuses across the entire grid, reducing each person's charge to a tiny 1% spark that is too weak to trigger a response.",
-                        example: "Passing by an injured individual on a highly congested metropolitan sidewalk, assuming someone else in the crowd has already called emergency services.",
+                        hook: "The Medical Diagnostic Monitor or Courthouse: A Type I error is a false alarm—like a fire alarm going off when someone is just making toast (claiming an effect exists when it doesn't). A Type II error is a silent failure—like an actual fire burning, but the alarm system fails to ring, leaving the danger completely undetected (missing a true effect).",
+                        example: "Concluding that an anxiety therapy works when it actually has zero physiological benefit (Type I) vs. dropping a valid therapy because your small sample size didn't show an effect (Type II).",
                         chart: {
                             type: 'pie',
-                            labels: ['Alone (100% Personal Load)', 'With 2 Strangers (Split)', 'With 5+ Strangers (Diffused)'],
+                            labels: ['Type I Error Prob (Alpha, set at 5%)', 'Statistical Power & Correct Decisions (95%)'],
                             datasets: [{
-                                label: 'Speedy Emergency Intervention Probabilities',
-                                data: [85, 62, 31],
-                                backgroundColor: ['#1c1917', '#78716c', '#e7e5e4']
+                                label: 'Decision Risk Allocation',
+                                data: [5, 95],
+                                backgroundColor: ['#292524', '#e7e5e4']
                             }]
                         }
                     }
@@ -428,103 +375,3 @@
                 blockHeading.className = 'text-xs font-bold text-stone-700 bg-stone-100 px-2 py-1.5 rounded-md mt-2 mb-1 cursor-default serif-heading';
                 blockHeading.textContent = block.title;
                 blockWrapper.appendChild(blockHeading);
-                
-                // Nested Topic List Element
-                const topicList = document.createElement('ul');
-                topicList.className = 'space-y-1 pl-1';
-                
-                block.topics.forEach((topic) => {
-                    const listItem = document.createElement('li');
-                    
-                    const dynamicButton = document.createElement('button');
-                    dynamicButton.className = 'w-full text-left text-xs font-medium text-stone-600 hover:text-amber-800 hover:bg-amber-50/50 p-2 rounded transition-all duration-150 border border-transparent hover:border-amber-200 focus:outline-none';
-                    dynamicButton.textContent = topic.title;
-                    
-                    // Hook active listener interface to load content block dynamically
-                    dynamicButton.addEventListener('click', () => {
-                        // Clear active states across all buttons
-                        document.querySelectorAll('#block-menu button').forEach(btn => {
-                            btn.classList.remove('bg-amber-100', 'text-stone-900', 'font-semibold', 'border-amber-300');
-                        });
-                        // Apply active highlight to selected element
-                        dynamicButton.classList.add('bg-amber-100', 'text-stone-900', 'font-semibold', 'border-amber-300');
-                        
-                        loadTopicDetailView(block.id.toUpperCase(), topic);
-                    });
-                    
-                    listItem.appendChild(dynamicButton);
-                    topicList.appendChild(listItem);
-                });
-                
-                blockWrapper.appendChild(topicList);
-                menuContainer.appendChild(blockWrapper);
-            });
-        }
-
-        /**
-         * Drives core content updates and updates interactive ChartJS canvas profiles
-         * @param {string} blockLabel - Active structural block metadata identifier
-         * @param {Object} topicObject - Topic data definition payload
-         */
-        function loadTopicDetailView(blockLabel, topicObject) {
-            // Unhide presentation view elements
-            document.getElementById('welcome-view').classList.add('hidden');
-            document.getElementById('content-view').classList.remove('hidden');
-            
-            // Map text details into UI fields
-            document.getElementById('content-block-title').textContent = blockLabel.replace("-", " ");
-            document.getElementById('content-topic-title').textContent = topicObject.title;
-            document.getElementById('content-essentials').innerHTML = topicObject.essentials;
-            document.getElementById('content-hook').textContent = topicObject.hook;
-            document.getElementById('content-example').textContent = topicObject.example;
-            
-            // Update chart card subtitles
-            document.getElementById('chart-title').textContent = `Empirical Data: ${topicObject.title.split(':')[0]}`;
-
-            // Reset any existing ChartJS instances to prevent canvas reuse conflicts
-            if (activeChartInstance !== null) {
-                activeChartInstance.destroy();
-            }
-            
-            // Initialize new Chart instance inside the clean canvas wrapper
-            const targetCanvasContext = document.getElementById('topicChart').getContext('2d');
-            
-            // Inject standard professional visual styling parameters into runtime chart options
-            const extendedChartConfiguration = {
-                type: topicObject.chart.type,
-                data: topicObject.chart.datasets ? topicObject.chart : {
-                    labels: topicObject.chart.labels,
-                    datasets: topicObject.chart.datasets
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom',
-                            labels: {
-                                font: { size: 10, family: 'Inter' },
-                                boxWidth: 12
-                            }
-                        }
-                    },
-                    scales: topicObject.chart.type === 'bar' || topicObject.chart.type === 'line' ? {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: '#f1f0ea' },
-                            ticks: { font: { size: 9, family: 'Inter' } }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { font: { size: 9, family: 'Inter' } }
-                        }
-                    } : {}
-                }
-            };
-            
-            activeChartInstance = new Chart(targetCanvasContext, extendedChartConfiguration);
-        }
-    </script>
-</body>
-</html>
