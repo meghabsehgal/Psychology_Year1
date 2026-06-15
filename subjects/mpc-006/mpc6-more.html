@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IGNOU MPC-006 Complete 16-Unit Exam Dashboard</title>
+    <!-- Tailwind CSS for clean, professional academic typography and layout -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js for data-heavy interactive visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&family=Fraunces:ital,opsz,wght=0,9..144,400;0,9..144,600;1,9..144,400&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfbfa;
+        }
+        .serif-heading {
+            font-family: 'Fraunces', serif;
+        }
+        /* Custom scrollbar for sidebar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f0ea;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c7c4b7;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a495;
+        }
+    </style>
+</head>
+<body class="text-stone-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="bg-stone-900 text-stone-100 border-b border-stone-800 shadow-sm sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <span class="text-xs font-semibold uppercase tracking-widest text-amber-400">IGNOU MAPC Exam Preparation Platform</span>
+                <h1 class="text-2xl md:text-3xl font-bold serif-heading text-white">MPC-006: Statistics in Psychology</h1>
+            </div>
+            <div class="flex items-center gap-3 bg-stone-800 px-4 py-2 rounded-lg border border-stone-700">
+                <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                <p class="text-sm font-medium text-stone-300">Active Recall Engine: 16/16 Units Loaded</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto flex flex-col lg:flex-row gap-6 p-4 md:p-6">
+        
+        <!-- Sidebar Navigation: Dynamic Block & Topic Hierarchy -->
+        <aside class="w-full lg:w-85 shrink-0 flex flex-col gap-4">
+            <div class="bg-white p-4 rounded-xl border border-stone-200 shadow-xs h-[calc(100vh-240px)] overflow-y-auto">
+                <h2 class="text-xs font-bold uppercase tracking-wider text-stone-400 mb-3 sticky top-0 bg-white py-1">Syllabus Structure Directory</h2>
+                <div class="space-y-4" id="block-menu">
+                    <!-- 16 Units injected dynamically via JS -->
+                </div>
+            </div>
+            
+            <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+                <h3 class="text-sm font-semibold text-amber-900 mb-1">💡 Complete 16-Unit Index</h3>
+                <p class="text-xs text-amber-800 leading-relaxed">
+                    Every block now contains its 4 mandatory units matching the official eGyanKosh layout for complete Term-End Exam coverage.
+                </p>
+            </div>
+        </aside>
+
+        <!-- Dynamic Content Area -->
+        <section class="flex-1 bg-white rounded-xl border border-stone-200 shadow-xs p-6 min-h-[600px] flex flex-col">
+            <!-- Welcome View (Default state) -->
+            <div id="welcome-view" class="my-auto text-center max-w-md mx-auto py-12">
+                <div class="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4 border border-stone-200">
+                    <span class="text-2xl text-stone-600">📊</span>
+                </div>
+                <h2 class="text-xl font-bold serif-heading text-stone-900 mb-2">Select a Statistical Unit</h2>
+                <p class="text-stone-500 text-sm leading-relaxed mb-6">
+                    Navigate through the 16 foundational curriculum units using the sidebar to reveal Exam Essentials, Research Scenarios, and real-world psychological application charts.
+                </p>
+            </div>
+
+            <!-- Core Content Display Area -->
+            <div id="content-view" class="hidden space-y-6">
+                <!-- Breadcrumbs & Header -->
+                <div class="border-b border-stone-100 pb-4">
+                    <span id="content-block-title" class="text-xs font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-2.5 py-1 rounded-md">BLOCK X</span>
+                    <h2 id="content-topic-title" class="text-xl md:text-2xl font-bold serif-heading text-stone-900 mt-2">Topic Title</h2>
+                </div>
+
+                <!-- Three-Part Instructional Scaffold Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Part 1: Exam Essentials -->
+                    <div class="lg:col-span-2 space-y-4">
+                        <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="p-1 bg-stone-200 rounded text-sm">📋</span>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-700">Exam Essentials (10 / 6 Mark Technical Structuring)</h3>
+                            </div>
+                            <div id="content-essentials" class="text-stone-700 text-sm leading-relaxed space-y-3 prose max-w-none">
+                                <!-- Dynamic Content -->
+                            </div>
+                        </div>
+
+                        <!-- Real-World Example Frame -->
+                        <div class="bg-stone-50 border border-stone-200 rounded-xl p-5">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="p-1 bg-stone-200 rounded text-sm">🌍</span>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-700">Psychological Research Scenario</h3>
+                            </div>
+                            <p id="content-example" class="text-stone-600 text-sm italic leading-relaxed">
+                                <!-- Dynamic Content -->
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Part 2 & 3: Retention Hooks & Interactive Visualization Space -->
+                    <div class="space-y-6">
+                        <!-- Structural Memory Hook Card -->
+                        <div class="bg-stone-900 text-stone-100 rounded-xl p-5 shadow-sm border border-stone-800">
+                            <div class="flex items-center gap-2 mb-3">
+                                <span class="p-1 bg-stone-800 rounded text-sm text-amber-400">⚓</span>
+                                <h3 class="font-bold uppercase tracking-wide text-xs text-stone-400">Retention Hook (Physical Metaphor)</h3>
+                            </div>
+                            <p id="content-hook" class="text-stone-200 text-sm leading-relaxed font-medium">
+                                <!-- Dynamic Content -->
+                            </p>
+                        </div>
+
+                        <!-- Data Visualization Anchor Frame -->
+                        <div id="chart-container-card" class="bg-white border border-stone-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
+                            <div>
+                                <h4 id="chart-title" class="text-xs font-bold text-stone-700 uppercase tracking-wider mb-2">Mathematical Representation</h4>
+                                <p id="chart-desc" class="text-xs text-stone-500 mb-4">Empirical geometric distributions or data profiles mapped out for visualization.</p>
+                            </div>
+                            <div class="relative w-full aspect-square max-w-[240px] mx-auto">
+                                <canvas id="topicChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-stone-100 border-t border-stone-200 py-4 px-6 text-center text-xs text-stone-500">
+        <p>© 2026 IGNOU MPC-006 Complete 16-Unit Master Syllabus Blueprint. Formatted for high-yield exam responses.</p>
+    </footer>
+
+    <!-- Comprehensive Academic Data Engine Object (Official eGyanKosh Mapping) -->
+    <script>
+        const syllabusData = [
+            {
+                id: "block-1",
+                title: "Block 1: Introduction to Statistics",
+                topics: [
+                    {
+                        id: "b1-u1",
+                        title: "Unit 1: Parametric & Non-Parametric Statistics",
+                        essentials: `
+                            <strong>1. Definition:</strong> Classifying statistics based on population parameter assumptions.
+                            <br><br><strong>2. Core Selection Criteria (10 Marks):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Measurement Scale:</strong> Parametric requires Interval/Ratio (e.g., test scores). Non-parametric uses Nominal/Ordinal (e.g., categories).</li>
+                                <li><strong>Distribution Profiles:</strong> Parametric assumes normal bell curve distribution. Non-parametric handles severely skewed arrays.</li>
+                                <li><strong>Sample Size ($N$):</strong> Parametric requires larger data groups ($N &gt; 30$). Non-parametric handles small cohorts ($N &lt; 15$).</li>
+                                <li><strong>Variance Homogeneity:</strong> Parametric demands equal group variances ($F_{max}$ rule).</li>
+                            </ul>
+                        `,
+                        hook: "The Tailored Blazer vs. The Rain Poncho: Parametric stats are a luxury tailored suit—highly precise and efficient, but only if you meet the exact measurements (normality, continuous data). Non-parametric stats are like a rain poncho—it fits any irregular shape, though it lacks fine analytical power.",
+                        example: "Using an independent sample t-test for raw response reaction times, but dropping down to a Mann-Whitney U test when checking subjective anxiety ranks.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Rigor Power Index', 'Data Shape Resilience', 'Small Sample Utility'],
+                            datasets: [
+                                { label: 'Parametric', data: [95, 20, 15], backgroundColor: '#44403c' },
+                                { label: 'Non-Parametric', data: [65, 100, 95], backgroundColor: '#d6d3d1' }
+                            ]
+                        }
+                    },
+                    {
+                        id: "b1-u2",
+                        title: "Unit 2: Descriptive & Inferential Statistics",
+                        essentials: `
+                            <strong>1. Core Bifurcation:</strong>
+                            <br>• <strong>Descriptive Statistics:</strong> Focuses on summarizing and describing the direct properties of a collected sample (e.g., Mean, Variance). It does not extend predictions to unmeasured groups.
+                            <br>• <strong>Inferential Statistics:</strong> Uses probability frameworks to draw conclusions about a broader parent population from sample data.
+                            <br><br><strong>2. Exam Target Metrics:</strong> Descriptive uses frequency organization and distribution plots. Inferential relies on confidence thresholds, hypothesis testing, and standard error limits.
+                        `,
+                        hook: "The Framed Photo vs. The Ocean Radar Screen: Descriptive statistics are a single printed photograph—showing you exactly what is inside the frame. Inferential stats are a sonar display tracking a few signals to draw a map of the entire dark ocean floor.",
+                        example: "A school tracking the average test performance score of 30 pupils (Descriptive) vs. running a t-test to decide if the strategy works for all students nationwide (Inferential).",
+                        chart: {
+                            type: 'doughnut',
+                            labels: ['Data Summary Focus', 'Population Prediction Focus'],
+                            datasets: [{ label: 'Workload Breakdown', data: [50, 50], backgroundColor: ['#57534e', '#a8a29e'] }]
+                        }
+                    },
+                    {
+                        id: "b1-u3",
+                        title: "Unit 3: Type I & Type II Errors",
+                        essentials: `
+                            <strong>1. Matrix Setup (Mandatory 6-Mark Layout):</strong>
+                            <br>• <strong>Type I Error ($\alpha$):</strong> False Positive. Rejecting a true null hypothesis ($H_0$). Stating an experimental effect exists when it was actually just a random fluke.
+                            <br>• <strong>Type II Error ($\beta$):</strong> False Negative. Failing to reject a false null hypothesis. Missing a real experimental treatment effect.
+                            <br><br><strong>2. Control Balance:</strong> Lowering Alpha (from 0.05 to 0.01) reduces Type I error risks but automatically spikes the probability of dropping into a Type II error state.
+                        `,
+                        hook: "The Fire Alarm vs. The Sleeping Guard: A Type I error is a false alarm going off when there is no smoke. A Type II error is a building fire spreading silently while the alarm completely fails to sound.",
+                        example: "Declaring a psychological wellness program highly successful when it actually has zero physiological benefit (Type I Error).",
+                        chart: {
+                            type: 'pie',
+                            labels: ['Alpha Target Risk (Type I)', 'Confidence Safety Window'],
+                            datasets: [{ label: 'Error Profiles', data: [5, 95], backgroundColor: ['#292524', '#e7e5e4'] }]
+                        }
+                    },
+                    {
+                        id: "b1-u4",
+                        title: "Unit 4: Setting Up Level of Significance",
+                        essentials: `
+                            <strong>1. Definition:</strong> The probability value ($p$) acting as the cutoff line to reject the null hypothesis. Standard thresholds are set at 0.05 (5% error margin) or 0.01 (1% error margin).
+                            <br><br><strong>2. One-Tailed vs. Two-Tailed Steps (6 Marks):</strong>
+                            <br>• <strong>Two-Tailed Test:</strong> Used when a relationship direction isn't predicted (e.g., 'Group A differs from Group B').
+                            <br>• <strong>One-Tailed Test:</strong> Direction is explicitly predicted (e.g., 'Group A scores higher than Group B'). Shifts the alpha rejection critical zone entirely to one side.
+                        `,
+                        hook: "The Boundary Line Fence: Level of significance is like placing a boundary fence at the edge of a property. If your research data falls outside that fence, it's considered rare enough to be a genuine discovery, not just random background noise.",
+                        example: "Setting an alpha of 0.05 on a directional test to find out if high-intensity therapies reduce patient panic counts faster than standard approaches.",
+                        chart: {
+                            type: 'line',
+                            labels: ['Safe Region (95%)', 'Rejection Zone (Top 2.5%)', 'Rejection Zone (Bottom 2.5%)'],
+                            datasets: [{ label: 'Two-Tailed Alpha Split', data: [95, 2.5, 2.5], backgroundColor: ['rgba(120,113,108,0.1)', '#1c1917', '#ca8a04'] }]
+                        }
+                    }
+                ]
+            },
+            {
+                id: "block-2",
+                title: "Block 2: Correlation and Regression",
+                topics: [
+                    {
+                        id: "b2-u1",
+                        title: "Unit 1: Product Moment Coefficient of Correlation",
+                        essentials: `
+                            <strong>1. Definition:</strong> Pearson's $r$ evaluates the linear relationship strength and direction between two continuous scale metrics, ranging from $-1.00$ to $+1.00$.
+                            <br><br><strong>2. Fixed Assumptions (10 Marks):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Linearity:</strong> The dataset coordinates must plot along a straight line path.</li>
+                                <li><strong>Continuous Variables:</strong> Scales must be Interval or Ratio variables.</li>
+                                <li><strong>Homoscedasticity:</strong> Uniform data spread around the linear path.</li>
+                                <li><strong>Normality:</strong> Symmetrical data curves within the underlying population profiles.</li>
+                            </ul>
+                        `,
+                        hook: "The Synchronized Skaters: Pearson's $r$ is an invisible bar connecting two skaters. A score of +1.00 means they move parallel to each other, while a score of -1.00 means they move in mirror-opposite directions. A score of 0.00 means they are completely independent.",
+                        example: "Checking whether hours spent on mindfulness tasks match up with measurable focus improvements across 60 individuals.",
+                        chart: {
+                            type: 'line',
+                            labels: ['Low Effort', 'Mid Effort', 'High Effort'],
+                            datasets: [{ label: 'Linear Trend Correlation (r = +0.82)', data: [25, 60, 90], borderColor: '#44403c', fill: false }]
+                        }
+                    },
+                    {
+                        id: "b2-u2",
+                        title: "Unit 2: Other Types of Correlation (Phi, Point-Biserial)",
+                        essentials: `
+                            <strong>1. Non-Standard Tool Options (10 Marks):</strong>
+                            <br>• <strong>Point-Biserial Correlation ($r_{pb}$):</strong> Used when one variable is continuous and the other is a true natural dichotomy (e.g., Male/Female, Employed/Unemployed).
+                            <br>• <strong>Phi Coefficient ($\phi$):</strong> Applied when both compared variables are true natural nominal dichotomies.
+                            <br>• <strong>Biserial Correlation ($r_b$):</strong> Used when one variable is continuous and the other is an artificial dichotomy (e.g., forcing continuous exam scores into Pass/Fail).
+                        `,
+                        hook: "The Custom Adapter Plugs: Think of these as special adapters for a electronic wall socket. When you don't have standard round continuous pins on both ends, you pick a unique adapter box to get the connection to work safely.",
+                        example: "Calculating correlation trends linking heart rate counts (Continuous) with whether a patient passed or failed a simulation test (Natural Dichotomy).",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Point-Biserial (Continuous/True)', 'Phi (Nominal/Nominal)'],
+                            datasets: [{ label: 'Structural Layout Usage', data: [100, 50], backgroundColor: '#a8a29e' }]
+                        }
+                    },
+                    {
+                        id: "b2-u3",
+                        title: "Unit 3: Partial and Multiple Correlation",
+                        essentials: `
+                            <strong>1. Advanced Concepts (6 Marks):</strong>
+                            <br>• <strong>Partial Correlation:</strong> Evaluates the linear relationship between two variables while mathematically isolating and holding constant the influence of a third confounding variable.
+                            <br>• <strong>Multiple Correlation ($R$):</strong> Measures the collective correlation strength of several independent predictor variables operating together on a single dependent metric.
+                        `,
+                        hook: "The Stage Spotlight Isolation: Partial correlation is like turning off the background stage lights (confounding variables) so the spotlight hits only two actors, allowing you to watch their interaction without distraction.",
+                        example: "Evaluating the correlation between study hours and exam grades while completely isolating and removing the effect of baseline IQ scores.",
+                        chart: {
+                            type: 'radar',
+                            labels: ['Variable X1 Focus', 'Variable X2 Focus', 'Confounding Control'],
+                            datasets: [{ label: 'Isolating Relationship Strength', data: [85, 70, 10], backgroundColor: 'rgba(87,83,78,0.2)', borderColor: '#57534e' }]
+                        }
+                    },
+                    {
+                        id: "b2-u4",
+                        title: "Unit 4: Bivariate and Multiple Regression",
+                        essentials: `
+                            <strong>1. Definition:</strong> Going beyond basic association to construct predictive paths.
+                            <br><br><strong>2. Linear Regression Formula Architecture:</strong>
+                            Expressed as $$Y = a + bX$$
+                            Where $Y$ is the predicted metric score, $a$ is the line's intercept value, $b$ is the slope regression coefficient, and $X$ is the raw input predictor score. Multiple regression expands this to include multiple independent variables: $$Y = a + b_1X_1 + b_2X_2 + ...$$
+                        `,
+                        hook: "The Flight Path Calculator: Think of regression as a flight trajectory tool. You plug in a starting elevation coordinate ($a$) and an ascent angle multiplier ($b$). This allows you to project exactly where the aircraft will sit at any milestone point along the trip.",
+                        example: "Predicting a patient's final wellness score based on the exact number of therapeutic treatment sessions completed.",
+                        chart: {
+                            type: 'line',
+                            labels: ['Baseline (a=20)', '2 Weeks', '4 Weeks', '6 Weeks (Y=56)'],
+                            datasets: [{ label: 'Regression Predictive Model', data: [20, 32, 44, 56], borderColor: '#ca8a04', fill: true, backgroundColor: 'rgba(202,138,4,0.05)' }]
+                        }
+                    }
+                ]
+            },
+            {
+                id: "block-3",
+                title: "Block 3: Normal Distribution",
+                topics: [
+                    {
+                        id: "b3-u1",
+                        title: "Unit 1: Characteristics of Normal Distribution (NPC)",
+                        essentials: `
+                            <strong>1. Theoretical Model:</strong> The Normal Probability Curve is a symmetrical mathematical model centered on the population median.
+                            <br><br><strong>2. Core Properties (10 Marks):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li><strong>Symmetry:</strong> Mean, Median, and Mode overlap perfectly at the zero center point.</li>
+                                <li><strong>Asymptotic Tails:</strong> The outer limits approach but never touch the base line, extending to infinity ($\pm\infty$).</li>
+                                <li><strong>Empirical Rule Fields:</strong> $\pm 1\sigma$ holds 68.26% of all data; $\pm 2\sigma$ covers 95.44%; $\pm 3\sigma$ captures 99.73%.</li>
+                            </ul>
+                        `,
+                        hook: "The Symmetrical Hourglass Hill: Pouring sand through a funnel creates a uniform mound. The high central peak holds the typical average cases, while the thin tapering sides contain rare extreme outliers.",
+                        example: "Standardizing population intelligence assessments to map onto an NPC with a Mean of 100 and a Standard Deviation step of 15.",
+                        chart: {
+                            type: 'line',
+                            labels: ['-3σ', '-2σ', '-1σ', '0 (Mean)', '+1σ', '+2σ', '+3σ'],
+                            datasets: [{ label: 'Area under Curve %', data: [0.13, 2.14, 13.59, 34.13, 34.13, 13.59, 2.14], borderColor: '#1c1917', fill: true, tension: 0.4 }]
+                        }
+                    },
+                    {
+                        id: "b3-u2",
+                        title: "Unit 2: Significance of Mean Differences & Standard Error",
+                        essentials: `
+                            <strong>1. Definition:</strong> Evaluating whether the differences between two sample means are genuine or just random sampling variations.
+                            <br><br><strong>2. Standard Error of the Mean ($SEM$):</strong>
+                            Calculates the standard deviation of sample means across repeated samplings from a population. Formula: $$SEM = \\frac{\\sigma}{\\sqrt{N}}$$
+                            A smaller $SEM$ indicates a more stable sample mean that closer matches the true population mean.
+                        `,
+                        hook: "The Radio Signal Tuning Dial: Standard Error is like the background static on a radio dial. If the static is low ($SEM$ is small), you can easily hear the true broadcast signal (the mean difference) clearly without distortion.",
+                        example: "Calculating the Standard Error across two student test samples to ensure group differences are statistically reliable.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Observed Mean Diff', 'Standard Error Barrier (SEM)'],
+                            datasets: [{ label: 'Signal vs Noise', data: [14.2, 2.1], backgroundColor: '#57534e' }]
+                        }
+                    },
+                    {
+                        id: "b3-u3",
+                        title: "Unit 3: Analysis of Variance (One-Way ANOVA)",
+                        essentials: `
+                            <strong>1. Core Purpose (10 Marks):</strong> The $t$-test is limited to comparing a maximum of two groups. Comparing three or more groups with multiple $t$-tests inflates the overall Type I error rate. ANOVA solves this by checking all group variances simultaneously.
+                            <br><br><strong>2. Variance Partitioning Architecture:</strong>
+                            <br>• <strong>Between-Group Variance:</strong> Measures variance caused by the actual experimental treatment effects.
+                            <br>• <strong>Within-Group Variance:</strong> Measures internal variance caused by individual differences and measurement error noise.
+                            <br>Formula: $$F = \\frac{MS_{Between}}{MS_{Within}}$$
+                        `,
+                        hook: "The Highway Overpass: If you want to check which of three alternative travel routes is fastest, you don't just run pairs of races indefinitely. You sit above the main intersection, watching all traffic lanes simultaneously to make a single, clear comparison.",
+                        example: "Evaluating performance metrics across three separate groups using three different drug dosage levels (None, Low, High).",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Between-Group Variance', 'Within-Group Error Noise'],
+                            datasets: [{ label: 'Variance Breakdown (SS)', data: [145, 40], backgroundColor: ['#1c1917', '#a8a29e'] }]
+                        }
+                    },
+                    {
+                        id: "b3-u4",
+                        title: "Unit 4: Two-Way Analysis of Variance",
+                        essentials: `
+                            <strong>1. Definition & Scope (6 Marks):</strong> Evaluates the simultaneous effects of two separate categorical independent variables on a single continuous dependent variable.
+                            <br><br><strong>2. Core Advantages:</strong> 
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Allows researchers to evaluate <strong>Main Effects</strong> for both independent variables individually.</li>
+                                <li>Measures <strong>Interaction Effects</strong>—revealing if the impact of one variable changes depending on the level of the other variable.</li>
+                            </ul>
+                        `,
+                        hook: "The Baking Ingredient Reaction: Main effects are like checking how sugar or heat affect a cake independently. The interaction effect is seeing how sugar and heat combine—creating a unique structural change that doesn't happen from either ingredient alone.",
+                        example: "Testing how two distinct therapy formats interact with patient gender profiles to influence overall recovery speeds.",
+                        chart: {
+                            type: 'line',
+                            labels: ['Therapy Type A', 'Therapy Type B'],
+                            datasets: [
+                                { label: 'Male Sub-cohort', data: [40, 85], borderColor: '#1c1917', fill: false },
+                                { label: 'Female Sub-cohort', data: [75, 45], borderColor: '#ca8a04', fill: false }
+                            ]
+                        }
+                    }
+                ]
+            },
+            {
+                id: "block-4",
+                title: "Block 4: Non-Parametric Statistics",
+                topics: [
+                    {
+                        id: "b4-u1",
+                        title: "Unit 1: Rationale & Non-Parametric Foundations",
+                        essentials: `
+                            <strong>1. Core Concept:</strong> When sample profiles violate the strict requirements of parametric models (such as normality or continuous scales), non-parametric alternatives must be used.
+                            <br><br><strong>2. Structural Features (6 Marks):</strong>
+                            <ul class="list-disc pl-5 space-y-1">
+                                <li>Often called <strong>distribution-free</strong> tests because they make no assumptions about the shape of the parent population curve.</li>
+                                <li>Are highly resilient with small sample cohorts ($N &lt; 10$).</li>
+                                <li>Convert raw values into ranked values or frequency counts, which sacrifices a bit of statistical power.</li>
+                            </ul>
+                        `,
+                        hook: "The All-Terrain Boots: Non-parametric tests are like all-terrain hiking boots. They aren't as fast as track spikes (parametric tests) on a smooth running surface, but they are highly reliable when navigating rough, uneven data paths without slipping.",
+                        example: "Switching from a standard t-test to non-parametric rankings because your clinical sample group has only 8 participants.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Assumptions Needed', 'Skew Resilience Index'],
+                            datasets: [
+                                { label: 'Parametric', data: [90, 20], backgroundColor: '#57534e' },
+                                { label: 'Non-Parametric', data: [10, 95], backgroundColor: '#e7e5e4' }
+                            ]
+                        }
+                    },
+                    {
+                        id: "b4-u2",
+                        title: "Unit 2: Mann-Whitney U Test for Two Sample Designs",
+                        essentials: `
+                            <strong>1. Definition:</strong> The non-parametric equivalent to the independent samples $t$-test. It determines whether two independent groups differ significantly based on ordinal rank data.
+                            <br><br><strong>2. Mechanics:</strong> Combines all scores into a single ranked list, sums the ranks for each group separately, and checks if one group clusters significantly lower or higher on the leaderboard.
+                        `,
+                        hook: "The Tug-of-War Leaderboard: Imagine combining two separate teams onto a single leaderboard. If Team A claims almost all the top ranks while Team B sits at the bottom, you can conclude a significant group difference exists without needing to measure their exact raw scores.",
+                        example: "Comparing ranked motivation scores between two distinct corporate branches that have non-normal score distributions.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Group A Rank Sum', 'Group B Rank Sum'],
+                            datasets: [{ label: 'Rank Distribution Comparison', data: [38, 72], backgroundColor: '#1c1917' }]
+                        }
+                    },
+                    {
+                        id: "b4-u3",
+                        title: "Unit 3: Kruskal-Wallis Analysis of Variance",
+                        essentials: `
+                            <strong>1. Definition:</strong> The non-parametric alternative to the One-Way ANOVA. It evaluates rank position differences across three or more independent sample groups.
+                            <br><br><strong>2. Exam Application Steps (6 Marks):</strong> Used when analyzing three or more comparison conditions where the data is ordinal, or when sample distributions violate normality and variance equality checks.
+                        `,
+                        hook: "The Multi-Lane Race Standings: Instead of using standard continuous stopwatches to measure speed, you record the final place positions (1st, 2nd, 10th) across three separate racing clubs to see if one club clearly dominates the podium standings.",
+                        example: "Comparing subjective adjustment ranks across three separate patient groups recovering with three distinct therapy styles.",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Therapy Group 1', 'Therapy Group 2', 'Therapy Group 3'],
+                            datasets: [{ label: 'Mean Rank Position Indices', data: [14, 32, 55], backgroundColor: '#78716c' }]
+                        }
+                    },
+                    {
+                        id: "b4-u4",
+                        title: "Unit 4: Chi-Square and Kendall Rank Correlation",
+                        essentials: `
+                            <strong>1. Chi-Square ($\chi^2$) Architecture (10 Marks):</strong> A non-parametric test for categorical frequency data. It compares observed cell counts ($O$) against expected frequency distributions ($E$). Formula: $$\chi^2 = \sum \frac{(O - E)^2}{E}$$
+                            <br><strong>2. Kendall's Tau ($\tau$):</strong> A non-parametric alternative for correlation that measures the association strength between two ranked variables by evaluating paired agreement profiles (concordant vs. discordant pairs).
+                        `,
+                        hook: "The Sorting Basket Audit: Chi-Square acts like an auditor checking color-coded sorting bins. It doesn't track fine measurements or weight values; it simply counts how many items land in each bin to see if the distribution matches baseline expectations.",
+                        example: "Evaluating if a significant relationship exists between geographic locations (Urban/Rural) and preferred therapy setups (Online/In-Person).",
+                        chart: {
+                            type: 'bar',
+                            labels: ['Category 1 (Obs vs Exp)', 'Category 2 (Obs vs Exp)'],
+                            datasets: [
+                                { label: 'Observed Frequency Counts', data: [55, 15], backgroundColor: '#ca8a04' },
+                                { label: 'Expected Baseline Values', data: [35, 35], backgroundColor: '#e7e5e4' }
+                            ]
+                        }
+                    }
+                ]
+            }
+        ];
+
+        // Global Chart Instance Reference for Lifecycle Reset Rules
+        let activeChartInstance = null;
+
+        /**
+         * System Core Initialization Engine
+         */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderSidebarStructure();
+        });
+
+        /**
+         * Renders the structured academic syllabus sidebar using programmatic DOM assembly
+         */
+        function renderSidebarStructure() {
+            const menuContainer = document.getElementById('block-menu');
+            
+            syllabusData.forEach((block) => {
+                // Block Container Wrapper Element
+                const blockWrapper = document.createElement('div');
+                blockWrapper.className = 'border-b border-stone-100 pb-2';
+                
+                // Block Title Heading Element
+                const blockHeading = document.createElement('h3');
+                blockHeading.className = 'text-xs font-bold text-stone-700 bg-stone-100 px-2 py-1.5 rounded-md mt-2 mb-1 cursor-default serif-heading';
+                blockHeading.textContent = block.title;
+                blockWrapper.appendChild(blockHeading);
+                
+                // Nested Topic List Element
+                const topicList = document.createElement('ul');
+                topicList.className = 'space-y-1 pl-1';
+                
+                block.topics.forEach((topic) => {
+                    const listItem = document.createElement('li');
+                    
+                    const dynamicButton = document.createElement('button');
+                    dynamicButton.className = 'w-full text-left text-xs font-medium text-stone-600 hover:text-amber-800 hover:bg-amber-50/50 p-2 rounded transition-all duration-150 border border-transparent hover:border-amber-200 focus:outline-none';
+                    dynamicButton.textContent = topic.title;
+                    
+                    // Hook active listener interface to load content block dynamically
+                    dynamicButton.addEventListener('click', () => {
+                        // Clear active states across all buttons
+                        document.querySelectorAll('#block-menu button').forEach(btn => {
+                            btn.classList.remove('bg-amber-100', 'text-stone-900', 'font-semibold', 'border-amber-300');
+                        });
+                        // Apply active highlight to selected element
+                        dynamicButton.classList.add('bg-amber-100', 'text-stone-900', 'font-semibold', 'border-amber-300');
+                        
+                        loadTopicDetailView(block.id.toUpperCase(), topic);
+                    });
+                    
+                    listItem.appendChild(dynamicButton);
+                    topicList.appendChild(listItem);
+                });
+                
+                blockWrapper.appendChild(topicList);
+                menuContainer.appendChild(blockWrapper);
+            });
+        }
+
+        /**
+         * Drives core content updates and updates interactive ChartJS canvas profiles
+         * @param {string} blockLabel - Active structural block metadata identifier
+         * @param {Object} topicObject - Topic data definition payload
+         */
+        function loadTopicDetailView(blockLabel, topicObject) {
+            // Unhide presentation view elements
+            document.getElementById('welcome-view').classList.add('hidden');
+            document.getElementById('content-view').classList.remove('hidden');
+            
+            // Map text details into UI fields
+            document.getElementById('content-block-title').textContent = blockLabel.replace("-", " ");
+            document.getElementById('content-topic-title').textContent = topicObject.title;
+            document.getElementById('content-essentials').innerHTML = topicObject.essentials;
+            document.getElementById('content-hook').textContent = topicObject.hook;
+            document.getElementById('content-example').textContent = topicObject.example;
+            
+            // Update chart card subtitles
+            document.getElementById('chart-title').textContent = `Statistical Geometry View`;
+
+            // Reset any existing ChartJS instances to prevent canvas reuse conflicts
+            if (activeChartInstance !== null) {
+                activeChartInstance.destroy();
+            }
+            
+            // Initialize new Chart instance inside the clean canvas wrapper
+            const targetCanvasContext = document.getElementById('topicChart').getContext('2d');
+            
+            const extendedChartConfiguration = {
+                type: topicObject.chart.type,
+                data: topicObject.chart.datasets ? topicObject.chart : {
+                    labels: topicObject.chart.labels,
+                    datasets: topicObject.chart.datasets
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'bottom',
+                            labels: { font: { size: 9, family: 'Inter' }, boxWidth: 10 }
+                        }
+                    },
+                    scales: topicObject.chart.type === 'bar' || topicObject.chart.type === 'line' ? {
+                        y: { beginAtZero: true, grid: { color: '#f1f0ea' }, ticks: { font: { size: 9, family: 'Inter' } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 9, family: 'Inter' } } }
+                    } : {}
+                }
+            };
+            
+            activeChartInstance = new Chart(targetCanvasContext, extendedChartConfiguration);
+        }
+    </script>
+</body>
+</html>
